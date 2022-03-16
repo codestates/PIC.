@@ -10,7 +10,7 @@ assignees: ''
 ### ISSUE
 
 - 그룹 : `client` , `server`
-- 타입 : `feature`,`bugfix`, `delete`
+- 타입 : `feature`
 - 상세설명 : 작업의 상세 설명을 기입합니다. ex) 즐겨찾기 버튼 구현
 
 ### TODO
