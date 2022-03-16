@@ -10,7 +10,7 @@ assignees: ''
 ### ISSUE
 
 - 그룹 : `client` , `server`
-- 타입 : `bugfix`, `feature`, `delete`
+- 타입 : `feature`,`bugfix`, `delete`
 - 상세설명 : 작업의 상세 설명을 기입합니다. ex) 즐겨찾기 버튼 구현
 
 ### TODO
@@ -21,7 +21,7 @@ assignees: ''
 
 ### Labels
 
-- `소요시간`, `그룹`, `스프린트`, `중요도`
+-  `그룹`, `중요도`
 
 
 !!! 업로드시 아래의 내용을 지우고 업로드합니다. !!!
