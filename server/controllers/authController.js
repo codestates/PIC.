@@ -1,6 +1,9 @@
 require('dotenv').config();
 const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
+const findWithPassword = require('../utils/findWithPassword');
+const generateToken = require('../utils/generateToken');
+const verifyToken = require('../utils/verifyToken');
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
@@ -65,8 +68,44 @@ const signup = asyncWrapper(async (req, res) => {
 })
 
 
+// 회원 탈퇴
+const signout = asyncWrapper(async (req, res) => {
+    res.send('signout ok')
+})
+
+
+// 일반 로그인
+const login = asyncWrapper(async (req, res) => {
+    const { email, password } = req.body;
+    if (email && password) {
+        const userInfo = await findWithPassword({ email }, password);
+        if (!userInfo) { // 해당 User가 없는 경우
+            res.status(400).json({ message: "fail : there is no user with that email and password" })
+        } else {
+            const accessToken = generateToken(userInfo, 'accessToken');
+            const refreshToken = generateToken(userInfo, 'refreshToken');
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                path: '/api/refresh-token',
+                maxAge: 60 * 60 * 24 * 7
+            })
+
+            res.json({
+                _id: userInfo._id,
+                accessToken,
+                message: "success"
+            })
+        }
+    } else { // email과 password가 둘 중 하나라도 요청에 있지 않은 경우
+        res.status(400).json({ message: "fail : require email and password" })
+    }
+})
+
+
 
 module.exports = {
     sendMail,
     signup,
+    signout,
+    login
 }
