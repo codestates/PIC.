@@ -5,6 +5,6 @@ const router = express.Router();
 const controllers = require('../controllers/authController');
 
 router.post('/mail', controllers.sendMail);
-router.get('/signup', controllers.signup);
+router.post('/signup', controllers.signup);
 
 module.exports = router;
