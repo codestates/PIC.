@@ -20,6 +20,7 @@ const Rows = styled.div`
   h3{
 
   }
+
   span{
 
   }
@@ -67,7 +68,7 @@ export const Mypage = () => {
   }, [])
 
   const navigateToModify = () => {
-    navigate('/modify')
+    navigate('modify')
   }
 
   let { email, nickname, image, likes } = userInfo
@@ -84,13 +85,13 @@ export const Mypage = () => {
         <span>{nickname}</span>
       </Rows>
       <Rows>
-        <h3>내 이메일</h3>
+        <h3 className='red'>내 이메일</h3>
         <span>{email}</span>
       </Rows>
       <Rows>
         <h3>내가 받은 좋아요</h3>
         <span>{likes}</span>
-      </Rows >
+      </Rows>
       <ModifyBtn onClick={navigateToModify}>회원정보 수정</ModifyBtn>
     </Container>
   );
