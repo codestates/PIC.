@@ -15,9 +15,7 @@ let authNum;
 const sendMail = asyncWrapper(async (req, res) => {
     const { email } = req.body;
     if (!email) {
-        res.json({
-            message: "require email"
-        })
+        res.json({ message: "require email" })
     } else {
         authNum = String(Math.random()).split('').slice(2, 8).join('');
         let emailTemplate;
@@ -45,7 +43,6 @@ const sendMail = asyncWrapper(async (req, res) => {
 
         transporter.sendMail(mailOptions, (err, info) => {
             if (err) throw err;
-            console.log(authNum);
             res.json({
                 authNum: authNum,
                 message: "success"
@@ -58,7 +55,13 @@ const sendMail = asyncWrapper(async (req, res) => {
 
 // 회원 가입
 const signup = asyncWrapper(async (req, res) => {
-
+    const { email, password, nickname } = req.body;
+    if (email && password && nickname) {
+        await User.create(req.body);
+        res.status(201).json({ message: "success" });
+    } else {
+        res.status(400).json({ message: "fail : require email, password, and nickname" });
+    }
 })
 
 
