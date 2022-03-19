@@ -102,10 +102,31 @@ const login = asyncWrapper(async (req, res) => {
 })
 
 
+// OAuth 2.0 로그인
+const oauthLogin = asyncWrapper(async (req, res) => {
+    const { idToken } = req.body;
+    if (!idToken) { // id token이 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require idToken" })
+    } else {
+        const { OAuth2Client } = require("google-auth-library");
+        const CLIENT_ID = process.env.CLIENT_ID;
+        const client = new OAuth2Client(CLIENT_ID);
+        async function verify() {
+            const ticket = await client.verifyIdToken({
+                idToken: idToken,
+                audience: process.env.CLIENT_ID,
+            });
+            const payload = ticket.getPayload();
+        }
+        verify().catch(console.error);
+    }
+})
+
 
 module.exports = {
     sendMail,
     signup,
     signout,
-    login
+    login,
+    oauthLogin
 }

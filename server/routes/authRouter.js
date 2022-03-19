@@ -8,6 +8,7 @@ router.post('/mail', controllers.sendMail);
 router.post('/signup', controllers.signup);
 router.delete('/signout', controllers.signout);
 router.post('/login', controllers.login);
+router.post('/oauth/google', controllers.oauthLogin);
 
 
 module.exports = router;
