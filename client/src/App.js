@@ -7,13 +7,14 @@ import reset from "styled-reset";
 import { Mypage } from "./pages/mypage";
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
+import { AddPostFloatBtn } from "./components/addPostFloatBtn";
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
 `;
 
 const TempContainer = styled.div`
-  height: 100vh;
+  height: 200vh;
   display: grid;
   place-items: center;
 `
@@ -22,10 +23,11 @@ export const App = () => {
   return (
     <div>
       <GlobalStyles />
-      App.js
       <Navbar />
       <TempContainer>
-        <PostThumbnail />
+        {/* <PostThumbnail /> */}
+        <AddPostFloatBtn />
+
       </TempContainer>
       <Routes>
         <Route path="mypage" element={<Mypage />} />
