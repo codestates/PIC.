@@ -15,6 +15,7 @@ const Container = styled.div`
   overflow: hidden;
   box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
   
+  cursor : pointer;
 
   transition: 0.2s;
   &:hover{
@@ -32,7 +33,7 @@ const PostImg = styled.div`
   background-position: center;
   /* background-color: #fff; */
   border-radius: 10px;
-  box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 3px rgba(0,0,0,0.2);
   z-index: 1;
 `
 
@@ -142,7 +143,7 @@ export const PostThumbnail = () => { // 실 사용시에는 해당 위치에 pro
 
     const getComments = async () => {
       const comments = await axios.get(`${serverPath}/comment?id=${_id}`)
-      setComments([])
+      setComments([]) // 여기 값 들어올때 수정해야함 까먹지 말기
       // 게시물 아이디를 쿼리를 이용하여 요청을 보내고 해당 배열의 길이를 상태에 저장한다.
     }
     getUserNickname()

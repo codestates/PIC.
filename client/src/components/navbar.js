@@ -107,7 +107,7 @@ export const Navbar = () => {
 
   const navigate = useNavigate()
 
-  const [isLogin, setIsLogin] = useState(false)
+  const [isLogin, setIsLogin] = useState(true)
   const [openModal, setOpenModal] = useState(false)
 
   const [openLoginModal, setOpenLoginModal] = useState(false)
@@ -117,16 +117,16 @@ export const Navbar = () => {
 
   const modalHandler = (modal) => {
     openModal ? setOpenModal(false) : setOpenModal(true)
-    
-    if(modal === 'login'){
+
+    if (modal === 'login') {
       openLoginModal ? setOpenLoginModal(false) : setOpenLoginModal(true)
       console.log('로그인 모달 오픈')
     }
-    if(modal === 'signup'){
+    if (modal === 'signup') {
       openSignupModal ? setOpenSignupModal(false) : setOpenSignupModal(true)
       console.log('회원가입 모달 오픈')
     }
-    if(modal === 'logout'){
+    if (modal === 'logout') {
       openLogoutCheckModal ? setOpenLogoutCheckModal(false) : setOpenLogoutCheckModal(true)
       console.log('로그아웃 체크 모달 오픈')
     }
@@ -139,7 +139,7 @@ export const Navbar = () => {
 
   return (
     <div>
-      {openModal ? <FakeModal onClick={modalHandler}/> : null }
+      {openModal ? <FakeModal onClick={modalHandler} /> : null}
       {/* 로그인 모달 */}
       {/* {openLoginModal ? <LoginModal onClick={() => modalHandler('login')} /> : null} */}
       {/* 회원가입 모달 */}
@@ -159,8 +159,12 @@ export const Navbar = () => {
           <RightLinks className='right-btns'>
             <Link className='keywords' to="keywords">키워드 검색</Link>
             <Link className='tags' to="tags">태그 검색</Link>
-            {isLogin ? <Link className='mypage' to="mypage">마이페이지</Link> : <div className='login' onClick={() => modalHandler('login')}> 로그인 </div>}
-            {isLogin ? <div className='logout' onClick={() => modalHandler('logout')}> 로그아웃 </div> : <div className='signup' onClick={() => modalHandler('signup')}> 회원가입 </div>}
+            {isLogin
+              ? <Link className='mypage' to="mypage">마이페이지</Link>
+              : <div className='login' onClick={() => modalHandler('login')}> 로그인 </div>}
+            {isLogin
+              ? <div className='logout' onClick={() => modalHandler('logout')}> 로그아웃 </div>
+              : <div className='signup' onClick={() => modalHandler('signup')}> 회원가입 </div>}
           </RightLinks>
         </InnerContainer>
       </Container>
