@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   position : relative;
@@ -56,6 +56,7 @@ const Logo = styled.div`
   font-family: 'Sriracha', cursive;
   font-size: 2.3rem;
   text-align: center;
+  cursor : pointer;
   span{
     color : #E80707;
   }
@@ -104,7 +105,9 @@ const FakeModal = styled.div`
 
 export const Navbar = () => {
 
-  const [isLogin, setIsLogin] = useState(false)
+  const navigate = useNavigate()
+
+  const [isLogin, setIsLogin] = useState(true)
   const [openModal, setOpenModal] = useState(false)
 
   const [openLoginModal, setOpenLoginModal] = useState(false)
@@ -114,24 +117,29 @@ export const Navbar = () => {
 
   const modalHandler = (modal) => {
     openModal ? setOpenModal(false) : setOpenModal(true)
-    
-    if(modal === 'login'){
+
+    if (modal === 'login') {
       openLoginModal ? setOpenLoginModal(false) : setOpenLoginModal(true)
       console.log('로그인 모달 오픈')
     }
-    if(modal === 'signup'){
+    if (modal === 'signup') {
       openSignupModal ? setOpenSignupModal(false) : setOpenSignupModal(true)
       console.log('회원가입 모달 오픈')
     }
-    if(modal === 'logout'){
+    if (modal === 'logout') {
       openLogoutCheckModal ? setOpenLogoutCheckModal(false) : setOpenLogoutCheckModal(true)
       console.log('로그아웃 체크 모달 오픈')
     }
   }
 
+  const navigateToHome = () => {
+    navigate('/main')
+  }
+
+
   return (
     <div>
-      {openModal ? <FakeModal onClick={modalHandler}/> : null }
+      {openModal ? <FakeModal onClick={modalHandler} /> : null}
       {/* 로그인 모달 */}
       {/* {openLoginModal ? <LoginModal onClick={() => modalHandler('login')} /> : null} */}
       {/* 회원가입 모달 */}
@@ -141,7 +149,7 @@ export const Navbar = () => {
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
       <Container>
         <InnerContainer>
-          <Logo className='logo'>PIC<span>.</span></Logo>
+          <Logo className='logo' onClick={navigateToHome}>PIC<span>.</span></Logo>
           <LeftLinks className='left-btns'>
             <Link className='my_pics' to="my_pics">내 사진</Link>
             <Link className='most_likes' to="most_likes">인기사진</Link>
@@ -151,8 +159,12 @@ export const Navbar = () => {
           <RightLinks className='right-btns'>
             <Link className='keywords' to="keywords">키워드 검색</Link>
             <Link className='tags' to="tags">태그 검색</Link>
-            {isLogin ? <Link className='mypage' to="mypage">마이페이지</Link> : <div className='login' onClick={() => modalHandler('login')}> 로그인 </div>}
-            {isLogin ? <div className='logout' onClick={() => modalHandler('logout')}> 로그아웃 </div> : <div className='signup' onClick={() => modalHandler('signup')}> 회원가입 </div>}
+            {isLogin
+              ? <Link className='mypage' to="mypage">마이페이지</Link>
+              : <div className='login' onClick={() => modalHandler('login')}> 로그인 </div>}
+            {isLogin
+              ? <div className='logout' onClick={() => modalHandler('logout')}> 로그아웃 </div>
+              : <div className='signup' onClick={() => modalHandler('signup')}> 회원가입 </div>}
           </RightLinks>
         </InnerContainer>
       </Container>
