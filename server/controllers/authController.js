@@ -186,7 +186,18 @@ const checkNickname = asyncWrapper(async (req, res) => {
 
 // 패스워드 확인
 const checkPassword = asyncWrapper(async (req, res) => {
-    res.send('check password ok');
+    const { password } = req.body;
+    if (!password) { // password가 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require password" });
+    } else {
+        const data = verifyToken(req.headers.authorization, 'accessToken');
+        const userInfo = await findWithPassword({ _id: data.id }, password);
+        if (!userInfo) { // 유효하지 않은 password일 경우
+            res.status(400).json({ message: "fail : invalid password" });
+        } else {
+            res.status(200).json({ message: "success: valid password "});
+        }
+    }
 })
 
 

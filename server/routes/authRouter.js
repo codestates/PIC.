@@ -14,7 +14,7 @@ router.get('/logout', controllers.logout);
 router.get('/refresh-token', controllers.refreshToken);
 router.post('/email', controllers.checkEmail);
 router.post('/nickname', controllers.checkNickname);
-router.post('/password', controllers.checkPassword);
+router.post('/password', checkToken, controllers.checkPassword);
 
 
 module.exports = router;
