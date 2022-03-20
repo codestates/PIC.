@@ -70,7 +70,9 @@ const signup = asyncWrapper(async (req, res) => {
 
 // 회원 탈퇴
 const signout = asyncWrapper(async (req, res) => {
-    res.send('signout ok')
+    const data = verifyToken(req.headers.authorization, 'accessToken');
+    await User.findOneAndDelete({ _id: data.id });
+    res.status(200).json({ message: "success" })
 })
 
 
