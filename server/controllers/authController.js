@@ -170,7 +170,17 @@ const checkEmail = asyncWrapper(async (req, res) => {
 
 // 닉네임 중복확인
 const checkNickname = asyncWrapper(async (req, res) => {
-    res.send('check nickname ok');
+    const { nickname } = req.body;
+    if (!nickname) { // nickname이 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require nickname" });
+    } else {
+        const userInfo = await User.findOne({ nickname });
+        if (userInfo) { // nickname이 중복되는 경우
+            res.status(400).json({ message: "fail : invalid nickname" });
+        } else {
+            res.status(200).json({ message: "success : valid nickname" })
+        }
+    }
 })
 
 
