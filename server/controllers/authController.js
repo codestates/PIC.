@@ -132,6 +132,25 @@ const logout = asyncWrapper(async (req, res) => {
 })
 
 
+// 리프레시토큰을 이용한 액세스토큰 재발급
+const refreshToken = asyncWrapper(async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        res.json({ message: "fail : require refresh token" });
+    } else {
+        const data = verifyToken(refreshToken, 'refreshToken');
+        if (data === 'fail') {
+            res.json({ message: "fail : invalid refresh token" });
+        } else {
+            const accessToken = generateToken({ _id: data.id }, 'accessToken');
+            res.json({
+                accessToken,
+                message: "success"
+            })
+        }
+    }
+})
+
 
 module.exports = {
     sendMail,
@@ -140,4 +159,5 @@ module.exports = {
     login,
     oauthLogin,
     logout,
+    refreshToken,
 }
