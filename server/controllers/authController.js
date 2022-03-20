@@ -152,6 +152,35 @@ const refreshToken = asyncWrapper(async (req, res) => {
 })
 
 
+// 이메일 중복확인
+const checkEmail = asyncWrapper(async (req, res) => {
+    const { email } = req.body;
+    if (!email) { // email이 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require email" });
+    } else {
+        const userInfo = await User.findOne({ email });
+        if (userInfo) { // email이 중복되는 경우
+            res.status(400).json({ message: "fail : invalid email" });
+        } else {
+            res.status(200).json({ message: "success : valid email" })
+        }
+    }
+})
+
+
+// 닉네임 중복확인
+const checkNickname = asyncWrapper(async (req, res) => {
+    res.send('check nickname ok');
+})
+
+
+// 패스워드 확인
+const checkPassword = asyncWrapper(async (req, res) => {
+    res.send('check password ok');
+})
+
+
+
 module.exports = {
     sendMail,
     signup,
@@ -160,4 +189,7 @@ module.exports = {
     oauthLogin,
     logout,
     refreshToken,
+    checkEmail,
+    checkNickname,
+    checkPassword
 }

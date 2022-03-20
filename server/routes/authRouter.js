@@ -12,7 +12,9 @@ router.post('/login', controllers.login);
 router.post('/oauth/google', controllers.oauthLogin);
 router.get('/logout', controllers.logout);
 router.get('/refresh-token', controllers.refreshToken);
-
+router.post('/email', controllers.checkEmail);
+router.post('/nickname', controllers.checkNickname);
+router.post('/password', controllers.checkPassword);
 
 
 module.exports = router;
