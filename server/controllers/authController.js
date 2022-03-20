@@ -123,10 +123,19 @@ const oauthLogin = asyncWrapper(async (req, res) => {
 })
 
 
+// 로그아웃
+const logout = asyncWrapper(async (req, res) => {
+    res.clearCookie('refreshToken', { path: '/api/refresh-token' });
+    res.json({ message: "success" });
+})
+
+
+
 module.exports = {
     sendMail,
     signup,
     signout,
     login,
-    oauthLogin
+    oauthLogin,
+    logout,
 }
