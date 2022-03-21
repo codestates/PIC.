@@ -48,7 +48,6 @@ const dummy = {
   }
 }
 export const Mypage = () => {
-
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const userId = "로그인 과정에서 로컬 스토리지에 저장된 id값"
 
@@ -58,7 +57,7 @@ export const Mypage = () => {
 
   useEffect(() => {
     //   const getUserinfo = async () => {
-    //     const userInfo = await axios.get(`serverPath/user/${userId}`)
+    //     const userInfo = await axios.get(`${serverPath}/api/user/${userId}`)
     //     if (userInfo) {
     //       setUserInfo(userInfo)
     setUserInfo(dummy.userInfo)

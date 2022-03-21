@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
+import { OneBtnModal } from './oneBtnModal';
+import { TwoBtnModal } from './twoBtnModal';
+
 
 const Container = styled.div`
   position : relative;
@@ -9,10 +12,11 @@ const Container = styled.div`
   justify-content: center;
 
   width: 100vw;
+  min-width: 1200px;
   height: 50px;
 
   background-color: #FFD600;
-  font-size: 1.1rem;
+  font-size: 1.0rem;
 
   a{
     text-decoration: none;
@@ -27,7 +31,7 @@ const Container = styled.div`
 const InnerContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  width: 1420px;
+  min-width: 1200px;
 
   .logo{
     grid-column: 1/3;
@@ -76,33 +80,6 @@ const RightLinks = styled.div`
   place-items: center;
 `
 
-const FakeModal = styled.div`
-  display: grid;
-  place-items: center;
-  position : absolute;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.3);
-  z-index: 999;
-
-  &::after{
-    content: '✕';
-    display : grid;
-    place-items: center;
-    font-size: 2rem;
-    color: #E80707;
-    text-shadow: 1px 1px 4px gray;
-
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #fff;
-    box-shadow: 3px 3px 4px gray;
-
-    cursor: pointer;
-  }
-`
-
 export const Navbar = () => {
 
   const navigate = useNavigate()
@@ -112,7 +89,7 @@ export const Navbar = () => {
 
   const [openLoginModal, setOpenLoginModal] = useState(false)
   const [openSignupModal, setOpenSignupModal] = useState(false)
-  const [openLogoutCheckModal, setOpenLogoutCheckModal] = useState(false)
+  const [openTwoBtnModal, setOpenTwoBtnModal] = useState(false)
   // 각 모달 컴포넌트가 열리고 닫혀있는지 확인하는 상태
 
   const modalHandler = (modal) => {
@@ -127,7 +104,7 @@ export const Navbar = () => {
       console.log('회원가입 모달 오픈')
     }
     if (modal === 'logout') {
-      openLogoutCheckModal ? setOpenLogoutCheckModal(false) : setOpenLogoutCheckModal(true)
+      openTwoBtnModal ? setOpenTwoBtnModal(false) : setOpenTwoBtnModal(true)
       console.log('로그아웃 체크 모달 오픈')
     }
   }
@@ -139,14 +116,17 @@ export const Navbar = () => {
 
   return (
     <div>
-      {openModal ? <FakeModal onClick={modalHandler} /> : null}
       {/* 로그인 모달 */}
       {/* {openLoginModal ? <LoginModal onClick={() => modalHandler('login')} /> : null} */}
       {/* 회원가입 모달 */}
       {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
       {/* 로그아웃 시 확인 모달 */}
-      {/* {openLogoutCheckModal ? <LogoutCheckModal onClick={() => modalHandler('logout')} /> : null} */}
+      {/* {openTwoBtnModal ? <TwoBtnModal close={() => modalHandler('logout')} action={() => {console.log('으엑')}} nav={"/main"}/> : null} */}
+      {/* 위의 내용 수정 필요 */}
+
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
+      {/* 완성된 모달 컴포넌트에 props 로 modal 상태변경 함수를 내려서 사용하기 */}
+      {/* 백드롭도 모달에서 관리해주어야함. */}
       <Container>
         <InnerContainer>
           <Logo className='logo' onClick={navigateToHome}>PIC<span>.</span></Logo>

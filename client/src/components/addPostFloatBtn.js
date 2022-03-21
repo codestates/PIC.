@@ -34,7 +34,7 @@ const Btn = styled.div`
 
     background-color: #000;
   }
-    &::after{
+  &::after{
     content : '';
     display: block;
     position: absolute;

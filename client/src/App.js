@@ -8,29 +8,33 @@ import { Mypage } from "./pages/mypage";
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
 import { AddPostFloatBtn } from "./components/addPostFloatBtn";
+import { OneBtnModal } from "./components/oneBtnModal";
+import { TwoBtnModal } from "./components/twoBtnModal";
+
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
+
+    .main{
+      height: 100vh;
+    }
 `;
 
 const TempContainer = styled.div`
-  height: 200vh;
   display: grid;
   place-items: center;
 `
 
 export const App = () => {
   return (
-    <div>
+    <div className='main'>
       <GlobalStyles />
       <Navbar />
       <TempContainer>
-        {/* <PostThumbnail /> */}
-        <AddPostFloatBtn />
 
       </TempContainer>
       <Routes>
-        <Route path="mypage" element={<Mypage />} />
+        <Route path="mypage" element={<Mypage test={"test"}/>} />
       </Routes>
     </div>
   )
