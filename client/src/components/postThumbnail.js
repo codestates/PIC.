@@ -72,7 +72,6 @@ const PostInfo = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
 
-
     svg{
       position: relative;
       top: 2px;
