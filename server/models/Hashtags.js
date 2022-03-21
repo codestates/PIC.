@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Hashtag_DataSchema = new mongoose.Schema(
+const HashtagsSchema = new mongoose.Schema(
   {
     분위기: {
         type: Array
@@ -20,4 +20,4 @@ const Hashtag_DataSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Hashtag_Data", Hashtag_DataSchema);
+module.exports = mongoose.model("Hashtags", HashtagsSchema);
