@@ -1,4 +1,3 @@
-require('dotenv').config();
 const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
 const findWithPassword = require('../utils/findWithPassword');
