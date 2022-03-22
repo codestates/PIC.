@@ -19,7 +19,15 @@ const uploadPost = asyncWrapper(async (req, res) => {
 
 // 해당 게시글 조회
 const getSinglePost = asyncWrapper(async (req, res) => {
-    res.send('get post ok');
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+        res.status(400).json({ message: "fail : invalid post id" });
+    } else {
+        res.status(200).json({
+            post,
+            message: "success"
+        })
+    }
 })
 
 
