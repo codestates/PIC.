@@ -1,7 +1,7 @@
 ---
 name: 'Issue: [에러 핸들링 템플릿]'
 about: 'Issue: [에러 핸들링 템플릿]'
-title: "[에러 핸들링]"
+title: "[ErrorLog] "
 labels: ''
 assignees: ''
 
