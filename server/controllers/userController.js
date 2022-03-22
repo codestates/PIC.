@@ -105,14 +105,36 @@ const oauthLogin = asyncWrapper(async (req, res) => {
         const { OAuth2Client } = require("google-auth-library");
         const CLIENT_ID = process.env.CLIENT_ID;
         const client = new OAuth2Client(CLIENT_ID);
-        async function verify() {
-            const ticket = await client.verifyIdToken({
-                idToken: idToken,
-                audience: process.env.CLIENT_ID,
-            });
-            const payload = ticket.getPayload();
+        const ticket = await client.verifyIdToken({
+            idToken: idToken,
+            audience: CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+
+        // DB에 넣을 값 생성
+        const email = payload.email + '-Google';
+        const nickname = payload.name + String(Math.random()).slice(2, 8);
+        const password = 'socialLoginUser';
+        const image = payload.picture;
+
+        // DB에 추가
+        let userInfo = await User.findOne({ email });
+        if (!userInfo) { // 처음 소셜로그인 하는 경우
+            userInfo = await User.create({ email, nickname, password, image });
         }
-        verify().catch(console.error);
+        const accessToken = generateToken(userInfo, 'accessToken');
+        const refreshToken = generateToken(userInfo, 'refreshToken');
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            path: '/api/users/refresh-token',
+            maxAge: 60 * 60 * 24 * 7
+        })
+
+        res.json({
+            _id: userInfo._id,
+            accessToken,
+            message: "success"
+        })
     }
 })
 
@@ -225,7 +247,7 @@ const checkPassword = asyncWrapper(async (req, res) => {
         if (!userInfo) { // 유효하지 않은 password일 경우
             res.status(400).json({ message: "fail : invalid password" });
         } else {
-            res.status(200).json({ message: "success: valid password "});
+            res.status(200).json({ message: "success: valid password " });
         }
     }
 })
