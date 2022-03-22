@@ -32,6 +32,10 @@ const TextContainer = styled.div`
   place-items: center;
   height: 50%;
   width: 85%;
+  
+  .body {
+    line-height: 1.4rem;
+  }
 `
 
 const BtnContainer = styled.div`
@@ -56,7 +60,6 @@ const YesBtn = styled.div`
   box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
 
   cursor : pointer;
-  
   transition: 0.1s;
   &:hover{
     background-color: #FFD600;
@@ -109,7 +112,7 @@ export const TwoBtnModal = ({ main, close, nav, action }) => {
       <Modal>
         <TextContainer>
           <div className='body'>
-            {main ? main : '-props 안내-\n  main={내용}을 입력하세요.\n    \" \\n \" 을 입력하여 줄바꿈 가능\n  close={닫는함수}\n  nav={이동할 path}\n  action={OK 시 실행시킬 함수}'}
+            {main ? main : '-props 안내-\n  main={내용}을 입력하세요.\n    \" \\n \" 을 입력하여 줄바꿈 가능\n  close={닫는함수} nav={이동할 path}\n  action={OK 시 실행시킬 함수}'}
           </div>
         </TextContainer>
         <BtnContainer>

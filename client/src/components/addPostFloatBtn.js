@@ -1,6 +1,7 @@
+// 해당 컴포넌트는 게시글을 모아보는 경우에만 표시합니다.
+
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
 
 const Btn = styled.div`
   display: grid;
