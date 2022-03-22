@@ -1,5 +1,147 @@
 const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
+const findWithPassword = require('../utils/findWithPassword');
+const generateToken = require('../utils/generateToken');
+const verifyToken = require('../utils/verifyToken');
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+const path = require('path');
+var appDir = path.dirname(require.main.filename);
+
+
+
+/********** Auth Number **********/
+let authNum;
+
+
+// 이메일 인증
+const sendMail = asyncWrapper(async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        res.json({ message: "require email" })
+    } else {
+        authNum = String(Math.random()).split('').slice(2, 8).join('');
+        let emailTemplate;
+        ejs.renderFile(appDir + '/template/authMail.ejs', { authCode: authNum }, function (err, data) {
+            if (err) throw err;
+            emailTemplate = data;
+        })
+
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            auth: {
+                user: process.env.NODEMAILER_USER,
+                pass: process.env.NODEMAILER_PASS
+            }
+        });
+
+        let mailOptions = {
+            from: 'PIC.',
+            to: email,
+            subject: '회원가입을 위한 인증번호를 입력해주세요.',
+            html: emailTemplate
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) throw err;
+            res.json({
+                authNum: authNum,
+                message: "success"
+            })
+            transporter.close();
+        })
+    }
+})
+
+
+// 회원 가입
+const signup = asyncWrapper(async (req, res) => {
+    const { email, password, nickname } = req.body;
+    if (email && password && nickname) {
+        await User.create(req.body);
+        res.status(201).json({ message: "success" });
+    } else {
+        res.status(400).json({ message: "fail : require email, password, and nickname" });
+    }
+})
+
+
+// 일반 로그인
+const login = asyncWrapper(async (req, res) => {
+    const { email, password } = req.body;
+    if (email && password) {
+        const userInfo = await findWithPassword({ email }, password);
+        if (!userInfo) { // 해당 User가 없는 경우
+            res.status(401).json({ message: "fail : there is no user with that email and password" })
+        } else {
+            const accessToken = generateToken(userInfo, 'accessToken');
+            const refreshToken = generateToken(userInfo, 'refreshToken');
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                path: '/api/users/refresh-token',
+                maxAge: 60 * 60 * 24 * 7
+            })
+
+            res.json({
+                _id: userInfo._id,
+                accessToken,
+                message: "success"
+            })
+        }
+    } else { // email과 password가 둘 중 하나라도 요청에 있지 않은 경우
+        res.status(400).json({ message: "fail : require email and password" })
+    }
+})
+
+
+// OAuth 2.0 로그인
+const oauthLogin = asyncWrapper(async (req, res) => {
+    const { idToken } = req.body;
+    if (!idToken) { // id token이 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require idToken" })
+    } else {
+        const { OAuth2Client } = require("google-auth-library");
+        const CLIENT_ID = process.env.CLIENT_ID;
+        const client = new OAuth2Client(CLIENT_ID);
+        async function verify() {
+            const ticket = await client.verifyIdToken({
+                idToken: idToken,
+                audience: process.env.CLIENT_ID,
+            });
+            const payload = ticket.getPayload();
+        }
+        verify().catch(console.error);
+    }
+})
+
+
+// 로그아웃
+const logout = asyncWrapper(async (req, res) => {
+    res.clearCookie('refreshToken', { path: '/api/users/refresh-token' });
+    res.json({ message: "success" });
+})
+
+
+// 리프레시토큰을 이용한 액세스토큰 재발급
+const refreshToken = asyncWrapper(async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        res.json({ message: "fail : require refresh token" });
+    } else {
+        const data = verifyToken(refreshToken, 'refreshToken');
+        if (data === 'fail') {
+            res.json({ message: "fail : invalid refresh token" });
+        } else {
+            const accessToken = generateToken({ _id: data.id }, 'accessToken');
+            res.json({
+                accessToken,
+                message: "success"
+            })
+        }
+    }
+})
 
 
 // 사용자 정보 조회
@@ -34,9 +176,73 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
 })
 
 
+// 회원 탈퇴
+const deleteUser = asyncWrapper(async (req, res) => {
+    await User.findOneAndDelete({ _id: req.params.id });
+    res.status(200).json({ message: "success" })
+})
+
+
+// 이메일 중복확인
+const checkEmail = asyncWrapper(async (req, res) => {
+    const { email } = req.body;
+    if (!email) { // email이 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require email" });
+    } else {
+        const userInfo = await User.findOne({ email });
+        if (userInfo) { // email이 중복되는 경우
+            res.status(400).json({ message: "fail : email exist" });
+        } else {
+            res.status(200).json({ message: "success : valid email" })
+        }
+    }
+})
+
+
+// 닉네임 중복확인
+const checkNickname = asyncWrapper(async (req, res) => {
+    const { nickname } = req.body;
+    if (!nickname) { // nickname이 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require nickname" });
+    } else {
+        const userInfo = await User.findOne({ nickname });
+        if (userInfo) { // nickname이 중복되는 경우
+            res.status(400).json({ message: "fail : nickname exist" });
+        } else {
+            res.status(200).json({ message: "success : valid nickname" })
+        }
+    }
+})
+
+
+// 패스워드 확인
+const checkPassword = asyncWrapper(async (req, res) => {
+    const { password } = req.body;
+    if (!password) { // password가 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require password" });
+    } else {
+        const userInfo = await findWithPassword({ _id: req.params.id }, password);
+        if (!userInfo) { // 유효하지 않은 password일 경우
+            res.status(400).json({ message: "fail : invalid password" });
+        } else {
+            res.status(200).json({ message: "success: valid password "});
+        }
+    }
+})
+
 
 
 module.exports = {
+    sendMail,
+    signup,
+    login,
+    oauthLogin,
+    logout,
+    refreshToken,
     getUserInfo,
-    updateUserInfo
+    updateUserInfo,
+    deleteUser,
+    checkEmail,
+    checkNickname,
+    checkPassword
 }
