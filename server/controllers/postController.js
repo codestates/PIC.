@@ -31,8 +31,54 @@ const getSinglePost = asyncWrapper(async (req, res) => {
 })
 
 
+// 필터링 후 모든 게시글 조회
+const getAllPosts = asyncWrapper(async (req, res) => {
+    const { like, date, hashtags } = req.query;
+    if (like && date) {
+        res.status(400).json({ message: "fail : please request one option - like or date" });
+    } else {
+        let posts = await Post.find();
+        const filter = {};
+        if (hashtags) {
+            filter.hashtags = hashtags.slice(1, hashtags.length - 1).split(',').map(e => e[0] === " " ? e.slice(1) : e)
+            posts = posts.filter(post => isSubsetOf(post.hashtags, filter.hashtags));
+        }
+        if (like) {
+            posts.sort((a, b) => b.likes.length - a.likes.length);
+        } else if (date) {
+            posts.sort((a, b) => b.createdAt - a.createdAt);
+        }
+        res.status(200).json({
+            posts,
+            message: "success"
+        })
+    }
+
+    // 부분집합 여부 확인하는 함수
+    function isSubsetOf(base, sample) {
+        base.sort();
+        sample.sort();
+        const findItemInSortedArr = (item, arr, from) => {
+            for (let i = from; i < arr.length; i++) {
+                if (item === arr[i]) return i;
+            }
+            return -1;
+        };
+
+        let baseIdx = 0;
+        for (let i = 0; i < sample.length; i++) {
+            baseIdx = findItemInSortedArr(sample[i], base, baseIdx);
+            if (baseIdx === -1) {
+                return false;
+            }
+        }
+        return true;
+    };
+})
+
 
 module.exports = {
     uploadPost,
-    getSinglePost
+    getSinglePost,
+    getAllPosts
 }
