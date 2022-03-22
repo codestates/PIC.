@@ -3,6 +3,7 @@ const asyncWrapper = require('../middleware/async');
 const findWithPassword = require('../utils/findWithPassword');
 const generateToken = require('../utils/generateToken');
 const verifyToken = require('../utils/verifyToken');
+const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
@@ -182,18 +183,26 @@ const getUserInfo = asyncWrapper(async (req, res) => {
 
 // 사용자 정보 업데이트
 const updateUserInfo = asyncWrapper(async (req, res) => {
-    if (Object.keys(req.body).length === 0) { // nickname, password, image 셋 다 request에 없을 경우
-        res.status(400).json({ message: "fail : require nickname or password or image" });
-    } else {
+    const { newNickname, newPassword, newImage } = req.body;
+    if (newNickname || newPassword || newImage) {
         const userInfo = await User.findById(req.params.id);
         if (!userInfo) {
             res.status(400).json({ message: "fail : invalid user id" });
         } else {
-            await User.updateOne({ _id: req.params.id }, req.body, {
+            let newInfo = {};
+            if (newPassword) {
+                const salt = await bcrypt.genSalt();
+                newInfo.password = await bcrypt.hash(newPassword, salt);
+            }
+            newNickname ? newInfo.nickname = req.body.newNickname : false;
+            newImage ? newInfo.image = req.body.newImage : false;
+            await User.updateOne({ _id: req.params.id }, newInfo, {
                 runValidators: true
             });
             res.status(200).json({ message: "success" });
         }
+    } else { // newNickname, newPassword, newImage 셋 다 request에 없을 경우
+        res.status(400).json({ message: "fail : require nickname or password or image" });
     }
 })
 
