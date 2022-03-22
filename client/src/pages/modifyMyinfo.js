@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-import { BiLeftIndent } from 'react-icons/bi';
+import { BsChevronLeft } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -25,6 +25,16 @@ const PageTitle = styled.h2`
   margin-bottom: 20px;
   
   font-size: 1.4rem;  
+`
+
+const GoBackBtn = styled(BsChevronLeft)`
+  position: absolute;
+  left: 0px;
+  top: -3px;
+
+  font-size: 1.5rem;
+  color: #aaa;
+  cursor: pointer;
 `
 
 const HLine = styled.div`
@@ -152,21 +162,6 @@ const Nofication = styled.div`
   font-size: 0.8rem;;
 `
 
-
-// 프로파일 이미지 업로드 및 표시
-// 호스팅 사용해야하고, 해당 주소 응답 받아서 표시해주어야 함.
-
-// 기존 비밀번호
-// 요청보내서 확인하기
-// 수정 누르면 요청 보내야함.
-
-
-// 회원탈퇴
-// 모달 띄우고, 예 눌렀을때 delete 요청 보내야함.
-// 아니요 누르면 그냥 뒤로가기
-// 페이지 이동 감지해서 alert 표시하기.
-// 아니면 모달?
-
 export const ModifyMyinfo = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
@@ -189,6 +184,7 @@ export const ModifyMyinfo = () => {
   const [okModalOpen, setOkModalOpen] = useState(false)
   const [invaildModalOpen, setInvaildModalOpen] = useState(false)
   const [signoutModalOpen, setSignoutModalOpen] = useState(false)
+  const [profileModalOpen, setProfileModalOpen] = useState(false)
 
   const navigate = useNavigate()
   const uploadBtn = useRef()
@@ -240,6 +236,7 @@ export const ModifyMyinfo = () => {
         })
       })()
       setNowUploading(false)
+      setProfileModalOpen(true)
       // 프로필 이미지를 저장하는 상태가 변경되는 경우 위의 요청을 보내고, 요청이 끝난 뒤 로딩 상태를 false 로.
     }
   }, [profileImg, serverPath])
@@ -253,10 +250,10 @@ export const ModifyMyinfo = () => {
   }, [newPassword, retypePassword])
 
 
-  const nicknameCheckHandler = (e) => {
+  const nicknameCheckHandler = async (e) => {
     setNewNickname(e.target.value)
-    setNicknameCheck(false)
   }
+
 
   const nicknameValidCheck = (value) => {
     let nicknameReg = /^[가-힣a-zA-Z0-9_]{2,12}$/;
@@ -268,11 +265,16 @@ export const ModifyMyinfo = () => {
       if (newNickname && nicknameValidCheck(newNickname)) {
         // 새로운 닉네임 필드에 값이 있고, 유효한 경우에만 요청전송
         // 두 조건이 일치하는 요청에서 200이 아닌 경우 중복으로 볼 수 있음.
-        const res = await axios.post(`${serverPath}/api/users/nickname`, {
-          nickname: newNickname
-        })
-        if (res.status === 200) {
-          setNicknameCheck(true)
+        try {
+          const res = await axios.post(`${serverPath}/api/users/nickname`, {
+            nickname: newNickname
+          })
+          if (res.status === 200) {
+            setNicknameCheck(true)
+          }
+        }
+        catch (err) {
+          setNicknameCheck(false)
         }
       }
     })()
@@ -289,22 +291,20 @@ export const ModifyMyinfo = () => {
     }
 
     try {
-      await axios.post(`${serverPath}/api/users/${userId}/password`, {
+      const res = await axios.post(`${serverPath}/api/users/${userId}/password`, {
         password: oldPassword
       }, headers)
-    }
-    catch (ex) {
-      if (ex.response.status === 401) {
-          setInvaildModalOpen(true)
+      if (res.status === 200) {
+        const body = {
+          newnickname: newNickname,
+          newPassword: newPassword
         }
-        if (ex.response.status === 200) {
-          const body = {
-            newnickname: newNickname,
-            newPassword: newPassword
-          }
-          axios.patch(`${serverPath}/api/users/${userId}`, body, headers)
+        axios.patch(`${serverPath}/api/users/${userId}`, body, headers)
         setOkModalOpen(true)
       }
+    }
+    catch (err) {
+      setInvaildModalOpen(true)
     }
   }
 
@@ -316,17 +316,15 @@ export const ModifyMyinfo = () => {
     }
 
     try {
-      await axios.post(`${serverPath}/api/users/${userId}/password`, {
+      const res = await axios.post(`${serverPath}/api/users/${userId}/password`, {
         password: oldPassword
       }, headers)
-    }
-    catch (ex) {
-      if (ex.response.status === 401) {
-        setInvaildModalOpen(true)
-      }
-      if (ex.response.status === 200) {
+      if (res.status === 200) {
         setSignoutModalOpen(true)
       }
+    }
+    catch (err) {
+      setInvaildModalOpen(true)
     }
   }
 
@@ -356,7 +354,6 @@ export const ModifyMyinfo = () => {
       return <Nofication>한글, 영문, 숫자, _ ,- 만 입력 가능합니다!</Nofication>
     }
     if (!nicknameCheck && newNickname && nicknameValidCheck(newNickname)) {
-      console.log(nicknameValidCheck(newNickname))
       return <Nofication>이미 사용중인 닉네임입니다!</Nofication>
     }
     if (newNickname && nicknameCheck) {
@@ -383,23 +380,25 @@ export const ModifyMyinfo = () => {
   }
 
   const ConfirmBtnByCondition = () => {
-    if (oldPassword && newNickname && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
-      // 기존 비밀번호가 있고, 새 비밀번호, 리타입 필드에 값이 있고 그 둘이 같으며, 새 비밀번호의 길이가 8자 이상 일때
+    if (oldPassword && newNickname && nicknameCheck && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
+      // 모든 값이 입력되어 았고, 유효성 및 중복검사, 일치여부를 충족한 경우
+      return (
+        <ConfirmBtn onClick={clickModifyBtn}>
+          <span>회원정보 수정?</span>
+        </ConfirmBtn>
+      )
+    }
+    if (oldPassword && nicknameCheck && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
+      // 기존 비밀번호가 있고, 닉네임이 유효하며, 새 비밀번호, 리타입 필드에 값이 있고 그 둘이 같으며, 새 비밀번호의 길이가 8자 이상 일때
+      // 닉네임의 중복확인이 되지 않은 경우를 걸러낼 수 잇음
       return (
         <ConfirmBtn onClick={clickModifyBtn}>
           <span>회원정보 수정</span>
         </ConfirmBtn>
       )
     }
-    if (oldPassword && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
-      // 기존 비밀번호가 있고, 새 비밀번호, 리타입 필드에 값이 있고 그 둘이 같으며, 새 비밀번호의 길이가 8자 이상 일때
-      return (
-        <ConfirmBtn onClick={clickModifyBtn}>
-          <span>회원정보 수정</span>
-        </ConfirmBtn>
-      )
-    }
-    if (oldPassword && newNickname && nicknameCheck) {
+    if (oldPassword && newNickname && nicknameCheck && !newPassword && !retypePassword) {
+      // 닉네임 필드에만 값이 존재하는 경우.
       return (
         <ConfirmBtn onClick={clickModifyBtn}>
           <span>회원정보 수정</span>
@@ -432,6 +431,9 @@ export const ModifyMyinfo = () => {
 
 
   const modalHandler = (modal) => {
+    if (modal === 'profile') {
+      profileModalOpen ? setProfileModalOpen(false) : setProfileModalOpen(true)
+    }
     if (modal === 'ok') {
       okModalOpen ? setOkModalOpen(false) : setOkModalOpen(true)
     }
@@ -445,12 +447,14 @@ export const ModifyMyinfo = () => {
 
   return (
     <Container>
+      {profileModalOpen ? <OneBtnModal close={() => modalHandler('profile')} main={'프로필 사진이 변경되었습니다!'} /> : null}
       {okModalOpen ? <OneBtnModal close={() => modalHandler('ok')} main={'회원정보 변경이 완료되었습니다!'} /> : null}
       {invaildModalOpen ? <OneBtnModal close={() => modalHandler('invalid')} main={'비밀번호가 다릅니다.'} /> : null}
       {signoutModalOpen ? <TwoBtnModal close={() => modalHandler('signout')} action={deleteAccount} main={'정말로 회원탈퇴 하시겠습니다?\n삭제된 정보는 복구 할 수 없습니다.'} /> : null}
 
       <Forms>
         <PageTitle >프로필 정보 수정</PageTitle>
+        <GoBackBtn onClick={() => navigate(-1)}/>
 
         <HLine />
         <ProfileImg url={profileImg} default={oldProfileImg}>
@@ -464,21 +468,21 @@ export const ModifyMyinfo = () => {
         <div className='fields'>
           <div className='form'>
             <div>기존 비밀번호 입력</div>
-            <input type={"password"} onBlur={(e) => { setOldPassword(e.target.value) }} />
+            <input type={"password"} placeholder="닉네임과 비밀번호 변경을 위해서는 필수입력입니다." onBlur={(e) => { setOldPassword(e.target.value) }} />
           </div>
           <div className='form'>
             <div>새로운 닉네임</div>
-            <input type="text" onBlur={nicknameCheckHandler} />
+            <input type="text" placeholder="변경할 닉네임을 입력합니다." onBlur={nicknameCheckHandler} />
             <NicknameNofication />
           </div>
           <div className='form'>
             <div>새로운 비밀번호 입력</div>
-            <input type={"password"} onBlur={(e) => { setNewPassword(e.target.value) }} />
+            <input type={"password"} placeholder="변경할 비밀번호를 입력합니다." onBlur={(e) => { setNewPassword(e.target.value) }} />
             <PasswordNofication />
           </div>
           <div className='form'>
             <div>새로운 비밀번호 확인</div>
-            <input type={"password"} onChange={(e) => { setRetypePassword(e.target.value) }} />
+            <input type={"password"} placeholder="변경할 비밀번호를 다시 입력합니다." onChange={(e) => { setRetypePassword(e.target.value) }} />
             <RetypePasswordNofication />
           </div>
         </div>
