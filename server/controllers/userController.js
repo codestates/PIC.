@@ -81,7 +81,7 @@ const login = asyncWrapper(async (req, res) => {
             const refreshToken = generateToken(userInfo, 'refreshToken');
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
-                path: '/api/users/refresh-token',
+                path: '/api/users/auth/token',
                 maxAge: 60 * 60 * 24 * 7
             })
 
@@ -127,7 +127,7 @@ const oauthLogin = asyncWrapper(async (req, res) => {
         const refreshToken = generateToken(userInfo, 'refreshToken');
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            path: '/api/users/refresh-token',
+            path: '/api/users/auth/token',
             maxAge: 60 * 60 * 24 * 7
         })
 

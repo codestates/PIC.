@@ -11,7 +11,7 @@ router.post('/', controllers.signup);
 router.post('/login', controllers.login);
 router.post('/oauth/google', controllers.oauthLogin);
 router.get('/logout', controllers.logout);
-router.get('/refresh-token', controllers.refreshToken);
+router.get('/auth/token', controllers.refreshToken);
 router.get('/:id', controllers.getUserInfo);
 router.patch('/:id', checkToken, controllers.updateUserInfo);
 router.delete('/:id', checkToken, controllers.deleteUser);
