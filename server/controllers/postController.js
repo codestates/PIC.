@@ -17,8 +17,8 @@ const uploadPost = asyncWrapper(async (req, res) => {
 })
 
 
-// 게시글 조회
-const getPost = asyncWrapper(async (req, res) => {
+// 해당 게시글 조회
+const getSinglePost = asyncWrapper(async (req, res) => {
     res.send('get post ok');
 })
 
@@ -26,5 +26,5 @@ const getPost = asyncWrapper(async (req, res) => {
 
 module.exports = {
     uploadPost,
-    getPost
+    getSinglePost
 }
