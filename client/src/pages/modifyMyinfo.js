@@ -1,6 +1,14 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { BiLeftIndent } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+
+import { LoadingIndicator } from '../components/loadingIndicator';
+import { OneBtnModal } from '../components/oneBtnModal';
+import { TwoBtnModal } from '../components/twoBtnModal';
+
+
 
 const Container = styled.div`
   position: relative;
@@ -39,7 +47,7 @@ const Forms = styled.div`
   align-items: center;
 
   width: 600px;
-  height: 800px;
+  height: 1000px;
   
   .fields{
     display: grid;
@@ -77,13 +85,22 @@ const Forms = styled.div`
 `
 
 const ProfileImg = styled.div`
+  display: grid;
+  place-items: center;
+
   width: 130px;
   height: 130px;
 
   margin-bottom: 20px;
 
-  border: 2px solid black;
+  background : ${props => props.url ? `url(${props.url})` : `${props.default}`};
+  background-position: center;
+  background-size: cover;
+  
+
   border-radius: 30%;
+
+  box-shadow: 0 3px 3px rgba(0,0,0,0.2);
 `
 
 const Btn = styled.div`
@@ -93,19 +110,19 @@ const Btn = styled.div`
   width: 305px;
   height: 40px;
 
-  background-color: #FFD600;
+  background-color: ${props => props.disabled ? '#DDDDDD' : '#FFD600'};
 
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
 
-  cursor : pointer;
+  cursor : ${props => props.disabled ? 'default' : 'pointer'};
 
   transition: 0.1s;
 
   &:hover{
-    transform: translateY(-2px);
-    box-shadow: 0px 5px 4px rgba(0,0,0,0.1);
+    transform: ${props => props.disabled ? 'null' : 'translateY(-2px)'};
+    box-shadow: ${props => props.disabled ? 'null' : '0px 5px 4px rgba(0,0,0,0.1)'};
   }
 
     span{
@@ -123,7 +140,7 @@ const ConfirmBtn = styled(Btn)`
 `
 
 const SignoutBtn = styled(Btn)`
-  background-color: #ff796b;
+  background-color:${props => props.disabled ? '#DDDDDD' : '#ff796b'};
   margin-top: 30px;
 `
 
@@ -135,41 +152,97 @@ const Nofication = styled.div`
   font-size: 0.8rem;;
 `
 
-const serverPath = process.env.REACT_APP_SERVER_PATH
+
+// 프로파일 이미지 업로드 및 표시
+// 호스팅 사용해야하고, 해당 주소 응답 받아서 표시해주어야 함.
+
+// 기존 비밀번호
+// 요청보내서 확인하기
+// 수정 누르면 요청 보내야함.
+
+
+// 회원탈퇴
+// 모달 띄우고, 예 눌렀을때 delete 요청 보내야함.
+// 아니요 누르면 그냥 뒤로가기
+// 페이지 이동 감지해서 alert 표시하기.
+// 아니면 모달?
 
 export const ModifyMyinfo = () => {
-  // 프로파일 이미지 업로드 및 표시
-  // 호스팅 사용해야하고, 해당 주소 응답 받아서 표시해주어야 함.
+  const serverPath = process.env.REACT_APP_SERVER_PATH
+  const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
+  const userId = "reciveduseridwhenlogin"
+  const accessToken = "recivedaccesstokenwhenlogin"
 
-  // 기존 비밀번호
-  // 요청보내서 확인하기
-  // 수정 누르면 요청 보내야함.
+  const [profileImg, setProfileImg] = useState('')
+  const [oldProfileImg, setOldProfileImg] = useState('#FFD600')
+  const [nowUploading, setNowUploading] = useState(false)
+  const [imgBase64, setImgBase64] = useState('')
 
-  // 새로운 닉네임
-  // 요청 보내서 확인하기
-  // 이 때 요청은 onBlur 이벤트에서 실행되어야 함.
-  // 닉네임 유효성 검사 필요
-  // 유효성 검사 결과에 따라 안내메시지 필요
-  //
-  // 새로운 비밀번호 ㅇㅋ
-  // 새로운 비밀번호 확인 ㅇㅋ
-  // 두개가 동일한지 확인 ㅇㅋ
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [retypePassword, setRetypePassword] = useState('')
+  const [newNickname, setNewNickname] = useState('')
 
-  // 수정완료
-  // patch 요청 보내야함
-
-  // 회원탈퇴
-  // 모달 띄우고, 예 눌렀을때 delete 요청 보내야함.
-  // 아니요 누르면 그냥 뒤로가기
-  // 페이지 이동 감지해서 alert 표시하기.
-  // 아니면 모달?
-  const [oldPassword, setOldPassword] = useState()
-  const [newPassword, setNewPassword] = useState()
-  const [retypePassword, setRetypePassword] = useState()
-  const [newNickname, setNewNickname] = useState()
-
-  const [nicknameCheck, setNicknameCheck] = useState(false)
+  const [nicknameCheck, setNicknameCheck] = useState(true)
   const [passwordCheck, setPasswordCheck] = useState(false)
+
+  const [okModalOpen, setOkModalOpen] = useState(false)
+  const [invaildModalOpen, setInvaildModalOpen] = useState(false)
+  const [signoutModalOpen, setSignoutModalOpen] = useState(false)
+
+  const navigate = useNavigate()
+  const uploadBtn = useRef()
+
+  const imgUpload = async (e) => {
+    e.preventDefault()
+    let img = e.target.files[0]
+
+    let reader = new FileReader()
+
+    reader.readAsDataURL(img)
+    reader.onload = () => {
+      setImgBase64(reader.result.split(',')[1])
+    }
+  }
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await axios.get(`${serverPath}/api/users/${userId}`)
+  //     if (res) {
+  //       setOldProfileImg(res.userInfo.image)
+  //     }
+  //   })()
+  // }, [])
+
+  useEffect(() => {
+    const apiCall = async () => {
+      setNowUploading(true)
+      let form = new FormData()
+
+      form.append('key', imgbbApi)
+      form.append('image', `${imgBase64}`)
+
+      const imgHosting = await axios.post('https://api.imgbb.com/1/upload', form)
+      setProfileImg(imgHosting.data.data.url)
+    }
+    if (imgBase64) {
+      apiCall()
+    }
+  }, [imgBase64, imgbbApi])
+
+  useEffect(() => {
+    if (profileImg) {
+      (async () => {
+        await axios.patch(`${serverPath}/api/users/${userId}`, {
+          newImage: profileImg
+        }, {
+          Authorization: accessToken
+        })
+      })()
+      setNowUploading(false)
+      // 프로필 이미지를 저장하는 상태가 변경되는 경우 위의 요청을 보내고, 요청이 끝난 뒤 로딩 상태를 false 로.
+    }
+  }, [profileImg, serverPath])
 
   useEffect(() => {
     if (newPassword === retypePassword) {
@@ -177,55 +250,215 @@ export const ModifyMyinfo = () => {
     } else {
       setPasswordCheck(false)
     }
-    console.log('리타입')
   }, [newPassword, retypePassword])
 
 
   const nicknameCheckHandler = (e) => {
     setNewNickname(e.target.value)
+    setNicknameCheck(false)
+  }
+
+  const nicknameValidCheck = (value) => {
+    let nicknameReg = /^[가-힣a-zA-Z0-9_]{2,12}$/;
+    return nicknameReg.test(value)
   }
 
   useEffect(() => {
     (async () => {
-      if (newNickname) {
+      if (newNickname && nicknameValidCheck(newNickname)) {
+        // 새로운 닉네임 필드에 값이 있고, 유효한 경우에만 요청전송
+        // 두 조건이 일치하는 요청에서 200이 아닌 경우 중복으로 볼 수 있음.
         const res = await axios.post(`${serverPath}/api/users/nickname`, {
           nickname: newNickname
         })
-        if(res.status === 200) {
+        if (res.status === 200) {
           setNicknameCheck(true)
         }
       }
     })()
-  }, [newNickname])
+  }, [newNickname, serverPath])
   // useEffect 를 이용하여, newNickname 상태가 바뀌면 닉네임 요청을 보낸다.
   // 위의 문법은 즉시실행함수로, 호출하지 않고 1회성으로 함수를 실행 시킬 수 있다.
   // 이후 응답에 따라 분기하여 상태를 변경한다.
 
-  const NicknameNofication = () => {
-    if (!nicknameCheck && newNickname) {
-      return <Nofication>올바른 닉네임인지 확인해주세요!</Nofication>
-    } else {
-      return null
+  const clickModifyBtn = async () => {
+    const headers = {
+      headers: {
+        Authorization: accessToken
+      }
     }
-    // 여기서 조건 분기
+
+    try {
+      await axios.post(`${serverPath}/api/users/${userId}/password`, {
+        password: oldPassword
+      }, headers)
+    }
+    catch (ex) {
+      if (ex.response.status === 401) {
+          setInvaildModalOpen(true)
+        }
+        if (ex.response.status === 200) {
+          const body = {
+            newnickname: newNickname,
+            newPassword: newPassword
+          }
+          axios.patch(`${serverPath}/api/users/${userId}`, body, headers)
+        setOkModalOpen(true)
+      }
+    }
   }
-  const PasswordNofication = () => {
+
+  const clickSignoutBtn = async () => {
+    const headers = {
+      headers: {
+        Authorization: accessToken
+      }
+    }
+
+    try {
+      await axios.post(`${serverPath}/api/users/${userId}/password`, {
+        password: oldPassword
+      }, headers)
+    }
+    catch (ex) {
+      if (ex.response.status === 401) {
+        setInvaildModalOpen(true)
+      }
+      if (ex.response.status === 200) {
+        setSignoutModalOpen(true)
+      }
+    }
+  }
+
+  const deleteAccount = () => {
+    const headers = {
+      headers: {
+        Authorization: accessToken
+      }
+    }
+
+    axios.delete(`${serverPath}/api/users/${userId}`, headers)
+    navigate('/main')
+  }
+
+  // 기존 비밀번호랑 다를때 invaild
+  // 기존 비밀번호랑 같을때 ok
+  // 탈퇴 할때 signout
+
+  const NicknameNofication = () => {
+    if (!nicknameValidCheck(newNickname) && newNickname.length > 12 && newNickname) {
+      return <Nofication>닉네임은 12글자를 넘길 수 없습니다!</Nofication>
+    }
+    if (!nicknameValidCheck(newNickname) && newNickname.length < 2 && newNickname) {
+      return <Nofication>닉네임은 2글자 이상이여야 합니다!</Nofication>
+    }
+    if (!nicknameValidCheck(newNickname) && newNickname) {
+      return <Nofication>한글, 영문, 숫자, _ ,- 만 입력 가능합니다!</Nofication>
+    }
+    if (!nicknameCheck && newNickname && nicknameValidCheck(newNickname)) {
+      console.log(nicknameValidCheck(newNickname))
+      return <Nofication>이미 사용중인 닉네임입니다!</Nofication>
+    }
+    if (newNickname && nicknameCheck) {
+      return <Nofication>사용가능한 닉네임입니다.</Nofication>
+    }
+    return null
+  }
+  const RetypePasswordNofication = () => {
     if (!passwordCheck && retypePassword) {
       // 두 값이 다르고, 확인 필드에 값이 있는 경우
       return <Nofication>비밀번호가 서로 다릅니다!</Nofication>
+    }
+    if (!passwordCheck && !retypePassword) {
+      return <Nofication>비밀번호를 재입력하세요!</Nofication>
+    }
+    return null
+  }
+
+  const PasswordNofication = () => {
+    if (newPassword && newPassword.length < 8) {
+      return <Nofication>8자 이상이여야 합니다.</Nofication>
+    }
+    return null
+  }
+
+  const ConfirmBtnByCondition = () => {
+    if (oldPassword && newNickname && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
+      // 기존 비밀번호가 있고, 새 비밀번호, 리타입 필드에 값이 있고 그 둘이 같으며, 새 비밀번호의 길이가 8자 이상 일때
+      return (
+        <ConfirmBtn onClick={clickModifyBtn}>
+          <span>회원정보 수정</span>
+        </ConfirmBtn>
+      )
+    }
+    if (oldPassword && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
+      // 기존 비밀번호가 있고, 새 비밀번호, 리타입 필드에 값이 있고 그 둘이 같으며, 새 비밀번호의 길이가 8자 이상 일때
+      return (
+        <ConfirmBtn onClick={clickModifyBtn}>
+          <span>회원정보 수정</span>
+        </ConfirmBtn>
+      )
+    }
+    if (oldPassword && newNickname && nicknameCheck) {
+      return (
+        <ConfirmBtn onClick={clickModifyBtn}>
+          <span>회원정보 수정</span>
+        </ConfirmBtn>
+      )
     } else {
-      return null
+      return (
+        <ConfirmBtn disabled={true}>
+          <span>회원정보 수정</span>
+        </ConfirmBtn>
+      )
+    }
+  }
+
+  const SignoutBtnByCondition = () => {
+    if (oldPassword) {
+      return (
+        <SignoutBtn onClick={clickSignoutBtn}>
+          <span>회원탈퇴</span>
+        </SignoutBtn>
+      )
+    } else {
+      return (
+        <SignoutBtn disabled={true}>
+          <span>회원탈퇴</span>
+        </SignoutBtn>
+      )
+    }
+  }
+
+
+  const modalHandler = (modal) => {
+    if (modal === 'ok') {
+      okModalOpen ? setOkModalOpen(false) : setOkModalOpen(true)
+    }
+    if (modal === 'invalid') {
+      invaildModalOpen ? setInvaildModalOpen(false) : setInvaildModalOpen(true)
+    }
+    if (modal === 'signout') {
+      signoutModalOpen ? setSignoutModalOpen(false) : setSignoutModalOpen(true)
     }
   }
 
   return (
     <Container>
+      {okModalOpen ? <OneBtnModal close={() => modalHandler('ok')} main={'회원정보 변경이 완료되었습니다!'} /> : null}
+      {invaildModalOpen ? <OneBtnModal close={() => modalHandler('invalid')} main={'비밀번호가 다릅니다.'} /> : null}
+      {signoutModalOpen ? <TwoBtnModal close={() => modalHandler('signout')} action={deleteAccount} main={'정말로 회원탈퇴 하시겠습니다?\n삭제된 정보는 복구 할 수 없습니다.'} /> : null}
 
       <Forms>
-        <PageTitle>프로필 정보 수정</PageTitle>
+        <PageTitle >프로필 정보 수정</PageTitle>
+
         <HLine />
-        <ProfileImg />
-        <ProfileImgBtn>
+        <ProfileImg url={profileImg} default={oldProfileImg}>
+          {nowUploading ? <LoadingIndicator /> : null}
+
+        </ProfileImg>
+        <input type="file" style={{ display: 'none' }} ref={uploadBtn} onChange={imgUpload} />
+        <ProfileImgBtn onClick={() => uploadBtn.current.click()}>
           <span>프로필 이미지 변경</span>
         </ProfileImgBtn>
         <div className='fields'>
@@ -241,19 +474,18 @@ export const ModifyMyinfo = () => {
           <div className='form'>
             <div>새로운 비밀번호 입력</div>
             <input type={"password"} onBlur={(e) => { setNewPassword(e.target.value) }} />
+            <PasswordNofication />
           </div>
           <div className='form'>
             <div>새로운 비밀번호 확인</div>
             <input type={"password"} onChange={(e) => { setRetypePassword(e.target.value) }} />
-            <PasswordNofication />
+            <RetypePasswordNofication />
           </div>
         </div>
-        <ConfirmBtn>
-          <span>회원정보 수정</span>
-        </ConfirmBtn>
-        <SignoutBtn>
+        <ConfirmBtnByCondition />
+        <SignoutBtnByCondition>
           <span>회원탈퇴</span>
-        </SignoutBtn>
+        </SignoutBtnByCondition>
       </Forms>
     </Container>
   );

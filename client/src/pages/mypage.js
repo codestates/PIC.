@@ -49,7 +49,7 @@ const dummy = {
 }
 export const Mypage = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
-  const userId = "로그인 과정에서 로컬 스토리지에 저장된 id값"
+  const userId = "reciveduseridwhenlogin"
 
   const [userInfo, setUserInfo] = useState([])
 

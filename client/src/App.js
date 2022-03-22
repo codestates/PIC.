@@ -39,7 +39,7 @@ export const App = () => {
       
       <Routes>
         <Route path="mypage" element={<Mypage test={"test"} />} />
-        <Route path="mypage/modify" element={<ModifyMyinfo />} />
+        <Route path="mypage/modify/" element={<ModifyMyinfo />} />
       </Routes>
     </div>
   )
