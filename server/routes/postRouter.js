@@ -5,7 +5,9 @@ const router = express.Router();
 const checkToken = require('../middleware/checkToken');
 const controllers = require('../controllers/postController');
 
-router.post('/content', checkToken, controllers.uploadPost);
+router.post('/', checkToken, controllers.uploadPost);
+router.get('/:id', controllers.getSinglePost);
+router.get('/', controllers.getAllPosts);
 
 
 module.exports = router;
