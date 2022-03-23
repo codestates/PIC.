@@ -91,14 +91,26 @@ const updatePost = asyncWrapper(async (req, res) => {
                 photo: newPhoto,
                 location: newLocation,
                 hashtags: newHashtags
-            };            
+            };
             await Post.updateOne({ _id: req.params.id }, newInfo, {
                 runValidators: true
             });
             res.status(200).json({ message: "success" });
-        } 
+        }
     } else { // request의 body에 수정할 값이 하나도 들어있지 않을 경우
         res.status(400).json({ message: "fail : none of the fields are in the request" });
+    }
+})
+
+
+// 필터링 후 모든 게시글 조회
+const deletePost = asyncWrapper(async (req, res) => {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+        res.status(400).json({ message: "fail : there's no post with the id" });
+    } else {
+        await Post.deleteOne({ _id: req.params.id });
+        res.status(200).json({ message: "success" })
     }
 })
 
@@ -107,5 +119,6 @@ module.exports = {
     uploadPost,
     getSinglePost,
     getAllPosts,
-    updatePost
+    updatePost,
+    deletePost
 }
