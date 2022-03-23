@@ -1,4 +1,5 @@
 const Post = require('../models/Post');
+const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
 const verifyToken = require('../utils/verifyToken');
 
@@ -21,7 +22,7 @@ const uploadPost = asyncWrapper(async (req, res) => {
 const getSinglePost = asyncWrapper(async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) {
-        res.status(400).json({ message: "fail : invalid post id" });
+        res.status(400).json({ message: "fail : there's no post with the id" });
     } else {
         res.status(200).json({
             post,
@@ -77,7 +78,7 @@ const getAllPosts = asyncWrapper(async (req, res) => {
 })
 
 
-// 필터링 후 모든 게시글 조회
+// 게시글 업데이트
 const updatePost = asyncWrapper(async (req, res) => {
     const { newTitle, newDescription, newPhoto, newLocation, newHashtags } = req.body;
     if (newTitle || newDescription || newPhoto || newLocation || newHashtags) {
@@ -103,7 +104,7 @@ const updatePost = asyncWrapper(async (req, res) => {
 })
 
 
-// 필터링 후 모든 게시글 조회
+// 게시글 삭제
 const deletePost = asyncWrapper(async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) {
@@ -115,10 +116,45 @@ const deletePost = asyncWrapper(async (req, res) => {
 })
 
 
+// 게시글 좋아요 토글
+const toggleLike = asyncWrapper(async (req, res) => {
+    const userId = verifyToken(req.headers.authorization, 'accessToken').id;
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    const userInfo = await User.findById(userId);
+    if (!post) {
+        res.status(400).json({ message: "fail : there's no post with the id" });
+    } else {
+        const oldLikesArray = post.likes;
+        let newLikesArray;
+        const oldFavoriteArray = userInfo.favorite;
+        let newFavoriteArray;
+        if (oldLikesArray.includes(userId)) {
+            newLikesArray = oldLikesArray.filter(e => e.toString() !== userId);
+            newFavoriteArray = oldFavoriteArray.filter(e => e.toString() !== postId);
+        } else {
+            oldLikesArray.push(userId);
+            newLikesArray = oldLikesArray;
+            oldFavoriteArray.push(postId);
+            newFavoriteArray = oldFavoriteArray;
+        }
+        // DB에 추가
+        await Post.updateOne({ _id: postId }, {
+            likes: newLikesArray
+        })
+        await User.updateOne({ _id: userId }, {
+            favorite: newFavoriteArray
+        })
+        res.status(200).json({ message: "success" });
+    }
+});
+
+
 module.exports = {
     uploadPost,
     getSinglePost,
     getAllPosts,
     updatePost,
-    deletePost
+    deletePost,
+    toggleLike
 }
