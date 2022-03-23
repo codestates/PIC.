@@ -189,13 +189,14 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
         if (!userInfo) {
             res.status(400).json({ message: "fail : invalid user id" });
         } else {
-            const newInfo = {};
+            const newInfo = {
+                nickname: newNickname,
+                image: newImage,
+            };
             if (newPassword) {
                 const salt = await bcrypt.genSalt();
                 newInfo.password = await bcrypt.hash(newPassword, salt);
             }
-            newNickname ? newInfo.nickname = req.body.newNickname : false;
-            newImage ? newInfo.image = req.body.newImage : false;
             await User.updateOne({ _id: req.params.id }, newInfo, {
                 runValidators: true
             });

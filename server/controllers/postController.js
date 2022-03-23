@@ -85,7 +85,13 @@ const updatePost = asyncWrapper(async (req, res) => {
         if (!post) {
             res.status(400).json({ message: "fail : there's no post with the id" });
         } else {
-            const newInfo = {};
+            const newInfo = {
+                title: newTitle,
+                description: newDescription,
+                photo: newPhoto,
+                location: newLocation,
+                hashtags: newHashtags
+            };            
             await Post.updateOne({ _id: req.params.id }, newInfo, {
                 runValidators: true
             });
