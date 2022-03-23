@@ -189,7 +189,7 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
         if (!userInfo) {
             res.status(400).json({ message: "fail : invalid user id" });
         } else {
-            let newInfo = {};
+            const newInfo = {};
             if (newPassword) {
                 const salt = await bcrypt.genSalt();
                 newInfo.password = await bcrypt.hash(newPassword, salt);
