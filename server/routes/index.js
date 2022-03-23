@@ -9,7 +9,7 @@ const hashtagsRouter = require('./hashtagsRouter');
 
 router.use('/users', userRouter);
 router.use('/posts', postRouter);
-router.use('/comments', commentRouter);
+router.use('/posts', commentRouter);
 router.use('/hashtags', hashtagsRouter);
 
 module.exports = router;

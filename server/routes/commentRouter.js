@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send("comment ok");
-})
+// middleware
+const checkToken = require('../middleware/checkToken');
+const controllers = require('../controllers/commentController');
+
+router.post('/:id/comments', checkToken, controllers.addComment);
+
 
 module.exports = router;
