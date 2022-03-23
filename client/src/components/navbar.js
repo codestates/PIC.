@@ -121,7 +121,7 @@ export const Navbar = () => {
       {/* 회원가입 모달 */}
       {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
       {/* 로그아웃 시 확인 모달 */}
-      {/* {openTwoBtnModal ? <TwoBtnModal close={() => modalHandler('logout')} action={() => {console.log('으엑')}} nav={"/main"}/> : null} */}
+      {openTwoBtnModal ? <TwoBtnModal main={'모달이 열렸다네.'}close={() => modalHandler('logout')} action={() => {console.log('으엑')}} nav={"/main"}/> : null}
       {/* 위의 내용 수정 필요 */}
 
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
