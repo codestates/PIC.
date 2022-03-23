@@ -210,8 +210,13 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
 
 // 회원 탈퇴
 const deleteUser = asyncWrapper(async (req, res) => {
-    await User.findOneAndDelete({ _id: req.params.id });
-    res.status(200).json({ message: "success" })
+    const userInfo = await User.findById(req.params.id);
+    if (!userInfo) {
+        res.status(400).json({ message: "fail : invalid user id" });
+    } else {
+        await User.deleteOne({ _id: req.params.id });
+        res.status(200).json({ message: "success" })
+    }
 })
 
 
