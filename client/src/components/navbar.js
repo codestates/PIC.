@@ -5,7 +5,7 @@ import { OneBtnModal } from './oneBtnModal';
 import { TwoBtnModal } from './twoBtnModal';
 
 
-const Container = styled.div`
+const Container = styled.header`
   position : relative;
   display: flex;
   align-items: center;

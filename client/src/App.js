@@ -48,16 +48,17 @@ export const App = () => {
       <GlobalStyles />
       <Navbar />
       <AddPostFloatBtn />
-      <Container>
 
-      
-      <Routes>
-        <Route path="mypage" element={<Mypage/>} />
-        <Route path="mypage/modify/" element={<ModifyMyinfo />} />
-        <Route path="add_post" element={<AddPost />} />
-      </Routes>
+      <Tag>asd</Tag>
+      <Tag usage={'added'}>asd</Tag>
+      <Container>
+        <Routes>
+          <Route path="mypage" element={<Mypage />} />
+          <Route path="mypage/modify/" element={<ModifyMyinfo />} />
+          <Route path="add_post" element={<AddPost />} />
+        </Routes>
       </Container>
-      <div style={{ height: '200px', background : '#ffd600'}}>fake footer</div>
+      <div style={{ height: '200px', background: '#ffd600' }}>fake footer</div>
     </div>
   )
 };

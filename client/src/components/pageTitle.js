@@ -14,7 +14,7 @@ const Title = styled.h2`
   position: relative;
   margin-bottom: 20px;
   
-  font-size: 1.4rem;  
+  font-size: 1.5rem;  
 `
 
 const GoBackBtn = styled(BsChevronLeft)`

@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { BiPlus, BiMinus } from "react-icons/bi";
+import { BsPlus, BsDash } from "react-icons/bs";
 import { useRef } from 'react';
 
-const Container = styled.div`
+const Wrapper = styled.div`
   display: flex;
-
+  width: min-content;
+  
   border-radius: 10px;
   overflow: hidden;
 
@@ -142,7 +143,7 @@ export const Tag = ({ usage, action, children }) => {
 
   return (
     <div>
-      <Container usage={usage} isSelected={isSelected}>
+      <Wrapper usage={usage} isSelected={isSelected}>
         {!usage
           ? <CommonTag onClick={selectHandler} usage={usage}>{children}</CommonTag>
           : null}
@@ -163,10 +164,10 @@ export const Tag = ({ usage, action, children }) => {
           )
           : null}
         <Btn onClick={doAction} usage={usage}>
-          {usage === 'added' ? <BiMinus /> : null}
-          {usage === 'add' ? <BiPlus /> : null}
+          {usage === 'added' ? <BsDash /> : null}
+          {usage === 'add' ? <BsPlus /> : null}
         </Btn>
-      </Container>
+      </Wrapper>
     </div >
   );
 };

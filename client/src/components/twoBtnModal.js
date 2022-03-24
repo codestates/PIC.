@@ -9,7 +9,7 @@ const Backdrop = styled.div`
   background-color: rgba(0,0,0,0.3);
   z-index: 999;
 `
-const Modal = styled.pre`
+const Modal = styled.div`
   position: relative;
 
   display: flex;
@@ -48,7 +48,7 @@ const BtnContainer = styled.div`
   justify-content: space-between;
 `
 
-const YesBtn = styled.div`
+const YesBtn = styled.button`
   display: grid;
   place-items: center;
   width: 100px;
@@ -71,7 +71,7 @@ const YesBtn = styled.div`
   }
 `
 
-const NoBtn = styled.div`
+const NoBtn = styled.button`
   display: grid;
   place-items: center;
   width: 100px;
@@ -115,9 +115,9 @@ export const TwoBtnModal = ({ main, close, nav, action }) => {
     <Backdrop>
       <Modal>
         <TextContainer>
-          <div className='body'>
+          <pre className='body'>
             {main ? main : '-props 안내-\n  main={내용}을 입력하세요.\n    \" \\n \" 을 입력하여 줄바꿈 가능\n  close={닫는함수} nav={이동할 path}\n  action={OK 시 실행시킬 함수}'}
-          </div>
+          </pre>
         </TextContainer>
         <BtnContainer>
           <YesBtn onClick={functionSet}>
