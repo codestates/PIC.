@@ -1,4 +1,4 @@
-const Hashtags = require('../models/Hashtags');
+const Hashtag = require('../models/Hashtag');
 const asyncWrapper = require('../middleware/async');
 
 
@@ -6,7 +6,7 @@ const asyncWrapper = require('../middleware/async');
 const createHashtags = asyncWrapper(async (req, res) => {
     const { category, content } = req.body;
     if (category && content) {
-        await Hashtags.create(req.body);
+        await Hashtag.create(req.body);
         res.status(201).json({ message: "success" });
     } else {
         res.status(400).json({ message: "fail : require category and content" });
@@ -16,7 +16,7 @@ const createHashtags = asyncWrapper(async (req, res) => {
 
 // 해시태그 조회
 const getHashtags = asyncWrapper(async (req, res) => {
-    const hashtags = await Hashtags.find();
+    const hashtags = await Hashtag.find();
     res.status(200).json({
         hashtags,
         message: "success"

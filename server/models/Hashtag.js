@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const HashtagsSchema = new mongoose.Schema(
+const HashtagSchema = new mongoose.Schema(
     {
         category: {
             type: String,
@@ -13,4 +13,4 @@ const HashtagsSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("Hashtags", HashtagsSchema);
+module.exports = mongoose.model("Hashtag", HashtagSchema);
