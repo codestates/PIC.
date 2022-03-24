@@ -100,8 +100,12 @@ export const TwoBtnModal = ({ main, close, nav, action }) => {
 
   const functionSet = () => {
     close()
-    action()
-    navigate(nav)
+    if(action){
+      action()  
+    }
+    if (nav) {
+      navigate(nav)
+    }
   }
 
   const closeModal = () => {

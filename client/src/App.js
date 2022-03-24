@@ -12,6 +12,9 @@ import { PostThumbnail } from "./components/postThumbnail";
 import { AddPostFloatBtn } from "./components/addPostFloatBtn";
 import { OneBtnModal } from "./components/oneBtnModal";
 import { TwoBtnModal } from "./components/twoBtnModal";
+import { Tag } from "./components/tagComponent";
+
+
 
 
 const GlobalStyles = createGlobalStyle`
@@ -27,8 +30,11 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const TempContainer = styled.div`
-  display: grid;
-  place-items: center;
+  height: 100%;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  align-items: center;
 `
 
 export const App = () => {
@@ -36,7 +42,11 @@ export const App = () => {
     <div className='main'>
       <GlobalStyles />
       <Navbar />
-      
+
+      <TempContainer> 
+
+      </TempContainer>
+
       <Routes>
         <Route path="mypage" element={<Mypage test={"test"} />} />
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
