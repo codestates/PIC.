@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
-
 import { Mypage } from "./pages/mypage";
 import { ModifyMyinfo } from "./pages/modifyMyinfo";
 
@@ -13,9 +13,9 @@ import { AddPostFloatBtn } from "./components/addPostFloatBtn";
 import { OneBtnModal } from "./components/oneBtnModal";
 import { TwoBtnModal } from "./components/twoBtnModal";
 import { Tag } from "./components/tagComponent";
-
-
-
+import { Login } from "./modals/login";
+import { GoogleLoginBtn } from "./components/googleLoginBtn";
+import { Footer } from "./components/footer";
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
@@ -35,22 +35,40 @@ const TempContainer = styled.div`
   /* flex-direction: column; */
   justify-content: center;
   align-items: center;
-`
+`;
 
 export const App = () => {
+  const [loginToken, setLoginToken] = useState("");
+  const [isLogin, setIsLogin] = useState(false);
+
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (loginToken) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [loginToken]);
+
+  // useEffect(() => {
+  //   if (isLogin) {
+  //     nav("mypage");
+  //     // 임시 경로(추후 게시판으로 이동해야함)
+  //   }
+  // });
+
   return (
-    <div className='main'>
+    <div className="main">
       <GlobalStyles />
+      {/* <TempContainer></TempContainer> */}
       <Navbar />
-
-      <TempContainer> 
-
-      </TempContainer>
-
       <Routes>
-        <Route path="mypage" element={<Mypage test={"test"} />} />
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
+        <Route path="login" element={<Login setLoginToken={setLoginToken} />} />
+        <Route path="mypage" element={<Mypage />} />
       </Routes>
+      <Footer />
     </div>
-  )
+  );
 };
