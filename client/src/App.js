@@ -37,8 +37,6 @@ const TempContainer = styled.div`
   align-items: center;
 `
 
-const arr = ['안녕', '하세요', '아우', '졸려라', '뭔가', '뇌가','안돌아간다', '으아아악'];
-
 export const App = () => {
   return (
     <div className='main'>
@@ -46,10 +44,7 @@ export const App = () => {
       <Navbar />
 
       <TempContainer> 
-        <Tag usage={'added'} action={() => console.log('삭제하는 함수 실행')}>내가 추가한 태그</Tag>
-        <Tag usage={'add'} action={() => console.log('추가하는 함수 실행')}>추가할 태그</Tag>
-        
-        {arr.map((el, idx) => <Tag key={idx}>{el}</Tag>)}
+
       </TempContainer>
 
       <Routes>
