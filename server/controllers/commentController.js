@@ -31,6 +31,24 @@ const addComment = asyncWrapper(async (req, res) => {
 })
 
 
+// 게시물의 댓글 조회
+const readComment = asyncWrapper(async (req, res) => {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+        res.status(400).json({ message: "fail : there's no post with the id" });
+    } else {
+        const postComments = post.comment;
+        const allComments = await Comment.find();
+        const filteredComments = allComments.filter(e => postComments.includes(e._id));
+        res.json({
+            comments: filteredComments,
+            message: "success"
+        })
+    }
+})
+
+
 module.exports = {
-    addComment
+    addComment,
+    readComment
 }
