@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send("hashtags ok");
-})
+// middleware
+const controllers = require('../controllers/hashtagsController');
+
+router.post('/', controllers.createHashtags);
+router.get('/', controllers.getHashtags);
+
 
 module.exports = router;
