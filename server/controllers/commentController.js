@@ -48,7 +48,26 @@ const readComment = asyncWrapper(async (req, res) => {
 })
 
 
+// 댓글 수정
+const modifyComment = asyncWrapper(async (req, res) => {
+    const [description, postId, commentId] = [req.body.newDescription, req.params.id, req.params.commentId];
+    const post = await Post.findById(postId);
+    const comment = await Comment.findById(commentId);
+    if (!description) {
+        res.status(400).json({ message: "fail : require description" });
+    } else if (!post) {
+        res.status(400).json({ message: "fail : there's no post with the id" });
+    } else if (!comment || !post.comment.includes(commentId)) {
+        res.status(400).json({ message: "fail : there's no comment with the id" });
+    } else {
+        await Comment.updateOne({ _id: commentId }, { description }, { runValidators: true });
+        res.json({ message: "success" });
+    }
+})
+
+
 module.exports = {
     addComment,
-    readComment
+    readComment,
+    modifyComment
 }
