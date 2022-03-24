@@ -384,7 +384,7 @@ export const ModifyMyinfo = () => {
       // 모든 값이 입력되어 았고, 유효성 및 중복검사, 일치여부를 충족한 경우
       return (
         <ConfirmBtn onClick={clickModifyBtn}>
-          <span>회원정보 수정?</span>
+          <span>회원정보 수정</span>
         </ConfirmBtn>
       )
     }
