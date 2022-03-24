@@ -66,8 +66,28 @@ const modifyComment = asyncWrapper(async (req, res) => {
 })
 
 
+// 댓글 삭제
+const deleteComment = asyncWrapper(async (req, res) => {
+    const [postId, commentId] = [req.params.id, req.params.commentId];
+    const post = await Post.findById(postId);
+    const comment = await Comment.findById(commentId);
+    if (!post) {
+        res.status(400).json({ message: "fail : there's no post with the id" });
+    } else if (!comment || !post.comment.includes(commentId)) {
+        res.status(400).json({ message: "fail : there's no comment with the id" });
+    } else {
+        const newCommentsArray = post.comment.filter(e => e.toString() !== commentId);
+        // Post, Comment DB에서 각각 삭제
+        await Post.updateOne({ _id: postId }, { comment: newCommentsArray });
+        await Comment.deleteOne({ _id: commentId });
+        res.status(200).json({ message: "success" });
+    }
+})
+
+
 module.exports = {
     addComment,
     readComment,
-    modifyComment
+    modifyComment,
+    deleteComment
 }
