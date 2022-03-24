@@ -81,7 +81,7 @@ const login = asyncWrapper(async (req, res) => {
             const refreshToken = generateToken(userInfo, 'refreshToken');
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
-                path: '/api/users/refresh-token',
+                path: '/api/users/auth/token',
                 maxAge: 60 * 60 * 24 * 7
             })
 
@@ -127,7 +127,7 @@ const oauthLogin = asyncWrapper(async (req, res) => {
         const refreshToken = generateToken(userInfo, 'refreshToken');
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            path: '/api/users/refresh-token',
+            path: '/api/users/auth/token',
             maxAge: 60 * 60 * 24 * 7
         })
 
@@ -189,13 +189,14 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
         if (!userInfo) {
             res.status(400).json({ message: "fail : invalid user id" });
         } else {
-            let newInfo = {};
+            const newInfo = {
+                nickname: newNickname,
+                image: newImage,
+            };
             if (newPassword) {
                 const salt = await bcrypt.genSalt();
                 newInfo.password = await bcrypt.hash(newPassword, salt);
             }
-            newNickname ? newInfo.nickname = req.body.newNickname : false;
-            newImage ? newInfo.image = req.body.newImage : false;
             await User.updateOne({ _id: req.params.id }, newInfo, {
                 runValidators: true
             });
@@ -209,8 +210,13 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
 
 // 회원 탈퇴
 const deleteUser = asyncWrapper(async (req, res) => {
-    await User.findOneAndDelete({ _id: req.params.id });
-    res.status(200).json({ message: "success" })
+    const userInfo = await User.findById(req.params.id);
+    if (!userInfo) {
+        res.status(400).json({ message: "fail : invalid user id" });
+    } else {
+        await User.deleteOne({ _id: req.params.id });
+        res.status(200).json({ message: "success" })
+    }
 })
 
 
