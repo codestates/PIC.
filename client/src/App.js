@@ -6,6 +6,7 @@ import reset from "styled-reset";
 
 import { Mypage } from "./pages/mypage";
 import { ModifyMyinfo } from "./pages/modifyMyinfo";
+import { AddPost } from "./pages/addPost";
 
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
@@ -13,7 +14,6 @@ import { AddPostFloatBtn } from "./components/addPostFloatBtn";
 import { OneBtnModal } from "./components/oneBtnModal";
 import { TwoBtnModal } from "./components/twoBtnModal";
 import { Tag } from "./components/tagComponent";
-
 
 
 
@@ -29,6 +29,11 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
 const TempContainer = styled.div`
   height: 100%;
   display: flex;
@@ -39,18 +44,20 @@ const TempContainer = styled.div`
 
 export const App = () => {
   return (
-    <div className='main'>
+    <div className="main">
       <GlobalStyles />
       <Navbar />
+      <AddPostFloatBtn />
+      <Container>
 
-      <TempContainer> 
-
-      </TempContainer>
-
+      
       <Routes>
-        <Route path="mypage" element={<Mypage test={"test"} />} />
+        <Route path="mypage" element={<Mypage/>} />
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
+        <Route path="add_post" element={<AddPost />} />
       </Routes>
+      </Container>
+      <div style={{ height: '200px', background : '#ffd600'}}>fake footer</div>
     </div>
   )
 };

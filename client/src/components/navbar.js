@@ -31,6 +31,7 @@ const Container = styled.div`
 const InnerContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
+  grid-gap: 20px;
   min-width: 1200px;
 
   .logo{
@@ -70,6 +71,7 @@ const Logo = styled.div`
 const LeftLinks = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
   place-items: center;
 
 `
@@ -77,6 +79,7 @@ const LeftLinks = styled.div`
 const RightLinks = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
   place-items: center;
 `
 
