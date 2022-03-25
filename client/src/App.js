@@ -16,6 +16,7 @@ import { Tag } from "./components/tagComponent";
 import { Login } from "./modals/login";
 import { GoogleLoginBtn } from "./components/googleLoginBtn";
 import { Footer } from "./components/footer";
+import { NaverLoginBtn } from "./components/naverLoginBtn";
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
@@ -62,11 +63,11 @@ export const App = () => {
     <div className="main">
       <GlobalStyles />
       {/* <TempContainer></TempContainer> */}
-      <Navbar />
+      <Navbar setLoginToken={setLoginToken} />
       <Routes>
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
-        <Route path="login" element={<Login setLoginToken={setLoginToken} />} />
         <Route path="mypage" element={<Mypage />} />
+        <Route path="naverLoginBtn" element={<NaverLoginBtn />} />
       </Routes>
       <Footer />
     </div>
