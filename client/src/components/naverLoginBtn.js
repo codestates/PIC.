@@ -1,34 +1,36 @@
-// import React from "react";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
 
-// export const NaverLoginBtn = () => {
-//   window.onload = function naver() {
-//     const naverLogin = new window.naver.LoginWithNaver({
-//       clientId: "클라이언트ID",
-//       loginButton: {
-//         color: "green",
-//         type: 3,
-//         height: 60,
-//       },
-//     });
+// const clientId = "dTBEtabH3xT8LbArVnzz";
+export const NaverLoginBtn = () => {
+  const { naver } = window;
+  const location = useLocation();
+  const serverPath = process.env.REACT_APP_SERVER_PATH;
 
-//     naverLogin.init();
-//     naverLogin.logout();
-//     naverLogin.getLoginStatus((status) => {
-//       if (status) {
-//         console.log(naverLogin.user, "로그인 상태");
-//         const { id, email, gender } = naverLogin.user;
+  // autho 코드만 네이버에서 받아오기
+  // 그 코드 서버로 전달
 
-//         if (gender === undefined) {
-//           alert("성별은 필수 동의 입니다.");
-//           naverLogin.repromt();
-//           return;
-//         }
-//       } else {
-//         console.log("로그인 상태가 아닙니다");
-//       }
-//     });
-//   };
-//   return <div id="naverIdLogin">NaverLoginBtn1!!!</div>;
-// };
+  const initializeNaverLogin = () => {
+    const naverLogin = new naver.LoginWithNaverId({
+      clientId: "dTBEtabH3xT8LbArVnzz",
+      callbackUrl: "http://localhost:3000",
+      isPopup: false,
+      loginButton: { color: "white", type: 3, height: "40" },
+    });
+    naverLogin.init();
+  };
+
+  const getNaverToken = () => {
+    if (!location.hash) return;
+    const token = location.hash.split("=")[1].split("&")[0];
+    // axios.post(`${serverPath}`);
+    console.log(token);
+  };
+
+  useEffect(() => {
+    initializeNaverLogin();
+    getNaverToken();
+  }, []);
+  return <div id="naverIdLogin"></div>;
+};

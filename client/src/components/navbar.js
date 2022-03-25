@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { OneBtnModal } from "./oneBtnModal";
@@ -77,10 +77,10 @@ const RightLinks = styled.div`
   place-items: center;
 `;
 
-export const Navbar = () => {
+export const Navbar = ({ setLoginToken }) => {
   const navigate = useNavigate();
 
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const [openLoginModal, setOpenLoginModal] = useState(false);
@@ -112,11 +112,20 @@ export const Navbar = () => {
   return (
     <div>
       {/* 로그인 모달 */}
-      {openLoginModal ? <Login onClick={() => modalHandler("login")} /> : null}
+      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setLoginTokenOnNavbar={setLoginToken} setIsLogin={setIsLogin} /> : null}
       {/* 회원가입 모달 */}
       {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
       {/* 로그아웃 시 확인 모달 */}
-      {openTwoBtnModal ? <TwoBtnModal main={'모달이 열렸다네.'}close={() => modalHandler('logout')} action={() => {console.log('으엑')}} nav={"/main"}/> : null}
+      {openTwoBtnModal ? (
+        <TwoBtnModal
+          main={"모달이 열렸다네."}
+          close={() => modalHandler("logout")}
+          action={() => {
+            console.log("으엑");
+          }}
+          nav={"/main"}
+        />
+      ) : null}
       {/* 위의 내용 수정 필요 */}
 
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
@@ -154,19 +163,16 @@ export const Navbar = () => {
               </Link>
             ) : (
               <div className="login" onClick={() => modalHandler("login")}>
-                {" "}
-                로그인{" "}
+                로그인
               </div>
             )}
             {isLogin ? (
               <div className="logout" onClick={() => modalHandler("logout")}>
-                {" "}
-                로그아웃{" "}
+                로그아웃
               </div>
             ) : (
               <div className="signup" onClick={() => modalHandler("signup")}>
-                {" "}
-                회원가입{" "}
+                회원가입
               </div>
             )}
           </RightLinks>
