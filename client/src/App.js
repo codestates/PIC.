@@ -20,7 +20,6 @@ import { NaverLoginBtn } from "./components/naverLoginBtn";
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
-
     .main{
       height: 100vh;
       /* overflow: hidden; */
@@ -73,3 +72,4 @@ export const App = () => {
     </div>
   );
 };
+
