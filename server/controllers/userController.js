@@ -4,6 +4,7 @@ const findWithPassword = require('../utils/findWithPassword');
 const generateToken = require('../utils/generateToken');
 const verifyToken = require('../utils/verifyToken');
 const bcrypt = require('bcrypt');
+const fetch = require('node-fetch');
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
@@ -97,14 +98,14 @@ const login = asyncWrapper(async (req, res) => {
 })
 
 
-// OAuth 2.0 로그인
-const oauthLogin = asyncWrapper(async (req, res) => {
+// OAuth 2.0 구글 로그인
+const oauthGoogleLogin = asyncWrapper(async (req, res) => {
     const { idToken } = req.body;
     if (!idToken) { // id token이 전달되지 않았을 경우
         res.status(400).json({ message: "fail : require idToken" })
     } else {
         const { OAuth2Client } = require("google-auth-library");
-        const CLIENT_ID = process.env.CLIENT_ID;
+        const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
         const client = new OAuth2Client(CLIENT_ID);
         const ticket = await client.verifyIdToken({
             idToken: idToken,
@@ -115,7 +116,7 @@ const oauthLogin = asyncWrapper(async (req, res) => {
         // DB에 넣을 값 생성
         const email = payload.email + '-Google';
         const nickname = payload.name + String(Math.random()).slice(2, 8);
-        const password = 'socialLoginUser';
+        const password = process.env.SOCIAL_LOGIN_PASSWORD;
         const image = payload.picture;
 
         // DB에 추가
@@ -136,6 +137,58 @@ const oauthLogin = asyncWrapper(async (req, res) => {
             accessToken,
             message: "success"
         })
+    }
+})
+
+// https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=dTBEtabH3xT8LbArVnzz&client_secret=fKFmTs1NZc&code=NvtIfw0uvbhmpApKMg&state=a4f9fff7-9131-4eda-9de5-76b36320cc51
+// https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dTBEtabH3xT8LbArVnzz&redirect_uri=http://localhost:3000&state=a4f9fff7-9131-4eda-9de5-76b36320cc51
+
+
+// OAuth 2.0 네이버 로그인
+const oauthNaverLogin = asyncWrapper(async (req, res) => {
+    const { code, state } = req.body;
+    if (code && state) {
+        const response = await fetch(`https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_CLIENT_ID}&client_secret=${process.env.NAVER_CLIENT_SECRET}&code=${code}&state=${code}`).then(res => res.json());
+        const naverAccessToken = response.access_token;
+        const naverUserInfo = await fetch(`https://openapi.naver.com/v1/nid/me`, {
+            headers: {
+                Authorization: `Bearer ${naverAccessToken}`
+            }
+        }).then(res => res.json());
+        return res.status(200).json({
+            response,
+            naverAccessToken,
+            naverUserInfo
+        });
+
+        // DB에 넣을 값 생성
+        const email = naverUserInfo.response.email + '-Naver';
+        const nickname = naverUserInfo.response.name + String(Math.random()).slice(2, 8);
+        const password = process.env.SOCIAL_LOGIN_PASSWORD;
+        const image = naverUserInfo.response.profile_image;
+
+
+        // // DB에 추가
+        // let userInfo = await User.findOne({ email });
+        // if (!userInfo) { // 처음 소셜로그인 하는 경우
+        //     userInfo = await User.create({ email, nickname, password, image });
+        // }
+        // const accessToken = generateToken(userInfo, 'accessToken');
+        // const refreshToken = generateToken(userInfo, 'refreshToken');
+        // res.cookie('refreshToken', refreshToken, {
+        //     httpOnly: true,
+        //     path: '/api/users/auth/token',
+        //     maxAge: 60 * 60 * 24 * 7
+        // })
+
+        // res.json({
+        //     _id: userInfo._id,
+        //     accessToken,
+        //     message: "success"
+        // })
+
+    } else { // authorization code 또는 state가 전달되지 않았을 경우
+        res.status(400).json({ message: "fail : require authorization code and state" });
     }
 })
 
@@ -273,7 +326,8 @@ module.exports = {
     sendMail,
     signup,
     login,
-    oauthLogin,
+    oauthGoogleLogin,
+    oauthNaverLogin,
     logout,
     refreshToken,
     getUserInfo,
