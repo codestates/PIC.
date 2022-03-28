@@ -80,12 +80,11 @@ const RightLinks = styled.div`
   place-items: center;
 `;
 
-export const Navbar = ({ setLoginToken }) => {
+export const Navbar = ({ setLoginToken, isLogin }) => {
   const navigate = useNavigate();
+  const localStorage = window.localStorage
 
-  const [isLogin, setIsLogin] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openSignupModal, setOpenSignupModal] = useState(false);
   const [openTwoBtnModal, setOpenTwoBtnModal] = useState(false);
@@ -112,14 +111,26 @@ export const Navbar = ({ setLoginToken }) => {
     navigate("/main");
   };
 
+  const handleLogout = () => {
+    localStorage.clear()
+    window.location.reload()
+  }
+
   return (
     <div>
       {/* 로그인 모달 */}
-      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setLoginTokenOnNavbar={setLoginToken} setIsLogin={setIsLogin} /> : null}
+      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setLoginTokenOnNavbar={setLoginToken} /> : null}
       {/* 회원가입 모달 */}
       {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
       {/* 로그아웃 시 확인 모달 */}
-      {openTwoBtnModal ? <TwoBtnModal main={'모달이 열렸다네.'} close={() => modalHandler('logout')} action={() => { console.log('으엑') }} nav={"/main"} /> : null}
+      {openTwoBtnModal ? (
+        <TwoBtnModal
+          main={"모달이 열렸다네."}
+          close={() => modalHandler("logout")}
+          action={() => handleLogout()}
+          nav={"/main"}
+        />
+      ) : null}
       {/* 위의 내용 수정 필요 */}
 
 
@@ -128,8 +139,7 @@ export const Navbar = ({ setLoginToken }) => {
       {/* 백드롭도 모달에서 관리해주어야함. */}
       <Container>
         <InnerContainer>
-          <Logo className="logo" onClick={navigateToHome}>PIC<span>.</span>
-          </Logo>
+          <Logo className="logo" onClick={navigateToHome}>PIC<span>.</span></Logo>
           <LeftLinks className="left-btns">
             <Link className="my_pics" to="my_pics">내 사진</Link>
             <Link className="most_likes" to="most_likes">인기사진</Link>
@@ -140,8 +150,9 @@ export const Navbar = ({ setLoginToken }) => {
             <Link className="keywords" to="keywords">키워드 검색</Link>
             <Link className="tags" to="tags">태그 검색</Link>
             {isLogin
-              ? <Link className="mypage" to="mypage">마이페이지</Link>
-              : <div className="login" onClick={() => modalHandler("login")}>로그인</div>}
+              ? <Link className="mypage" to="mypage"> 마이페이지</Link>
+              : <div className="login" onClick={() => modalHandler("login")}>로그인</div>
+            }
             {isLogin
               ? <div className="logout" onClick={() => modalHandler("logout")}>로그아웃</div>
               : <div className="signup" onClick={() => modalHandler("signup")}>회원가입</div>
