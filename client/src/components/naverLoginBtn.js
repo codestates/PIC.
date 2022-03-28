@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // const clientId = "dTBEtabH3xT8LbArVnzz";
 export const NaverLoginBtn = () => {
   const { naver } = window;
-  const location = useLocation();
   const serverPath = process.env.REACT_APP_SERVER_PATH;
-
-  // autho 코드만 네이버에서 받아오기
-  // 그 코드 서버로 전달
+  const [code, setCode] = useState('')
+  const [nidState, setNidState] = useState('')
+  const navigate = useNavigate()
 
   const initializeNaverLogin = () => {
     const naverLogin = new naver.LoginWithNaverId({
@@ -20,17 +20,38 @@ export const NaverLoginBtn = () => {
     });
     naverLogin.init();
   };
+  const naverCode = () => {
+    const url = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dTBEtabH3xT8LbArVnzz&redirect_uri=http://localhost:3000&state=a4f9fff7-9131-4eda-9de5-76b36320cc51"
+    window.location.replace(url)
+  }
 
-  const getNaverToken = () => {
-    if (!location.hash) return;
-    const token = location.hash.split("=")[1].split("&")[0];
-    // axios.post(`${serverPath}`);
-    console.log(token);
-  };
+  const uriParam = window.location.search.replace('?', '')
+    .split('&')
+    .map((params) => {
+      return params.split('=')
+    })
+
+  const params = Object.fromEntries(uriParam)
+  console.log(params, "PARAMS")
+  useEffect(() => {
+    if (window.location.search && params) {
+      setCode(params.code)
+      setNidState(params.state)
+      // 이 위치에 요청 작성
+    }
+    console.log(code, "CODE", nidState, "STATE")
+  }, [])
 
   useEffect(() => {
-    initializeNaverLogin();
-    getNaverToken();
-  }, []);
-  return <div id="naverIdLogin"></div>;
+    if (code && nidState) {
+      axios.post(`${serverPath}/api/users/oauth/naver`, {
+        code: code,
+        state: nidState,
+      })
+    }
+  }, [code, nidState])
+
+  return <div onClick={naverCode}>
+    <button>NAVER</button>
+  </div>;
 };
