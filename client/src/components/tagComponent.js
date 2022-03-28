@@ -2,10 +2,12 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { BsPlus, BsDash } from "react-icons/bs";
 import { useRef } from 'react';
+import { useEffect } from 'react';
 
 const Wrapper = styled.div`
   display: flex;
   width: min-content;
+  height: 25px;
   
   border-radius: 10px;
   overflow: hidden;
@@ -90,16 +92,15 @@ const Btn = styled.div`
       box-shadow: inset -1px 1px 1px rgba(0,0,0,0.2);
     }
   }
-
 `
 
-export const Tag = ({ usage, action, children }) => {
+export const Tag = ({ usage, children, addFn, removeFn, selectFn }) => {
   // usage 은 어떤 버튼인지 결정합니다.
   // 없는 경우 : 일반 태그
   // added : 추가된 태그, 삭제버튼 포함
   // add : 태그 추가를 위한 input, 추가버튼 포함
 
-  // action 은 usage가 add, added 일 때 버튼이 어떤 함수를 실행할 것인지 결정합니다.
+  // addFn, removeFn, selectFn 은 각각 추가, 삭제, 선택을 조작하는 함수입니다.
 
   // children 태그 내부의 내용을 결정합니다. children={} 혹은 <Tag>내용</Tag> 으로 전달 할 수 있습니다.
 
@@ -109,34 +110,35 @@ export const Tag = ({ usage, action, children }) => {
   // 태그 추가를 위한 양식인 경우,
   // 위의 값을 props 을 갱신함수를 이용하여 전달합니다.
 
+  const tagInput = useRef()
 
-  const addTag = useRef()
-
-  const doAction = () => {
+  const addTag = () => {
     setAddTagValue('')
 
-    if (addTag.current){
-      addTag.current.textContent = ''
+    if (tagInput.current) {
+      tagInput.current.textContent = ''
     }
-    if (action) {
-      action()
+    if (addFn && addTagValue) {
+      addFn(addTagValue.replace(/\s/g, ''))
     }
   }
 
-  const selectHandler = () => {
+  const removeTag = (e) => {
+    removeFn(e.target.parentElement.parentElement.children[0].textContent)
+  }
+
+  const selectHandler = (value) => {
     isSelected ? setIsSelected(false) : setIsSelected(true)
+    selectFn(value)
   }
 
   const KeyHandler = (e) => {
-    if (e.keyCode === 32) {
-      // space 막기
-      e.preventDefault()
-    }
     if (e.keyCode === 13) {
       // enter 막기
       e.preventDefault()
-      if (action) {
-        action()
+      if (addFn && addTagValue.length > 0) {
+        tagInput.current.textContent = ''
+        addFn(addTagValue.replace(/\s/g, ''))
       }
     }
   }
@@ -145,7 +147,7 @@ export const Tag = ({ usage, action, children }) => {
     <div>
       <Wrapper usage={usage} isSelected={isSelected}>
         {!usage
-          ? <CommonTag onClick={selectHandler} usage={usage}>{children}</CommonTag>
+          ? <CommonTag onClick={e => selectHandler(e.target.textContent)}>{children}</CommonTag>
           : null}
         {usage === 'added'
           ? <CommonTag usage={usage}>{children}</CommonTag>
@@ -157,16 +159,18 @@ export const Tag = ({ usage, action, children }) => {
                 contentEditable
                 spellCheck={false}
                 placeholder={children}
-                ref={addTag}
-                onKeyDown={(e) => KeyHandler(e)}
-                onInput={e => setAddTagValue(e.target.innerText)}></div>
+                ref={tagInput}
+                onKeyDown={e => KeyHandler(e)}
+                onBlur={addTag}
+                onInput={e => setAddTagValue(e.target.innerText)}
+              ></div>
             </CommonTag>
           )
           : null}
-        <Btn onClick={doAction} usage={usage}>
-          {usage === 'added' ? <BsDash /> : null}
-          {usage === 'add' ? <BsPlus /> : null}
-        </Btn>
+
+        {usage === 'added' ? <Btn onClick={e => removeTag(e)} usage={usage}> <BsDash /> </Btn> : null}
+        {usage === 'add' ? <Btn onClick={e => addTag(e)} usage={usage}><BsPlus /></Btn> : null}
+
       </Wrapper>
     </div >
   );

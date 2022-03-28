@@ -16,7 +16,8 @@ const Container = styled.div`
   grid-template-columns: repeat(12, 1fr);
   
   width: 1200px;
-  height: 100%;
+  height: max-content;
+  margin-bottom: 200px;
 `
 
 const Forms = styled.div`
@@ -84,7 +85,8 @@ const ProfileImg = styled.div`
   box-shadow: 0 3px 3px rgba(0,0,0,0.2);
 `
 
-const Btn = styled.div`
+const Btn = styled.button`
+  font-size: 1rem;
   display: grid;
   place-items: center;
 
@@ -187,7 +189,7 @@ export const ModifyMyinfo = () => {
       let form = new FormData()
 
       form.append('key', imgbbApi)
-      form.append('image', `${imgBase64}`)
+      form.append('image', imgBase64)
 
       const imgHosting = await axios.post('https://api.imgbb.com/1/upload', form)
       setProfileImg(imgHosting.data.data.url)
@@ -220,15 +222,13 @@ export const ModifyMyinfo = () => {
     }
   }, [newPassword, retypePassword])
 
-
-  const nicknameCheckHandler = async (e) => {
-    setNewNickname(e.target.value)
-  }
-
-
   const nicknameValidCheck = (value) => {
     let nicknameReg = /^[가-힣a-zA-Z0-9_]{2,12}$/;
     return nicknameReg.test(value)
+  }
+
+  const nicknameCheckHandler = (e) => {
+    setNewNickname(e.target.value)
   }
 
   useEffect(() => {
@@ -429,7 +429,7 @@ export const ModifyMyinfo = () => {
           {nowUploading ? <LoadingIndicator /> : null}
 
         </ProfileImg>
-        <input type="file" style={{ display: 'none' }} ref={uploadBtn} onChange={imgUpload} />
+        <input type="file" accept="image/*" style={{ display: 'none' }} ref={uploadBtn} onChange={imgUpload} />
         <ProfileImgBtn onClick={() => uploadBtn.current.click()}>
           <span>프로필 이미지 변경</span>
         </ProfileImgBtn>
