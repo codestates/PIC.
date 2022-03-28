@@ -11,7 +11,6 @@ import { PageTitle } from '../components/pageTitle';
 
 const Container = styled.div`
   position: relative;
-
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   
@@ -60,7 +59,6 @@ const Forms = styled.div`
       border: #FFD600;
     }
   }
-
   .form{
     position: relative;
   }
@@ -107,7 +105,6 @@ const Btn = styled.button`
     transform: ${props => props.disabled ? 'null' : 'translateY(-2px)'};
     box-shadow: ${props => props.disabled ? 'null' : '0px 5px 4px rgba(0,0,0,0.1)'};
   }
-
     span{
     position: relative;
     top: 2px;

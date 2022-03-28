@@ -14,16 +14,13 @@ import { AddPostFloatBtn } from "./components/addPostFloatBtn";
 import { OneBtnModal } from "./components/oneBtnModal";
 import { TwoBtnModal } from "./components/twoBtnModal";
 import { Tag } from "./components/tagComponent";
-import { BtnComponent as Btn } from "./components/BtnComponent";
-
 import { Login } from "./modals/login";
+import { GoogleLoginBtn } from "./components/googleLoginBtn";
 import { Footer } from "./components/footer";
-import { TagSelection } from "./components/tagSelection";
-import { PageTitle } from "./components/pageTitle";
-
+import { NaverLoginBtn } from "./components/naverLoginBtn";
+import Signup from "./modals/signup";
 const GlobalStyles = createGlobalStyle`
     ${reset}
-
     .main{
       
       /* overflow: hidden; */
@@ -80,9 +77,10 @@ export const App = () => {
       <InnerContainer>
         <AddPostFloatBtn />
         {/* <TagSelection /> */}
+        
         <Routes>
+          <Route path="login" element={<Login />} />
           <Route path="mypage/modify/" element={<ModifyMyinfo />} />
-          <Route path="login" element={<Login setLoginToken={setLoginToken} />} />
           <Route path="mypage" element={<Mypage />} />
           <Route path="add_post" element={<AddPost />} />
         </Routes>
@@ -92,3 +90,4 @@ export const App = () => {
     </Container>
   );
 };
+

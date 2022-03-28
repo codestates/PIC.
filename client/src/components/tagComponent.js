@@ -16,7 +16,6 @@ const Wrapper = styled.div`
   // usage props가 존재하지 않고(기본 태그), 선택되지 않은 태그인 경우 회색,
   // 만약 선택된 상태라면 테마색을 표시한다.
   box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
-
 `
 const CommonTag = styled.div`
   display: grid;
@@ -52,7 +51,6 @@ const CommonTag = styled.div`
       /* 즉, div에 placeholder 속성은 없지만, CSS와 속성의 이름을 이용하여 */
       /* 해당하는 속성명의 속성값을 placeholder '처럼' 사용한다. */
     }
-
     &:focus{
       outline: none;
       &:empty:before {
@@ -60,7 +58,6 @@ const CommonTag = styled.div`
       }
     }
   }
-
   cursor: ${props => !props.usage ? 'pointer' : 'default'};
 `
 

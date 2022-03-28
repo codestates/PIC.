@@ -7,7 +7,7 @@
 // 그 버튼 클릭하면 로그인 모달창 더서 작동 되도록 구현하기
 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { GoogleLoginBtn } from "../components/googleLoginBtn";
@@ -46,7 +46,7 @@ const Btn = styled.button`
   color: black;
   border-radius: 20px;
   margin-bottom: 10px;
-  cursor: grab;
+  cursor: pointer;
 `;
 
 const Column = styled.div`
@@ -64,29 +64,31 @@ const ModalView = styled.div`
   height: 800px;
   border-radius: 1rem;
   position: relative;
-  > .close-btn {
+  /* > .close-btn {
     position: absolute;
     top: 2px;
     right: 7px;
     cursor: pointer;
-  }
+  } */
 `;
 
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
-export const Login = ({ setLoginToken }) => {
+export const Login = ({ setLoginTokenOnNavbar, setIsLogin, closeFn }) => {
+  // console.log(setIsLogin, "af");
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [token, setToken] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginToken, setLoginToken] = useState("");
   const [id, setId] = useState("");
   // google
+  // 상태이름 리팩토링 하면서 수정하기
 
   const navigate = useNavigate();
 
   const loginHandler = async () => {
-    const response = await axios.post(`${serverPath}api/login/`, {
+    const response = await axios.post(`${serverPath}api/users/login`, {
       email: email,
-      password: pass,
+      password: password,
     });
     return response;
   };
@@ -95,44 +97,37 @@ export const Login = ({ setLoginToken }) => {
     e.preventDefault();
     const res = await loginHandler();
     if (res) {
-      setToken(res.data.accessToken);
+      setLoginToken(res.data.accessToken);
       setId(res.data._id);
     }
     if (res.status === 200) {
-      navigate("../mypage");
-      // 나중에 랜딩페이지로 바꿀것
+      navSignup();
+      setIsLogin(true);
+      closeFn();
     }
   };
 
   useEffect(() => {
-    setLoginToken(token);
-  }, [token]);
+    setLoginTokenOnNavbar(loginToken);
+  }, [loginToken]);
 
   const navSignup = () => {
     navigate("../mypage");
   };
 
   return (
-    <>
-      <ModalContainer>
+      <ModalContainer onClick={closeFn}>
         <ModalForm>
           <ModalView>
             <Column> 이메일 </Column>
-            <Input
-              placeholder="이메일을 입력해주세욤"
-              onChange={(e) => setEmail(e.target.value)}
-            ></Input>
+            <Input placeholder="이메일을 입력해주세욤" onChange={(e) => setEmail(e.target.value)}></Input>
             <Column> 비밀번호</Column>
-            <Input
-              type="password"
-              placeholder="비밀번호를 입력해보시지요"
-              onChange={(e) => setPass(e.target.value)}
-            ></Input>
+            <Input type="password" placeholder="비밀번호를 입력해보시지요" onChange={(e) => setPassword(e.target.value)}></Input>
             <Column>
               <Btn onClick={submit}>로그인</Btn>
             </Column>
             <GoogleLoginBtn setLoginToken={setLoginToken} />
-            <NaverLoginBtn />
+            {/* <NaverLoginBtn /> */}
             {/* <Column
               className="g-signin2"
               data-onsuccess="onSignIn"
@@ -147,7 +142,6 @@ export const Login = ({ setLoginToken }) => {
           </ModalView>
         </ModalForm>
       </ModalContainer>
-    </>
   );
 };
 

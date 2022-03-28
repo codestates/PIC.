@@ -16,7 +16,6 @@ const Indicator = styled(AiOutlineLoading)`
       transform: rotate(360deg);
     }
   }
-
   animation: rotate ${props => props.duration ? props.duration : '1s' } linear infinite;
 `
 

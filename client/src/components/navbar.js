@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { OneBtnModal } from "./oneBtnModal";
@@ -80,7 +80,7 @@ const RightLinks = styled.div`
   place-items: center;
 `;
 
-export const Navbar = () => {
+export const Navbar = ({ setLoginToken }) => {
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(false);
@@ -115,19 +115,21 @@ export const Navbar = () => {
   return (
     <div>
       {/* 로그인 모달 */}
-      {openLoginModal ? <Login onClick={() => modalHandler("login")} /> : null}
+      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setLoginTokenOnNavbar={setLoginToken} setIsLogin={setIsLogin} /> : null}
       {/* 회원가입 모달 */}
       {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
       {/* 로그아웃 시 확인 모달 */}
       {openTwoBtnModal ? <TwoBtnModal main={'모달이 열렸다네.'} close={() => modalHandler('logout')} action={() => { console.log('으엑') }} nav={"/main"} /> : null}
       {/* 위의 내용 수정 필요 */}
 
+
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
       {/* 완성된 모달 컴포넌트에 props 로 modal 상태변경 함수를 내려서 사용하기 */}
       {/* 백드롭도 모달에서 관리해주어야함. */}
       <Container>
         <InnerContainer>
-          <Logo className="logo" onClick={navigateToHome}>PIC<span>.</span></Logo>
+          <Logo className="logo" onClick={navigateToHome}>PIC<span>.</span>
+          </Logo>
           <LeftLinks className="left-btns">
             <Link className="my_pics" to="my_pics">내 사진</Link>
             <Link className="most_likes" to="most_likes">인기사진</Link>
@@ -142,7 +144,8 @@ export const Navbar = () => {
               : <div className="login" onClick={() => modalHandler("login")}>로그인</div>}
             {isLogin
               ? <div className="logout" onClick={() => modalHandler("logout")}>로그아웃</div>
-              : <div className="signup" onClick={() => modalHandler("signup")}>회원가입</div>}
+              : <div className="signup" onClick={() => modalHandler("signup")}>회원가입</div>
+            }
           </RightLinks>
         </InnerContainer>
       </Container>
