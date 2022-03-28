@@ -140,9 +140,6 @@ const oauthGoogleLogin = asyncWrapper(async (req, res) => {
     }
 })
 
-// https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=dTBEtabH3xT8LbArVnzz&client_secret=fKFmTs1NZc&code=NvtIfw0uvbhmpApKMg&state=a4f9fff7-9131-4eda-9de5-76b36320cc51
-// https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dTBEtabH3xT8LbArVnzz&redirect_uri=http://localhost:3000&state=a4f9fff7-9131-4eda-9de5-76b36320cc51
-
 
 // OAuth 2.0 네이버 로그인
 const oauthNaverLogin = asyncWrapper(async (req, res) => {
@@ -155,37 +152,31 @@ const oauthNaverLogin = asyncWrapper(async (req, res) => {
                 Authorization: `Bearer ${naverAccessToken}`
             }
         }).then(res => res.json());
-        return res.status(200).json({
-            response,
-            naverAccessToken,
-            naverUserInfo
-        });
-
+        
         // DB에 넣을 값 생성
         const email = naverUserInfo.response.email + '-Naver';
-        const nickname = naverUserInfo.response.name + String(Math.random()).slice(2, 8);
+        const nickname = naverUserInfo.response.nickname + String(Math.random()).slice(2, 8);
         const password = process.env.SOCIAL_LOGIN_PASSWORD;
         const image = naverUserInfo.response.profile_image;
 
+        // DB에 추가
+        let userInfo = await User.findOne({ email });
+        if (!userInfo) { // 처음 소셜로그인 하는 경우
+            userInfo = await User.create({ email, nickname, password, image });
+        }
+        const accessToken = generateToken(userInfo, 'accessToken');
+        const refreshToken = generateToken(userInfo, 'refreshToken');
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            path: '/api/users/auth/token',
+            maxAge: 60 * 60 * 24 * 7
+        })
 
-        // // DB에 추가
-        // let userInfo = await User.findOne({ email });
-        // if (!userInfo) { // 처음 소셜로그인 하는 경우
-        //     userInfo = await User.create({ email, nickname, password, image });
-        // }
-        // const accessToken = generateToken(userInfo, 'accessToken');
-        // const refreshToken = generateToken(userInfo, 'refreshToken');
-        // res.cookie('refreshToken', refreshToken, {
-        //     httpOnly: true,
-        //     path: '/api/users/auth/token',
-        //     maxAge: 60 * 60 * 24 * 7
-        // })
-
-        // res.json({
-        //     _id: userInfo._id,
-        //     accessToken,
-        //     message: "success"
-        // })
+        res.json({
+            _id: userInfo._id,
+            accessToken,
+            message: "success"
+        })
 
     } else { // authorization code 또는 state가 전달되지 않았을 경우
         res.status(400).json({ message: "fail : require authorization code and state" });
