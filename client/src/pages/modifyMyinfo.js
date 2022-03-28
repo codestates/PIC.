@@ -12,7 +12,6 @@ import { TwoBtnModal } from '../components/twoBtnModal';
 
 const Container = styled.div`
   position: relative;
-
   display: grid;
   place-items: center;
   
@@ -31,7 +30,6 @@ const GoBackBtn = styled(BsChevronLeft)`
   position: absolute;
   left: 0px;
   top: -3px;
-
   font-size: 1.5rem;
   color: #aaa;
   cursor: pointer;
@@ -43,7 +41,6 @@ const HLine = styled.div`
     
     width: 100%;
     height: 1px;
-
     background-color: #aaa;
 `
 
@@ -88,7 +85,6 @@ const Forms = styled.div`
       border: transparent;
     }
   }
-
   .form{
     position: relative;
   }
@@ -134,7 +130,6 @@ const Btn = styled.div`
     transform: ${props => props.disabled ? 'null' : 'translateY(-2px)'};
     box-shadow: ${props => props.disabled ? 'null' : '0px 5px 4px rgba(0,0,0,0.1)'};
   }
-
     span{
     position: relative;
     top: 2px;
