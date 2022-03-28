@@ -72,43 +72,36 @@ const ModalView = styled.div`
   } */
 `;
 
+const CloseBtn = styled.button`
+`
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
-export const Login = ({ setLoginTokenOnNavbar, setIsLogin, closeFn }) => {
-  console.log(setIsLogin, "af");
+export const Login = ({ closeFn }) => {
+  const localStorage = window.localStorage
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginToken, setLoginToken] = useState("");
-  const [id, setId] = useState("");
-  // google
 
   const navigate = useNavigate();
 
   const loginHandler = async () => {
-    const response = await axios.post(`${serverPath}api/users/login`, {
+    const response = await axios.post(`${serverPath}/api/users/login`, {
       email: email,
       password: password,
-    });
-    return response;
-  };
+    })
+    return response
+  }
 
   const submit = async (e) => {
     e.preventDefault();
     const res = await loginHandler();
     if (res) {
-      setLoginToken(res.data.accessToken);
-      setId(res.data._id);
-    }
-    if (res.status === 200) {
+      localStorage.setItem("userId", res.data._id)
+      localStorage.setItem("loginToken", res.data.accessToken)
       navSignup();
-      setIsLogin(true);
-      closeFn(false);
+      closeFn();
+      window.location.reload()
     }
   };
-
-  useEffect(() => {
-    setLoginTokenOnNavbar(loginToken);
-  }, [loginToken]);
 
   const navSignup = () => {
     navigate("../mypage");
@@ -116,9 +109,9 @@ export const Login = ({ setLoginTokenOnNavbar, setIsLogin, closeFn }) => {
 
   return (
     <>
-      <ModalContainer onClick={closeFn}>
+      <ModalContainer>
         <ModalForm>
-          <ModalView>
+          <ModalView><CloseBtn onClick={closeFn}>x</CloseBtn>
             <Column> 이메일 </Column>
             <Input placeholder="이메일을 입력해주세욤" onChange={(e) => setEmail(e.target.value)}></Input>
             <Column> 비밀번호</Column>
@@ -126,16 +119,8 @@ export const Login = ({ setLoginTokenOnNavbar, setIsLogin, closeFn }) => {
             <Column>
               <Btn onClick={submit}>로그인</Btn>
             </Column>
-            <GoogleLoginBtn setLoginToken={setLoginToken} />
-            <NaverLoginBtn />
-            {/* <Column
-              className="g-signin2"
-              data-onsuccess="onSignIn"
-              data-width="210"
-              data-height="40"
-              data-theme="dark"
-              onClick={navSignup}
-            ></Column> */}
+            <GoogleLoginBtn />
+            {/* <NaverLoginBtn /> */}
             <Column>
               <Btn onClick={navSignup}>회원가입</Btn>
             </Column>
@@ -146,4 +131,4 @@ export const Login = ({ setLoginTokenOnNavbar, setIsLogin, closeFn }) => {
   );
 };
 
-// 구글 로그인시 토큰 아이디 서버에 전달해줄것
+

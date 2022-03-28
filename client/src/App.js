@@ -38,31 +38,23 @@ const TempContainer = styled.div`
 `;
 
 export const App = () => {
-  const [loginToken, setLoginToken] = useState("");
+  const localStorage = window.localStorage
+
   const [isLogin, setIsLogin] = useState(false);
 
-  const nav = useNavigate();
-
   useEffect(() => {
-    if (loginToken) {
-      setIsLogin(true);
+    if (localStorage.getItem("loginToken") && localStorage.getItem("userId")) {
+      setIsLogin(true)
     } else {
-      setIsLogin(false);
+      setIsLogin(false)
     }
-  }, [loginToken]);
-
-  // useEffect(() => {
-  //   if (isLogin) {
-  //     nav("mypage");
-  //     // 임시 경로(추후 게시판으로 이동해야함)
-  //   }
-  // });
+  })
 
   return (
     <div className="main">
       <GlobalStyles />
       {/* <TempContainer></TempContainer> */}
-      <Navbar setLoginToken={setLoginToken} />
+      <Navbar isLogin={isLogin} />
       <Routes>
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
         <Route path="mypage" element={<Mypage />} />
