@@ -32,6 +32,10 @@ const TextContainer = styled.div`
   place-items: center;
   height: 50%;
   width: 85%;
+
+  .body {
+    line-height: 1.4rem;
+  }
 `
 
 const YesBtn = styled.div`
@@ -66,7 +70,9 @@ export const OneBtnModal = ({ main, close, nav }) => {
 
   const functionSet = () => {
     close()
-    navigate(nav)
+    if (nav) {
+      navigate(nav)
+    }
   }
 
   return (
@@ -74,7 +80,7 @@ export const OneBtnModal = ({ main, close, nav }) => {
       <Modal>
         <TextContainer>
           <div className='body'>
-            {main ? main : '-props 안내-\n  main={내용}을 입력하세요.\n    \" \\n \" 을 입력하여 줄바꿈 가능\n  close={닫는함수}\n  nav={이동할 path}'}
+            {main ? main : '-props 안내-\n  main={내용}을 입력하세요.\n    \" \\n \" 을 입력하여 줄바꿈 가능\n  close={닫는함수}  nav={이동할 path}'}
           </div>
         </TextContainer>
         <YesBtn onClick={functionSet}>

@@ -47,29 +47,39 @@ const HLine = styled.div`
 const Forms = styled.div`
   position: absolute;
   top : 200px;
+
   display: flex;
   flex-direction: column;
+
   align-items: center;
+
   width: 600px;
   height: 1000px;
   
   .fields{
     display: grid;
     justify-content: center;
+
     width: 305px;
     min-height: 50px;
+
     margin-top: 50px;
   }
+
   .fields > div{
     margin-bottom: 25px;
   }
+
   .fields input{
     width: 305px;
     height: 38px;
+
     margin-top: 6px;
     box-sizing: border-box;
+
     border: 1px solid #aaa;
     border-radius: 3px;
+
     &:focus {
       outline: 3px solid #FFD600;
       border: transparent;
@@ -83,28 +93,39 @@ const Forms = styled.div`
 const ProfileImg = styled.div`
   display: grid;
   place-items: center;
+
   width: 130px;
   height: 130px;
+
   margin-bottom: 20px;
+
   background : ${props => props.url ? `url(${props.url})` : `${props.default}`};
   background-position: center;
   background-size: cover;
   
+
   border-radius: 30%;
+
   box-shadow: 0 3px 3px rgba(0,0,0,0.2);
 `
 
 const Btn = styled.div`
   display: grid;
   place-items: center;
+
   width: 305px;
   height: 40px;
+
   background-color: ${props => props.disabled ? '#DDDDDD' : '#FFD600'};
+
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
+
   cursor : ${props => props.disabled ? 'default' : 'pointer'};
+
   transition: 0.1s;
+
   &:hover{
     transform: ${props => props.disabled ? 'null' : 'translateY(-2px)'};
     box-shadow: ${props => props.disabled ? 'null' : '0px 5px 4px rgba(0,0,0,0.1)'};
@@ -132,10 +153,11 @@ const Nofication = styled.div`
   position: absolute;
   top : 2px;
   right : 0;
+
   font-size: 0.8rem;;
 `
 
-const ModifyMyinfo = () => {
+export const ModifyMyinfo = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
   const userId = "reciveduseridwhenlogin"
@@ -223,14 +245,14 @@ const ModifyMyinfo = () => {
   }, [newPassword, retypePassword])
 
 
+  const nicknameCheckHandler = async (e) => {
+    setNewNickname(e.target.value)
+  }
+
+
   const nicknameValidCheck = (value) => {
     let nicknameReg = /^[가-힣a-zA-Z0-9_]{2,12}$/;
     return nicknameReg.test(value)
-  }
-
-  const nicknameCheckHandler = (e) => {
-    console.log("이게뭐야");
-    setNewNickname(e.target.value)
   }
 
   useEffect(() => {
@@ -467,5 +489,3 @@ const ModifyMyinfo = () => {
     </Container>
   );
 };
-
-export default ModifyMyinfo; 

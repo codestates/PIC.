@@ -5,8 +5,10 @@ import { useRef } from 'react';
 
 const Container = styled.div`
   display: flex;
+
   border-radius: 10px;
   overflow: hidden;
+
   background-color: ${props => props.usage || props.isSelected ? '#FFEA7C' : '#ddd'};
   // usage props가 존재하지 않고(기본 태그), 선택되지 않은 태그인 경우 회색,
   // 만약 선택된 상태라면 테마색을 표시한다.
@@ -22,15 +24,22 @@ const CommonTag = styled.div`
   
   box-sizing: border-box;
   padding: 3px 10px 0px 10px;
+
   user-select: none;
+
   overflow: hidden;
+
   div{
     min-width: 60px;
     max-width: max-content;
     height: 16px;
+
     border: none;
+
     text-align: center;
+
     cursor: text;
+
     &:empty:before {
       content: attr(placeholder);
       color: gray;
@@ -54,21 +63,30 @@ const Btn = styled.div`
   place-items: center;
   width: 25px;
   height: 25px;
+
   box-sizing: border-box;
+
   background-color: #fff;
   /* border: 1px solid #ddd; */
   border-radius: 10px;
+
   font-size: 1.3rem;
+
   cursor: pointer;
+
   transition: 0.1s;
+
   &:hover {
     box-shadow: -1px 1px 2px rgba(0,0,0,0.5);
+
     &:active {
       background-color: ${props => props.usage === 'added' ? '#FF796B' : null};
       background-color: ${props => props.usage === 'add' ? '#ffd600' : null};
+
       box-shadow: inset -1px 1px 1px rgba(0,0,0,0.2);
     }
   }
+
 `
 
 export const Tag = ({ usage, action, children }) => {

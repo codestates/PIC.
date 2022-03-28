@@ -1,7 +1,7 @@
 ---
-name: 'Issue: Dev-Log'
-about: 'Issue: Dev-Log'
-title: "[Dev Log] 2022XXXX / 작성자 / Day-00"
+name: 'Issue: DevLog'
+about: 'Issue: DevLog'
+title: "[DevLog] 2022XXXX / 작성자 / Day N"
 labels: ''
 assignees: ''
 

@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { AiOutlineLoading  } from "react-icons/ai";
 
 const Container = styled.div`
+
+
 `
 const Indicator = styled(AiOutlineLoading)`
   font-size: ${props => props.size ? props.size : '3rem'};

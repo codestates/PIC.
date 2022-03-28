@@ -5,19 +5,18 @@ import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import { Mypage } from "./pages/mypage";
-// import { ModifyMyinfo } from "./pages/modifyMyinfo";
-// import { Signup } from './modals/signup';
-import Signup from './modals/signup';
+import { ModifyMyinfo } from "./pages/modifyMyinfo";
+
 import { Navbar } from "./components/navbar";
-// import { PostThumbnail } from "./components/postThumbnail";
-// import { AddPostFloatBtn } from "./components/addPostFloatBtn";
-// import { OneBtnModal } from "./components/oneBtnModal";
-// import { TwoBtnModal } from "./components/twoBtnModal";
-// import { Tag } from "./components/tagComponent";
-// import { Login } from "./modals/login";
-// import { GoogleLoginBtn } from "./components/googleLoginBtn";
-// import { Footer } from "./components/footer";
-// import { NaverLoginBtn } from "./components/naverLoginBtn";
+import { PostThumbnail } from "./components/postThumbnail";
+import { AddPostFloatBtn } from "./components/addPostFloatBtn";
+import { OneBtnModal } from "./components/oneBtnModal";
+import { TwoBtnModal } from "./components/twoBtnModal";
+import { Tag } from "./components/tagComponent";
+import { Login } from "./modals/login";
+import { GoogleLoginBtn } from "./components/googleLoginBtn";
+import { Footer } from "./components/footer";
+import { NaverLoginBtn } from "./components/naverLoginBtn";
 
 const GlobalStyles = createGlobalStyle`
     ${reset}
@@ -64,14 +63,12 @@ export const App = () => {
       <GlobalStyles />
       {/* <TempContainer></TempContainer> */}
       <Navbar setLoginToken={setLoginToken} />
-      <Signup />
-      {/* <Routes>
+      <Routes>
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
         <Route path="mypage" element={<Mypage />} />
         <Route path="naverLoginBtn" element={<NaverLoginBtn />} />
-        {/* <Route path="signup" element={<NaverLoginBtn />} /> */}
-      {/* </Routes> */} 
-      {/* // <Footer /> */}
+      </Routes>
+      <Footer />
     </div>
   );
 };
