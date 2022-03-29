@@ -25,8 +25,8 @@ const PostSchema = new mongoose.Schema(
       required: [true, "must provide location"],
     },
     hashtags: {
-      type: Array,
-      default: [],
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
     likes: [
       {
