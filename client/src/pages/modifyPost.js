@@ -34,8 +34,6 @@ const Container = styled.section`
 
 const InnerContainer = styled.div`
   grid-column: 3 / 11;
-  margin-top: 200px;
-  margin-bottom: 300px;
   height: max-content;
 `
 

@@ -16,19 +16,17 @@ const Container = styled.div`
   
   width: 1200px;
   height: max-content;
-  margin-bottom: 200px;
 `
 
 const Forms = styled.div`
   grid-column: 3 / 11;
-  margin-top: 200px;
 
   display: flex;
   flex-direction: column;
 
+  min-height: max-content;
+
   align-items: center;
-  
-  height: 1000px;
   
   .fields{
     display: grid;

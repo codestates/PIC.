@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { GoMarkGithub } from "react-icons/go";
 
 const Container = styled.div`
-  position: absolute;
-  bottom: 0px;
+  position: relative;
 
   display: grid;
   place-items: center;

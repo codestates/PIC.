@@ -39,23 +39,18 @@ const GlobalStyles = createGlobalStyle`
 const Container = styled.div`
 position: relative;
 width: 100vw;
-min-height: 100vh;
-height: max-content;
-overflow: auto;
 `
 
 const InnerContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
-`
+  
+  min-height: max-content;
 
-const TempContainer = styled.div`
-  height: 100%;
-  display: flex;
-  /* flex-direction: column; */
-  justify-content: center;
-  align-items: center;
-`;
+  margin-top: 200px;
+  margin-bottom: 200px;
+`
 
 export const App = () => {
   const localStorage = window.localStorage
@@ -75,12 +70,14 @@ export const App = () => {
       <GlobalStyles />
       {/* <TempContainer></TempContainer> */}
       <Navbar isLogin={isLogin} />
-      <Routes>
-        <Route path="mypage/modify/" element={<ModifyMyinfo />} />
-        <Route path="posts/:id/modify/" element={<ModifyPost />} />
-        <Route path="mypage" element={<Mypage />} />
-        <Route path="add_post" element={<AddPost />} />
-      </Routes>
+      <InnerContainer>
+        <Routes>
+          <Route path="mypage/modify/" element={<ModifyMyinfo />} />
+          <Route path="posts/:id/modify/" element={<ModifyPost />} />
+          <Route path="mypage" element={<Mypage />} />
+          <Route path="add_post" element={<AddPost />} />
+        </Routes>
+      </InnerContainer>
       <Footer />
     </Container>
   );
