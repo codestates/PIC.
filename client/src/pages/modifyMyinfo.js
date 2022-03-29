@@ -1,59 +1,33 @@
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-import { BsChevronLeft } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { LoadingIndicator } from '../components/loadingIndicator';
 import { OneBtnModal } from '../components/oneBtnModal';
 import { TwoBtnModal } from '../components/twoBtnModal';
-
+import { PageTitle } from '../components/pageTitle';
 
 
 const Container = styled.div`
   position: relative;
   display: grid;
-  place-items: center;
+  grid-template-columns: repeat(12, 1fr);
   
-  width: 100%;
-  height: 100%;
-`
-
-const PageTitle = styled.h2`
-  position: relative;
-  margin-bottom: 20px;
-  
-  font-size: 1.4rem;  
-`
-
-const GoBackBtn = styled(BsChevronLeft)`
-  position: absolute;
-  left: 0px;
-  top: -3px;
-  font-size: 1.5rem;
-  color: #aaa;
-  cursor: pointer;
-`
-
-const HLine = styled.div`
-    display: block;
-    margin-bottom: 30px;
-    
-    width: 100%;
-    height: 1px;
-    background-color: #aaa;
+  width: 1200px;
+  height: max-content;
+  margin-bottom: 200px;
 `
 
 const Forms = styled.div`
-  position: absolute;
-  top : 200px;
+  grid-column: 3 / 11;
+  margin-top: 200px;
 
   display: flex;
   flex-direction: column;
 
   align-items: center;
-
-  width: 600px;
+  
   height: 1000px;
   
   .fields{
@@ -82,7 +56,7 @@ const Forms = styled.div`
 
     &:focus {
       outline: 3px solid #FFD600;
-      border: transparent;
+      border: #FFD600;
     }
   }
   .form{
@@ -109,7 +83,8 @@ const ProfileImg = styled.div`
   box-shadow: 0 3px 3px rgba(0,0,0,0.2);
 `
 
-const Btn = styled.div`
+const Btn = styled.button`
+  font-size: 1rem;
   display: grid;
   place-items: center;
 
@@ -211,7 +186,7 @@ export const ModifyMyinfo = () => {
       let form = new FormData()
 
       form.append('key', imgbbApi)
-      form.append('image', `${imgBase64}`)
+      form.append('image', imgBase64)
 
       const imgHosting = await axios.post('https://api.imgbb.com/1/upload', form)
       setProfileImg(imgHosting.data.data.url)
@@ -244,15 +219,13 @@ export const ModifyMyinfo = () => {
     }
   }, [newPassword, retypePassword])
 
-
-  const nicknameCheckHandler = async (e) => {
-    setNewNickname(e.target.value)
-  }
-
-
   const nicknameValidCheck = (value) => {
     let nicknameReg = /^[가-힣a-zA-Z0-9_]{2,12}$/;
     return nicknameReg.test(value)
+  }
+
+  const nicknameCheckHandler = (e) => {
+    setNewNickname(e.target.value)
   }
 
   useEffect(() => {
@@ -448,15 +421,12 @@ export const ModifyMyinfo = () => {
       {signoutModalOpen ? <TwoBtnModal close={() => modalHandler('signout')} action={deleteAccount} main={'정말로 회원탈퇴 하시겠습니다?\n삭제된 정보는 복구 할 수 없습니다.'} /> : null}
 
       <Forms>
-        <PageTitle >프로필 정보 수정</PageTitle>
-        <GoBackBtn onClick={() => navigate(-1)}/>
-
-        <HLine />
+        <PageTitle>프로필 정보 수정</PageTitle>
         <ProfileImg url={profileImg} default={oldProfileImg}>
           {nowUploading ? <LoadingIndicator /> : null}
 
         </ProfileImg>
-        <input type="file" style={{ display: 'none' }} ref={uploadBtn} onChange={imgUpload} />
+        <input type="file" accept="image/*" style={{ display: 'none' }} ref={uploadBtn} onChange={imgUpload} />
         <ProfileImgBtn onClick={() => uploadBtn.current.click()}>
           <span>프로필 이미지 변경</span>
         </ProfileImgBtn>

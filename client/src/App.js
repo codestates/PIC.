@@ -6,6 +6,7 @@ import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import { Mypage } from "./pages/mypage";
 import { ModifyMyinfo } from "./pages/modifyMyinfo";
+import { AddPost } from "./pages/addPost";
 
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
@@ -17,17 +18,28 @@ import { Login } from "./modals/login";
 import { GoogleLoginBtn } from "./components/googleLoginBtn";
 import { Footer } from "./components/footer";
 import { NaverLoginBtn } from "./components/naverLoginBtn";
-
+import Signup from "./modals/signup";
 const GlobalStyles = createGlobalStyle`
     ${reset}
     .main{
-      height: 100vh;
+      
       /* overflow: hidden; */
       /* 모달이 열린 경우 뒤의 화면의 스크롤이 생기지 않게 하려면 위의 내용을 추가시켜 줘야한다. */
       /* 모달이 열린 경우를 상태로 저장하여 클래스이름을 조건부 렌더링하면 해결 가능할 듯 */
       /* true ? className="main activeModal" : className="main"*/
     }
 `;
+
+const Container = styled.div`
+position: relative;
+min-height: 100vh;
+height: max-content;
+`
+
+const InnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`
 
 const TempContainer = styled.div`
   height: 100%;
@@ -51,17 +63,18 @@ export const App = () => {
   })
 
   return (
-    <div className="main">
+    <Container>
       <GlobalStyles />
       {/* <TempContainer></TempContainer> */}
       <Navbar isLogin={isLogin} />
       <Routes>
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
         <Route path="mypage" element={<Mypage />} />
+        <Route path="add_post" element={<AddPost />} />
         <Route path="naverLoginBtn" element={<NaverLoginBtn />} />
       </Routes>
       <Footer />
-    </div>
+    </Container>
   );
 };
 

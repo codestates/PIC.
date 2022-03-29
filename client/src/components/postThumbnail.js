@@ -5,7 +5,7 @@ import { BiLike, BiChat } from "react-icons/bi";
 import { BsGeoAltFill } from "react-icons/bs";
 
 
-const Container = styled.div`
+const Container = styled.section`
   position: relative;
   width: 220px;
   height: 320px;
@@ -40,7 +40,7 @@ const PostImg = styled.div`
 const PostInfo = styled.div`
 
   width: 100%;
-  height: 100%;
+  height: max-content;
   
   margin: 8px 0 0 8px;
   .title {
@@ -108,7 +108,7 @@ const dummy = {
   author: "<ObjectId0>",
   title: "엄청엄청엄청 긴 제목을 가진 사진이다.",
   description: "description1",
-  photo: "https://i.ibb.co/hYsxHwX/172d903f28d5.jpg",
+  photo: "https://i.ibb.co/Fxw6w1j/def78d7e8341.jpg",
   location: {
     latitude: 33.45063772475703,
     longitude: 126.57068303345567,
@@ -160,22 +160,21 @@ export const PostThumbnail = () => { // 실 사용시에는 해당 위치에 pro
     <Container>
       <PostImg url={photo} />
       <PostInfo>
-
         <h3 className='title'>{title}</h3>
-        <div className='nickname'>{nickname ? nickname : 'Nickname'}</div>
-        <div className='address'>
+        <p className='nickname'>{nickname ? nickname : 'Nickname'}</p>
+        <p className='address'>
           <BsGeoAltFill />
           {presentAdd}
-        </div>
+        </p>
 
         <div className='social-amounts'>
           <div className='like'>
             <BiLike />
-            <div className='amounts'>{likes.length}</div>
+            <p className='amounts'>{likes.length}</p>
           </div>
           <div className='comment'>
             <BiChat />
-            <div className='amounts'>{comments.length}</div>
+            <p className='amounts'>{comments.length}</p>
           </div>
         </div>
       </PostInfo>

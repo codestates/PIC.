@@ -21,6 +21,8 @@ const Btn = styled.div`
   cursor : pointer;
 
   transition : 0.2s;
+
+  z-index: 999;
   &:hover{
     transform: translateY(-2px);
     box-shadow : 0px 5px 4px rgba(0,0,0,0.5);

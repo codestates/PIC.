@@ -23,7 +23,6 @@ export const GoogleLoginBtn = () => {
     }
   };
 
-  useEffect(() => { }, []);
   const onFailure = (error) => {
     console.log(error);
   };

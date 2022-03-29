@@ -5,8 +5,8 @@ import { OneBtnModal } from "./oneBtnModal";
 import { TwoBtnModal } from "./twoBtnModal";
 import { Login } from "../modals/login";
 
-const Container = styled.div`
-  position: relative;
+const Container = styled.header`
+  position : relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,6 +30,7 @@ const Container = styled.div`
 const InnerContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
+  grid-gap: 20px;
   min-width: 1200px;
 
   .logo {
@@ -68,12 +69,14 @@ const Logo = styled.div`
 const LeftLinks = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
   place-items: center;
 `;
 
 const RightLinks = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
   place-items: center;
 `;
 
@@ -129,6 +132,7 @@ export const Navbar = ({ setLoginToken, isLogin }) => {
         />
       ) : null}
       {/* 위의 내용 수정 필요 */}
+
 
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
       {/* 완성된 모달 컴포넌트에 props 로 modal 상태변경 함수를 내려서 사용하기 */}

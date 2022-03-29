@@ -7,7 +7,7 @@
 // 그 버튼 클릭하면 로그인 모달창 더서 작동 되도록 구현하기
 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { GoogleLoginBtn } from "../components/googleLoginBtn";
@@ -108,7 +108,6 @@ export const Login = ({ closeFn }) => {
   };
 
   return (
-    <>
       <ModalContainer>
         <ModalForm>
           <ModalView><CloseBtn onClick={closeFn}>x</CloseBtn>
@@ -127,7 +126,6 @@ export const Login = ({ closeFn }) => {
           </ModalView>
         </ModalForm>
       </ModalContainer>
-    </>
   );
 };
 

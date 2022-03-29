@@ -4,16 +4,20 @@ import { Link } from "react-router-dom";
 import { GoMarkGithub } from "react-icons/go";
 
 const Container = styled.div`
+  position: absolute;
+  bottom: 0px;
+
   display: grid;
-  background-color: #ffd600;
-  padding: 15px 0;
-  box-sizing: border-box;
   place-items: center;
+
   width: 100vw;
   min-width: 1200px;
   height: 200px;
-  bottom: 0px;
-  position: absolute;
+
+  box-sizing: border-box;
+  padding: 15px 0;
+
+  background-color: #ffd600;
 `;
 
 const InnerContainer = styled.div`
