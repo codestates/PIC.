@@ -329,7 +329,7 @@ export const ModifyPost = () => {
       },
       newHashtags: tags
     }
-    axios.post(`${serverPath}/api/posts`, body, headers)
+    axios.patch(`${serverPath}/api/${params.id}/posts`, body, headers)
   }
 
   return (
@@ -355,7 +355,10 @@ export const ModifyPost = () => {
           <h3 className='category'>사진 설명</h3>
           <textarea ref={descArea} onKeyUp={autoResizing} spellCheck={false} onChange={(e) => setDesctription(e.target.value)} value={description}></textarea>
         </DescContainer>
-        <Btn action={patchPost} width={'100%'}>게시글 수정하기</Btn>
+        {title 
+          ? <Btn action={patchPost} width={'100%'}>게시글 수정하기</Btn> 
+          : <Btn disabled={true} width={'100%'}>게시글 수정하기</Btn>
+        }
       </InnerContainer>
     </Container >
   );

@@ -81,8 +81,6 @@ export const TagSelection = ({ setTags, tags }) => {
     )
   }, [myTags, selectedTags])
 
-  console.log(selectedTags)
-  console.log(myTags)
 
   const selectTag = (value) => {
     if (selectedTags.includes(value)) {
