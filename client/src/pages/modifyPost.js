@@ -101,6 +101,11 @@ const TitleContainer = styled.section`
 
     padding-left: 10px;
     font-size: 1.2rem;
+
+    &:focus {
+      outline: 3px solid #FFD600;
+      border: #FFD600;
+    }
   }
 `
 
@@ -119,9 +124,13 @@ const DescContainer = styled.section`
     font-size: 1.2rem;
 
     resize: none;
-    overflow: hidden
+    overflow: hidden;
     // 히든을 줌으로써 스크롤을 없앰 -> 크기에 맞게 늘어나니 스크롤은 보이지 않지만, 내용은 다 보인다.
 
+    &:focus {
+      outline: 3px solid #FFD600;
+      border: #FFD600;
+    }
   }
 `
 
@@ -157,37 +166,37 @@ export const ModifyPost = () => {
 
 
 
-// 게시글의 아이디를 받아서 ㅇㅋ
-// 해당 게시글의 내용을 가져오기위해 요청을 보냄 ㅇㅋ
-// 가져온 게시글의 정보를 이용해서 사진, 지도, 태그, 설명을 미리채움 반 ㅇㅋ
+  // 게시글의 아이디를 받아서 ㅇㅋ
+  // 해당 게시글의 내용을 가져오기위해 요청을 보냄 ㅇㅋ
+  // 가져온 게시글의 정보를 이용해서 사진, 지도, 태그, 설명을 미리채움 반 ㅇㅋ
 
-// !!!! 태그가 문제임
+  // !!!! 태그가 문제임
 
-// 이후 patch 요청을 보낸다.
+  // 이후 patch 요청을 보낸다.
 
 
   useState(() => {
-      // axios.get(`${serverPath}/posts/${params.id}`)
-      const data = {
-        title: "고양이",
-        description: "고앵이이이\n\n고\n\n앵\n\n이",
-        photo: "https://i.ibb.co/RSJ4DBk/468081180d1c.jpg",
-        location: {
-          latitude: 37.496683618601395,
-          longitude: 127.02467216931328,
-          roadAdd: "제주특별자치도 제주시 첨단로 242",
-          lotAdd: "제주특별자치도 제주시 영평동 2181",
-        },
-        hashtags: {
-          keywords: ["제주도", "일상", "신나는", "화창한", "밤",],
-          myTags: ["고앵이", "졸리다"]
-        }
-      };
-      setTitle(data.title)
-      setDesctription(data.description)
-      setLocation(data.location)
-      setTags(data.hashtags)
-      setImgHostUrl(data.photo)
+    // axios.get(`${serverPath}/posts/${params.id}`)
+    const data = {
+      title: "고양이",
+      description: "고앵이이이\n\n고\n\n앵\n\n이",
+      photo: "https://i.ibb.co/RSJ4DBk/468081180d1c.jpg",
+      location: {
+        latitude: 37.496683618601395,
+        longitude: 127.02467216931328,
+        roadAdd: "제주특별자치도 제주시 첨단로 242",
+        lotAdd: "제주특별자치도 제주시 영평동 2181",
+      },
+      hashtags: {
+        keywords: ["제주도", "일상", "신나는", "화창한", "밤",],
+        myTags: ["고앵이", "졸리다"]
+      }
+    };
+    setTitle(data.title)
+    setDesctription(data.description)
+    setLocation(data.location)
+    setTags(data.hashtags)
+    setImgHostUrl(data.photo)
   }, [])
 
   // 이미지 읽어오기
@@ -322,7 +331,7 @@ export const ModifyPost = () => {
     }
     axios.post(`${serverPath}/api/posts`, body, headers)
   }
-  
+
   return (
     <Container>
       <InnerContainer>
@@ -336,7 +345,7 @@ export const ModifyPost = () => {
         </BoxContianer>
         <TitleContainer>
           <h3 className='category'>사진 이름</h3>
-          <input type="text" onChange={(e) => setTitle(e.target.value)} value={title} />
+          <input type="text" spellCheck={false} onChange={(e) => setTitle(e.target.value)} value={title} />
         </TitleContainer>
         <TagContainer>
           <h3 className='category'>태그</h3>

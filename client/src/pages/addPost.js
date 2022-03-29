@@ -102,6 +102,12 @@ const TitleContainer = styled.section`
 
     padding-left: 10px;
     font-size: 1.2rem;
+
+    outline : none;
+    &:focus {
+      outline: 3px solid #FFD600;
+      border: #FFD600;
+    }
   }
 `
 
@@ -120,8 +126,13 @@ const DescContainer = styled.section`
     font-size: 1.2rem;
 
     resize: none;
-    overflow: hidden
+    overflow: hidden;
     // 히든을 줌으로써 스크롤을 없앰 -> 크기에 맞게 늘어나니 스크롤은 보이지 않지만, 내용은 다 보인다.
+
+    &:focus {
+      outline: 3px solid #FFD600;
+      border: #FFD600;
+    }
 
   }
 `
@@ -317,7 +328,7 @@ export const AddPost = () => {
         </BoxContianer>
         <TitleContainer>
           <h3 className='category'>사진 이름</h3>
-          <input type="text" onChange={(e) => setTitle(e.target.value)} />
+          <input type="text" spellCheck={false} onChange={(e) => setTitle(e.target.value)} />
         </TitleContainer>
         <TagContainer>
           <h3 className='category'>태그</h3>

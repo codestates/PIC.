@@ -64,6 +64,9 @@ export const TagSelection = ({ setTags, tags }) => {
 
   useEffect(() => {
     if (tags) {
+      // 수정페이지인 경우 기존 태그를 저장해둔 해당 props 를 전달해주지만, 
+      // 추가페이지의 경우 해당 props 가 없으므로, 있는 경우에만 아래의 과정을 통해
+      // 상태의 기본값을 지정한다.
       setSelectedTags(tags.keywords)
       setMyTags(tags.myTags)
     }

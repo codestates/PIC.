@@ -91,7 +91,7 @@ const Btn = styled.div`
   }
 `
 
-export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags}) => {
+export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags }) => {
   // usage 은 어떤 버튼인지 결정합니다.
   // 없는 경우 : 일반 태그
   // added : 추가된 태그, 삭제버튼 포함
@@ -141,12 +141,13 @@ export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags}) => {
   }
   const tagDOM = useRef()
   useEffect(() => {
-    if (tags && tagDOM.current && tags.keywords.includes(tagDOM.current.textContent)){
+    if (tags && tagDOM.current && tags.keywords.includes(tagDOM.current.textContent)) {
       setIsSelected(true)
     }
     // 게시글 수정에서 이미 포함된 키워드인 경우 선택된 상태를 true 로
+    // 결국 모양만 수정해주는 거임
   }, [])
-  
+
   return (
     <div>
       <Wrapper usage={usage} isSelected={isSelected}>
