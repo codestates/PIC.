@@ -43,7 +43,10 @@ const getAllPosts = asyncWrapper(async (req, res) => {
         const filter = {};
         if (hashtags) {
             filter.hashtags = hashtags.slice(1, hashtags.length - 1).split(',').map(e => e[0] === " " ? e.slice(1) : e)
-            posts = posts.filter(post => isSubsetOf(post.hashtags, filter.hashtags));
+            posts = posts.filter(post => {
+                const allTags = [...post.hashtags.keywords, ...post.hashtags.myTags]
+                return isSubsetOf(allTags, filter.hashtags)
+            });
         }
         if (like) {
             posts.sort((a, b) => b.likes.length - a.likes.length);

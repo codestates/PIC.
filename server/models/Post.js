@@ -26,7 +26,10 @@ const PostSchema = new mongoose.Schema(
     },
     hashtags: {
       type: mongoose.Schema.Types.Mixed,
-      default: {},
+      default: {
+        keywords: [],
+        myTags: []
+      },
     },
     likes: [
       {
