@@ -3,6 +3,7 @@ const User = require('../models/User');
 const asyncWrapper = require('../middleware/async');
 const verifyToken = require('../utils/verifyToken');
 const isSubsetOf = require('../utils/isSubsetOf');
+const getIncluded = require('../utils/getIncluded');
 
 
 // 게시글 업로드
@@ -35,19 +36,26 @@ const getSinglePost = asyncWrapper(async (req, res) => {
 
 // 필터링 후 모든 게시글 조회
 const getAllPosts = asyncWrapper(async (req, res) => {
-    const { like, date, hashtags } = req.query;
+    const { like, date, hashtags, distance, center } = req.query;
     if (like && date) {
         res.status(400).json({ message: "fail : please request one option - like or date" });
     } else {
         let posts = await Post.find();
-        const filter = {};
+        // Hashtag 필터링
         if (hashtags) {
-            filter.hashtags = hashtags.slice(1, hashtags.length - 1).split(',').map(e => e[0] === " " ? e.slice(1) : e)
+            filterHashtags = hashtags.slice(1, hashtags.length - 1).split(',').map(e => e[0] === " " ? e.slice(1) : e)
             posts = posts.filter(post => {
                 const allTags = [...post.hashtags.keywords, ...post.hashtags.myTags]
-                return isSubsetOf(allTags, filter.hashtags)
+                return isSubsetOf(allTags, filterHashtags)
             });
         }
+
+        // distance 필터링
+        if (distance && center) {
+            const [centerX, centerY] = center.slice(1, center.length - 1).split(',').map(e => e[0] === " " ? Number(e.slice(1)) : Number(e));
+            posts = posts.filter(post => getIncluded(centerX, centerY, Number(post.location.latitude), Number(post.location.longitude), Number(distance)))
+        }
+
         if (like) {
             posts.sort((a, b) => b.likes.length - a.likes.length);
         } else if (date) {
