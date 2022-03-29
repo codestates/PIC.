@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsCameraFill } from "react-icons/bs";
 
@@ -126,24 +125,9 @@ const DescContainer = styled.section`
   }
 `
 
-export const AddPost = () => {
 
-  // todo 요청 보내야함
-  // 포스트 요청
-  // 이름, 태그, 사진주소, 좌표 및 한글주소
 
-  // ! 태그 저장해야함
-  // -> 현재 컴포넌트에서 상태 만들어서 갱신함수 내려주기
-  // -> [...선택한 태그, ... 추가한 태그 ] 가 되어야함.
-
-  // todo 지도 넣어야함
-  // 좌표저장하는 상태 ok
-  // 주소 가져오고 저장하느 상태
-  // 주소검색 넣기
-  // 현재 위치 찍는거 넣기
-
-  // 1. 지도 넣기, 도로명 주소까지
-  // 2. 요청 작성
+export const ModifyPost = () => {
 
   const kakao = window.kakao
 
@@ -164,9 +148,47 @@ export const AddPost = () => {
   const [description, setDesctription] = useState('')
   const [tags, setTags] = useState([])
 
+  const params = useParams()
+
   const imgInput = useRef()
   const kakaoMap = useRef()
   const descArea = useRef()
+
+
+
+
+// 게시글의 아이디를 받아서 ㅇㅋ
+// 해당 게시글의 내용을 가져오기위해 요청을 보냄 ㅇㅋ
+// 가져온 게시글의 정보를 이용해서 사진, 지도, 태그, 설명을 미리채움 반 ㅇㅋ
+
+// !!!! 태그가 문제임
+
+// 이후 patch 요청을 보낸다.
+
+
+  useState(() => {
+      // axios.get(`${serverPath}/posts/${params.id}`)
+      const data = {
+        title: "고양이",
+        description: "고앵이이이\n\n고\n\n앵\n\n이",
+        photo: "https://i.ibb.co/RSJ4DBk/468081180d1c.jpg",
+        location: {
+          latitude: 37.496683618601395,
+          longitude: 127.02467216931328,
+          roadAdd: "제주특별자치도 제주시 첨단로 242",
+          lotAdd: "제주특별자치도 제주시 영평동 2181",
+        },
+        hashtags: {
+          keywords: ["제주도", "일상", "신나는", "화창한", "밤",],
+          myTags: ["고앵이", "졸리다"]
+        }
+      };
+      setTitle(data.title)
+      setDesctription(data.description)
+      setLocation(data.location)
+      setTags(data.hashtags)
+      setImgHostUrl(data.photo)
+  }, [])
 
   // 이미지 읽어오기
   const uploadImage = (e) => {
@@ -209,18 +231,22 @@ export const AddPost = () => {
   useEffect(() => {
     const container = kakaoMap.current
     let options = {
-      center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표, 추후에 위치 지정하기.
+      center: new kakao.maps.LatLng(location.latitude, location.longitude), //지도의 중심좌표, 추후에 위치 지정하기.
       level: 3
     }
 
     const map = new kakao.maps.Map(container, options)
 
-    const marker = new kakao.maps.Marker()
+    const marker = new kakao.maps.Marker({
+      position: new kakao.maps.LatLng(location.latitude, location.longitude)
+    })
 
     marker.setMap(map)
 
+
     kakao.maps.event.addListener(map, 'click', (mouseEvent) => {
       let latlng = mouseEvent.latLng
+      console.log(latlng)
       marker.setPosition(latlng)
 
       setLocation({
@@ -276,38 +302,31 @@ export const AddPost = () => {
       return null
     }
   }
-  const uploadPost = () => {
+  const patchPost = () => {
     const headers = {
       headers: {
         Authorization: accessToken
       }
     }
     const body = {
-      title: title,
-      description: description,
-      photo: imgHostUrl,
-      location: {
-        latitude: location.latitude,
-        longitude: location.longitude,
-        roadAdd: address.roadAdd,
-        lotAdd: address.lotAdd
+      newTitle: title,
+      newDescription: description,
+      newPhoto: imgHostUrl,
+      newLocation: {
+        newLatitude: location.latitude,
+        newLongitude: location.longitude,
+        newRoadAdd: address.roadAdd,
+        newLotAdd: address.lotAdd
       },
-      hashtags: tags
+      newHashtags: tags
     }
     axios.post(`${serverPath}/api/posts`, body, headers)
   }
-
-  const UploadBtnByCondition = () => {
-    if (title && imgHostUrl && location) {
-      return <Btn action={uploadPost} width={'100%'}>업로드하기</Btn>
-    } else {
-      return <Btn disabled={true} width={'100%'}>업로드하기</Btn>
-    }
-  }
+  
   return (
     <Container>
       <InnerContainer>
-        <PageTitle>게시글 작성</PageTitle>
+        <PageTitle>게시글 수정</PageTitle>
         <BoxContianer>
           <input type="file" accept="image/*" style={{ display: 'none' }} ref={imgInput} onChange={uploadImage} />
           <UploadImageBox onClick={() => imgInput.current.click()} img={imgHostUrl}>
@@ -317,17 +336,17 @@ export const AddPost = () => {
         </BoxContianer>
         <TitleContainer>
           <h3 className='category'>사진 이름</h3>
-          <input type="text" onChange={(e) => setTitle(e.target.value)} />
+          <input type="text" onChange={(e) => setTitle(e.target.value)} value={title} />
         </TitleContainer>
         <TagContainer>
           <h3 className='category'>태그</h3>
-          <TagSelection setTags={setTags} />
+          <TagSelection setTags={setTags} tags={tags} />
         </TagContainer>
         <DescContainer>
           <h3 className='category'>사진 설명</h3>
-          <textarea ref={descArea} onKeyUp={autoResizing} spellCheck={false} onChange={(e) => setDesctription(e.target.value)} ></textarea>
+          <textarea ref={descArea} onKeyUp={autoResizing} spellCheck={false} onChange={(e) => setDesctription(e.target.value)} value={description}></textarea>
         </DescContainer>
-        <UploadBtnByCondition />
+        <Btn action={patchPost} width={'100%'}>게시글 수정하기</Btn>
       </InnerContainer>
     </Container >
   );

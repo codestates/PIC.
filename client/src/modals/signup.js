@@ -82,7 +82,7 @@ const Nofication = styled.div`
   font-size: 0.8rem; ;
 `;
 
-const Signup = () => {
+export const Signup = () => {
   //! -------------------------------------- 1. 상태선언 ------------------------------------
 
   const serverPath = process.env.REACT_APP_SERVER_PATH;
@@ -398,6 +398,3 @@ const Signup = () => {
     </div>
   );
 };
-
-
-export default Signup;

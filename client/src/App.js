@@ -4,21 +4,27 @@ import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
+
 import { Mypage } from "./pages/mypage";
 import { ModifyMyinfo } from "./pages/modifyMyinfo";
 import { AddPost } from "./pages/addPost";
+import { ModifyPost } from "./pages/modifyPost";
 
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
 import { AddPostFloatBtn } from "./components/addPostFloatBtn";
-import { OneBtnModal } from "./components/oneBtnModal";
-import { TwoBtnModal } from "./components/twoBtnModal";
 import { Tag } from "./components/tagComponent";
-import { Login } from "./modals/login";
 import { GoogleLoginBtn } from "./components/googleLoginBtn";
 import { Footer } from "./components/footer";
 import { NaverLoginBtn } from "./components/naverLoginBtn";
-import Signup from "./modals/signup";
+
+import { OneBtnModal } from "./components/oneBtnModal";
+import { TwoBtnModal } from "./components/twoBtnModal";
+import { Login } from "./modals/login";
+import { Signup } from "./modals/signup";
+
+
+
 const GlobalStyles = createGlobalStyle`
     ${reset}
     .main{
@@ -32,8 +38,10 @@ const GlobalStyles = createGlobalStyle`
 
 const Container = styled.div`
 position: relative;
+width: 100vw;
 min-height: 100vh;
 height: max-content;
+overflow: auto;
 `
 
 const InnerContainer = styled.div`
@@ -69,9 +77,9 @@ export const App = () => {
       <Navbar isLogin={isLogin} />
       <Routes>
         <Route path="mypage/modify/" element={<ModifyMyinfo />} />
+        <Route path="posts/:id/modify/" element={<ModifyPost />} />
         <Route path="mypage" element={<Mypage />} />
         <Route path="add_post" element={<AddPost />} />
-        <Route path="naverLoginBtn" element={<NaverLoginBtn />} />
       </Routes>
       <Footer />
     </Container>
