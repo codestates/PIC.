@@ -10,6 +10,8 @@ const Container = styled.div`
 
   width: 100%;
   height: 100%;
+
+  /* z-index: 999; */
 `;
 
 const Btn = styled.div`
@@ -82,7 +84,7 @@ const Nofication = styled.div`
   font-size: 0.8rem; ;
 `;
 
-const Signup = () => {
+export const Signup = () => {
   //! -------------------------------------- 1. 상태선언 ------------------------------------
 
   const serverPath = process.env.REACT_APP_SERVER_PATH;
@@ -398,6 +400,3 @@ const Signup = () => {
     </div>
   );
 };
-
-
-export default Signup;

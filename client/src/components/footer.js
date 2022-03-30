@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { GoMarkGithub } from "react-icons/go";
 
 const Container = styled.div`
-  position: absolute;
-  bottom: 0px;
+  position: relative;
+  bottom: 0;
 
   display: grid;
   place-items: center;
@@ -15,7 +15,7 @@ const Container = styled.div`
   height: 200px;
 
   box-sizing: border-box;
-  padding: 15px 0;
+  padding: 30px 0;
 
   background-color: #ffd600;
 `;
@@ -26,7 +26,7 @@ const InnerContainer = styled.div`
     display: grid;
     place-items: center;
     margin-right: 50px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     &:last-child {
       margin-right: 0;
     }
@@ -69,7 +69,7 @@ const Title = styled.div`
   }
   .head {
     margin-right: 10px;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
   }
 `;
 
@@ -77,9 +77,6 @@ const Copyright = styled.div`
   display: flex;
   font-weight: lighter;
   font-size: 7px;
-  .copy {
-    margin-top: 20px;
-  }
 `;
 
 export const Footer = () => {

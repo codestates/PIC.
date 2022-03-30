@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Btn = styled.div`
+  position: fixed;
+  right: calc(50% - 30px - 550px);
+  bottom: 250px;
+
   display: grid;
   place-items: center;
-  position: fixed;
-
-  right: 15%;
-  bottom: 15%;
 
   width: 60px;
   height: 60px;
@@ -22,7 +22,7 @@ const Btn = styled.div`
 
   transition : 0.2s;
 
-  z-index: 999;
+  z-index: 998;
   &:hover{
     transform: translateY(-2px);
     box-shadow : 0px 5px 4px rgba(0,0,0,0.5);
