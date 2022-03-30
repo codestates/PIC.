@@ -107,9 +107,6 @@ export const Navbar = ({ setLoginToken, isLogin }) => {
     }
   };
 
-  const navigateToHome = () => {
-    navigate("/main");
-  };
 
   const handleLogout = () => {
     localStorage.clear()
@@ -123,23 +120,16 @@ export const Navbar = ({ setLoginToken, isLogin }) => {
       {/* 회원가입 모달 */}
       {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
       {/* 로그아웃 시 확인 모달 */}
-      {openTwoBtnModal ? (
-        <TwoBtnModal
-          main={"모달이 열렸다네."}
-          close={() => modalHandler("logout")}
-          action={() => handleLogout()}
-          nav={"/main"}
-        />
-      ) : null}
-      {/* 위의 내용 수정 필요 */}
-
+      {openTwoBtnModal
+        ? <TwoBtnModal main={"로그아웃 하시겠습니까?"} close={() => modalHandler("logout")} action={() => handleLogout()} nav={"/main"} /> 
+        : null}
 
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
       {/* 완성된 모달 컴포넌트에 props 로 modal 상태변경 함수를 내려서 사용하기 */}
       {/* 백드롭도 모달에서 관리해주어야함. */}
       <Container>
         <InnerContainer>
-          <Logo className="logo" onClick={navigateToHome}>PIC<span>.</span></Logo>
+          <Logo className="logo" onClick={() => navigate("/main")}>PIC<span>.</span></Logo>
           <LeftLinks className="left-btns">
             <Link className="my_pics" to="my_pics">내 사진</Link>
             <Link className="most_likes" to="most_likes">인기사진</Link>

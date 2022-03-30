@@ -9,6 +9,7 @@ import { Mypage } from "./pages/mypage";
 import { ModifyMyinfo } from "./pages/modifyMyinfo";
 import { AddPost } from "./pages/addPost";
 import { ModifyPost } from "./pages/modifyPost";
+import { PostsBoard } from "./pages/postsBoard";
 
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
@@ -39,6 +40,8 @@ const GlobalStyles = createGlobalStyle`
 const Container = styled.div`
 position: relative;
 width: 100vw;
+height: 100vh;
+min-height: 100vh;
 `
 
 const InnerContainer = styled.div`
@@ -46,7 +49,9 @@ const InnerContainer = styled.div`
   display: flex;
   justify-content: center;
   
-  min-height: max-content;
+  height: max-content;
+  min-height: 700px;
+  
 
   margin-top: 200px;
   margin-bottom: 200px;
@@ -67,11 +72,16 @@ export const App = () => {
 
   return (
     <Container>
+      {/* <Signup /> */}
       <GlobalStyles />
       {/* <TempContainer></TempContainer> */}
       <Navbar isLogin={isLogin} />
       <InnerContainer>
         <Routes>
+          <Route path="my_pics" element={<PostsBoard category="my_pics" />} />
+          <Route path="most_likes" element={<PostsBoard category="most_likes" />} />
+          <Route path="new_pics" element={<PostsBoard category="new_pics" />} />
+          <Route path="favorites" element={<PostsBoard category="favorites" />} />
           <Route path="mypage/modify/" element={<ModifyMyinfo />} />
           <Route path="posts/:id/modify/" element={<ModifyPost />} />
           <Route path="mypage" element={<Mypage />} />

@@ -71,7 +71,7 @@ const ProfileImg = styled.div`
 
   margin-bottom: 20px;
 
-  background : ${props => props.url ? `url(${props.url})` : `${props.default}`};
+  background : ${props => props.newPic ? `url(${props.newPic})` : `url(${props.oldPic})`};
   background-position: center;
   background-size: cover;
   
@@ -133,11 +133,11 @@ const Nofication = styled.div`
 export const ModifyMyinfo = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
-  const userId = "reciveduseridwhenlogin"
-  const accessToken = "recivedaccesstokenwhenlogin"
+  const userId = window.localStorage.getItem('userId')
+  const accessToken = window.localStorage.getItem('loginToken')
 
-  const [profileImg, setProfileImg] = useState('')
-  const [oldProfileImg, setOldProfileImg] = useState('#FFD600')
+  const [profileImg, setProfileImg] = useState(null)
+  const [oldProfileImg, setOldProfileImg] = useState(null)
   const [nowUploading, setNowUploading] = useState(false)
   const [imgBase64, setImgBase64] = useState('')
 
@@ -157,6 +157,15 @@ export const ModifyMyinfo = () => {
   const navigate = useNavigate()
   const uploadBtn = useRef()
 
+  useEffect(() => {
+    (async () => {
+      const res = await axios.get(`${serverPath}/api/users/${userId}`)
+      if (res) {
+        setOldProfileImg(res.data.userInfo.image)
+      }
+    })()
+  }, [])
+
   const imgUpload = async (e) => {
     e.preventDefault()
     let img = e.target.files[0]
@@ -168,15 +177,6 @@ export const ModifyMyinfo = () => {
       setImgBase64(reader.result.split(',')[1])
     }
   }
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await axios.get(`${serverPath}/api/users/${userId}`)
-  //     if (res) {
-  //       setOldProfileImg(res.userInfo.image)
-  //     }
-  //   })()
-  // }, [])
 
   useEffect(() => {
     const apiCall = async () => {
@@ -200,7 +200,9 @@ export const ModifyMyinfo = () => {
         await axios.patch(`${serverPath}/api/users/${userId}`, {
           newImage: profileImg
         }, {
-          Authorization: accessToken
+          headers: {
+            Authorization: accessToken
+          }
         })
       })()
       setNowUploading(false)
@@ -262,7 +264,7 @@ export const ModifyMyinfo = () => {
       }, headers)
       if (res.status === 200) {
         const body = {
-          newnickname: newNickname,
+          newNickname: newNickname,
           newPassword: newPassword
         }
         axios.patch(`${serverPath}/api/users/${userId}`, body, headers)
@@ -420,9 +422,8 @@ export const ModifyMyinfo = () => {
 
       <Forms>
         <PageTitle>프로필 정보 수정</PageTitle>
-        <ProfileImg url={profileImg} default={oldProfileImg}>
+        <ProfileImg newPic={profileImg} oldPic={oldProfileImg}>
           {nowUploading ? <LoadingIndicator /> : null}
-
         </ProfileImg>
         <input type="file" accept="image/*" style={{ display: 'none' }} ref={uploadBtn} onChange={imgUpload} />
         <ProfileImgBtn onClick={() => uploadBtn.current.click()}>
