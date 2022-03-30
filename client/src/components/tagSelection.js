@@ -126,7 +126,6 @@ export const TagSelection = ({ setTags, tags }) => {
   // click 이벤트를 실행시킨다.
 
   // 즉, keywords props 로 받아온 배열내부에 있는 값과 일치하는 경우.
-console.log(selectedTags)
 
 
   return (
