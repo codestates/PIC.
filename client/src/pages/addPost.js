@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { BsCameraFill } from "react-icons/bs";
+import { IoLocateSharp as LocationPin } from "react-icons/io5";
+
 
 import { PageTitle } from '../components/pageTitle';
 import { TagSelection } from '../components/tagSelection';
@@ -91,6 +93,48 @@ const KakaoMapBox = styled.section`
 
 `
 
+const MyLocation = styled.div`
+  position: absolute;
+  top: 17px;
+  right: 17px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: max-content;
+  height: 1.5rem;
+  padding: 0 6px;
+
+  background-color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+
+  color: #666;
+
+  z-index: 2;
+
+  cursor : pointer;
+
+  span {  
+    position: relative;
+    top: 1px;
+
+    font-size: 0.9rem;
+  }
+
+  svg {
+    margin-left: 5px;
+  }
+
+  transition: 0.1s;
+
+  &:hover {
+    background-color: #ffd600;
+    color: #000;
+  }
+`
+
 const TitleContainer = styled.section`
   input {
     width: 100%;
@@ -163,11 +207,12 @@ export const AddPost = () => {
   const [imgBase64, setImgBase64] = useState(null)
   const [imgHostUrl, setImgHostUrl] = useState('')
 
-  const [currentLocation, setCurrentLocation] = useState([]) // 지오로케이션 사용하면 쓰기
+  const [currentLocation, setCurrentLocation] = useState(null) // 지오로케이션 사용하면 쓰기
   const [location, setLocation] = useState(null)
   const [address, setAddress] = useState([])
 
   const [isUploading, setIsUploading] = useState(false)
+  const [isLoadingMyLocation, setIsLoadingMyLocation] = useState(false)
 
   const [title, setTitle] = useState('')
   const [description, setDesctription] = useState('')
@@ -228,18 +273,36 @@ export const AddPost = () => {
 
     marker.setMap(map)
 
-    kakao.maps.event.addListener(map, 'click', (mouseEvent) => {
-      let latlng = mouseEvent.latLng
-      marker.setPosition(latlng)
+    // 현재 위치가 있는 경우 해당 위치에 마커를 표시한다.
+    if (currentLocation) {
+      marker.setPosition(new kakao.maps.LatLng(currentLocation.latitude, currentLocation.longitude))
+      const latlng = marker.getPosition() // 이동한 좌표
+      map.panTo(latlng)
 
       setLocation({
         latitude: latlng.getLat(), //위도
         longitude: latlng.getLng() //경도
       })
+    }
 
-      let geocoder = new kakao.maps.services.Geocoder()
+    //
+    kakao.maps.event.addListener(map, 'click', (mouseEvent) => {
+      let latlng = mouseEvent.latLng
+      marker.setPosition(latlng) // 클릭한 좌표
 
-      geocoder.coord2Address(latlng.La, latlng.Ma, (result, status) => {
+      setLocation({
+        latitude: latlng.getLat(), //위도
+        longitude: latlng.getLng() //경도
+      })
+    })
+  }, [currentLocation])
+
+  // location 상태가 바뀔 때 
+  useEffect(() => {
+    let geocoder = new kakao.maps.services.Geocoder()
+    if (location) {
+
+      geocoder.coord2Address(location.longitude, location.latitude, (result, status) => {
         if (status === kakao.maps.services.Status.OK && result[0].road_address) {
           setAddress(
             {
@@ -257,17 +320,40 @@ export const AddPost = () => {
           )
         }
       })
-    })
-  }, [])
 
+    }
+  }, [kakao.maps.services.Geocoder, kakao.maps.services.Status.OK, location])
 
+  // 내 위치 가져오기
+  const getMyLocation = () => {
+    setIsLoadingMyLocation(true)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        if (position) {
+          setCurrentLocation(
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }
+          )
+          setIsLoadingMyLocation(false)
+        }
+      })
+    } else {
+      setIsLoadingMyLocation(false)
+      // 모달 상태
+    }
+  }
+  // 현재위치를 불러오는 중입니다.
+  // 현재위치를 불러올수없습니다 -> 모달
+  console.log(location, address)
+
+  // 본문 작성 페이지 리사이징
   const autoResizing = () => {
     const textarea = descArea.current
     textarea.style.height = 'auto'
     textarea.style.height = textarea.scrollHeight + 'px'
   }
-
-  // -> 주소검색, 지도 크게 보기, 내위치 
 
   const ImageContainer = () => {
     if (isUploading) {
@@ -322,7 +408,12 @@ export const AddPost = () => {
           <UploadImageBox onClick={() => imgInput.current.click()} img={imgHostUrl}>
             <ImageContainer />
           </UploadImageBox>
-          <KakaoMapBox ref={kakaoMap} />
+          <KakaoMapBox ref={kakaoMap}>
+            <MyLocation onClick={getMyLocation}>
+              <span>{isLoadingMyLocation ? '위치를 가져오는 중...' : '내 위치' }</span>
+              <LocationPin />
+            </MyLocation>
+          </KakaoMapBox>
         </BoxContianer>
         <TitleContainer>
           <h3 className='category'>사진 이름</h3>
