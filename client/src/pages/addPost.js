@@ -2,13 +2,19 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsCameraFill } from "react-icons/bs";
+import { IoLocateSharp as LocationPin, IoSearch } from "react-icons/io5";
+
 
 import { PageTitle } from '../components/pageTitle';
 import { TagSelection } from '../components/tagSelection';
 import { LoadingIndicator } from "../components/loadingIndicator";
 import { BtnComponent as Btn } from '../components/BtnComponent';
+
+import { PlaceSearch } from '../modals/placeSearch';
+
 
 
 const Container = styled.section`
@@ -40,6 +46,7 @@ const InnerContainer = styled.div`
 
 const BoxContianer = styled.section`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 `
 
@@ -88,8 +95,57 @@ const KakaoMapBox = styled.section`
   box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
 
   border-radius: 10px;
-
 `
+
+const BtnOnMap = styled.div`
+  position: absolute;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: max-content;
+  height: 1.5rem;
+  padding: 0 6px;
+
+  background-color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+
+  color: #666;
+
+  z-index: 2;
+
+  cursor : pointer;
+
+  span {  
+    position: relative;
+    top: 1px;
+
+    font-size: 0.9rem;
+  }
+
+  svg {
+    margin-left: 5px;
+  }
+
+  transition: 0.1s;
+
+  &:hover {
+    background-color: #ffd600;
+    color: #000;
+  }
+`
+const MyLocationBtn = styled(BtnOnMap)`
+  top: 17px;
+  right: 17px;
+`
+
+const LocationSearchBtn = styled(BtnOnMap)`
+  bottom: 17px;
+  right: 17px;
+`
+
 
 const TitleContainer = styled.section`
   input {
@@ -136,25 +192,10 @@ const DescContainer = styled.section`
 `
 
 export const AddPost = () => {
-
-  // todo 요청 보내야함
-  // 포스트 요청
-  // 이름, 태그, 사진주소, 좌표 및 한글주소
-
-  // ! 태그 저장해야함
-  // -> 현재 컴포넌트에서 상태 만들어서 갱신함수 내려주기
-  // -> [...선택한 태그, ... 추가한 태그 ] 가 되어야함.
-
-  // todo 지도 넣어야함
-  // 좌표저장하는 상태 ok
-  // 주소 가져오고 저장하느 상태
-  // 주소검색 넣기
-  // 현재 위치 찍는거 넣기
-
-  // 1. 지도 넣기, 도로명 주소까지
-  // 2. 요청 작성
+  const navigate = useNavigate()
 
   const kakao = window.kakao
+  const daum = window.daum
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
@@ -163,15 +204,17 @@ export const AddPost = () => {
   const [imgBase64, setImgBase64] = useState(null)
   const [imgHostUrl, setImgHostUrl] = useState('')
 
-  const [currentLocation, setCurrentLocation] = useState([]) // 지오로케이션 사용하면 쓰기
   const [location, setLocation] = useState(null)
   const [address, setAddress] = useState([])
 
   const [isUploading, setIsUploading] = useState(false)
+  const [isLoadingMyLocation, setIsLoadingMyLocation] = useState(false)
 
   const [title, setTitle] = useState('')
   const [description, setDesctription] = useState('')
   const [tags, setTags] = useState([])
+
+  const [openSearchModal, setOpenSearchModal] = useState(false)
 
   const imgInput = useRef()
   const kakaoMap = useRef()
@@ -216,6 +259,7 @@ export const AddPost = () => {
 
   // 카카오 지도 API 사용
   useEffect(() => {
+    console.log('맵리렌더')
     const container = kakaoMap.current
     let options = {
       center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표, 추후에 위치 지정하기.
@@ -228,18 +272,31 @@ export const AddPost = () => {
 
     marker.setMap(map)
 
+    // 현재 위치가 있는 경우 해당 위치에 마커를 표시한다.
+    if (location) {
+      marker.setPosition(new kakao.maps.LatLng(location.latitude, location.longitude))
+      const latlng = marker.getPosition() // 이동한 좌표
+      map.setCenter(latlng)
+    }
+
+
     kakao.maps.event.addListener(map, 'click', (mouseEvent) => {
       let latlng = mouseEvent.latLng
-      marker.setPosition(latlng)
+      marker.setPosition(latlng) // 클릭한 좌표
 
       setLocation({
         latitude: latlng.getLat(), //위도
         longitude: latlng.getLng() //경도
       })
+    })
+  }, [location])
 
-      let geocoder = new kakao.maps.services.Geocoder()
+  // location 상태가 바뀔 때 
+  useEffect(() => {
+    let geocoder = new kakao.maps.services.Geocoder()
+    if (location) {
 
-      geocoder.coord2Address(latlng.La, latlng.Ma, (result, status) => {
+      geocoder.coord2Address(location.longitude, location.latitude, (result, status) => {
         if (status === kakao.maps.services.Status.OK && result[0].road_address) {
           setAddress(
             {
@@ -257,17 +314,56 @@ export const AddPost = () => {
           )
         }
       })
+
+    }
+  }, [kakao.maps.services.Geocoder, kakao.maps.services.Status.OK, location])
+
+  // 내 위치 가져오기
+  const getMyLocation = () => {
+    setIsLoadingMyLocation(true)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        if (position) {
+          setLocation(
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }
+          )
+          setIsLoadingMyLocation(false)
+        }
+      })
+    } else {
+      setIsLoadingMyLocation(false)
+      // 모달 상태
+    }
+  }
+  // 현재위치를 불러오는 중입니다.
+  // 현재위치를 불러올수없습니다 -> 모달
+
+  const searchAddress = () => {
+    const width = 500; //팝업의 너비
+    const height = 600;
+
+    new daum.Postcode({
+      oncomplete: (data) => {
+        console.log(data) // 여기서 받아온 지번주소를 이용하기
+      }
+    }).open({
+      width: 500,
+      height: 600,
+      left: (window.screen.width / 2) - (width / 2),
+      top: (window.screen.height / 2) - (height / 2)
     })
-  }, [])
+  }
 
 
+  // 본문 작성 페이지 리사이징
   const autoResizing = () => {
     const textarea = descArea.current
     textarea.style.height = 'auto'
     textarea.style.height = textarea.scrollHeight + 'px'
   }
-
-  // -> 주소검색, 지도 크게 보기, 내위치 
 
   const ImageContainer = () => {
     if (isUploading) {
@@ -285,7 +381,7 @@ export const AddPost = () => {
       return null
     }
   }
-  const uploadPost = () => {
+  const uploadPost = async () => {
     const headers = {
       headers: {
         Authorization: accessToken
@@ -303,7 +399,14 @@ export const AddPost = () => {
       },
       hashtags: tags
     }
-    axios.post(`${serverPath}/api/posts`, body, headers)
+    try {
+      const res = await axios.post(`${serverPath}/api/posts`, body, headers)
+      if (res.status === 201) {
+        navigate('/my_pics')
+      }
+    } catch (err) {
+      //err
+    }
   }
 
   const UploadBtnByCondition = () => {
@@ -313,8 +416,16 @@ export const AddPost = () => {
       return <Btn disabled={true} width={'100%'}>업로드하기</Btn>
     }
   }
+
+  const modalHandler = (modal) => {
+    if (modal === "search") {
+      openSearchModal ? setOpenSearchModal(false) : setOpenSearchModal(true);
+    }
+  }
+
   return (
     <Container>
+      {openSearchModal ? <PlaceSearch setLocation={setLocation} closeFn={() => modalHandler('search')} /> : null}
       <InnerContainer>
         <PageTitle>게시글 작성</PageTitle>
         <BoxContianer>
@@ -322,7 +433,16 @@ export const AddPost = () => {
           <UploadImageBox onClick={() => imgInput.current.click()} img={imgHostUrl}>
             <ImageContainer />
           </UploadImageBox>
-          <KakaoMapBox ref={kakaoMap} />
+          <KakaoMapBox ref={kakaoMap}>
+            <MyLocationBtn onClick={getMyLocation}>
+              <span>{isLoadingMyLocation ? '위치를 가져오는 중...' : '내 위치'}</span>
+              <LocationPin />
+            </MyLocationBtn>
+            <LocationSearchBtn onClick={() => modalHandler('search')}>
+              <span>주소로 검색하기</span>
+              <IoSearch />
+            </LocationSearchBtn>
+          </KakaoMapBox>
         </BoxContianer>
         <TitleContainer>
           <h3 className='category'>사진 이름</h3>
