@@ -4,21 +4,28 @@ import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
+
 import { Mypage } from "./pages/mypage";
 import { ModifyMyinfo } from "./pages/modifyMyinfo";
 import { AddPost } from "./pages/addPost";
+import { ModifyPost } from "./pages/modifyPost";
+import { PostsBoard } from "./pages/postsBoard";
 
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
 import { AddPostFloatBtn } from "./components/addPostFloatBtn";
-import { OneBtnModal } from "./components/oneBtnModal";
-import { TwoBtnModal } from "./components/twoBtnModal";
 import { Tag } from "./components/tagComponent";
-import { Login } from "./modals/login";
 import { GoogleLoginBtn } from "./components/googleLoginBtn";
 import { Footer } from "./components/footer";
 import { NaverLoginBtn } from "./components/naverLoginBtn";
-import Signup from "./modals/signup";
+
+import { OneBtnModal } from "./components/oneBtnModal";
+import { TwoBtnModal } from "./components/twoBtnModal";
+import { Login } from "./modals/login";
+import { Signup } from "./modals/signup";
+
+
+
 const GlobalStyles = createGlobalStyle`
     ${reset}
     .main{
@@ -32,22 +39,23 @@ const GlobalStyles = createGlobalStyle`
 
 const Container = styled.div`
 position: relative;
+width: 100vw;
+height: 100vh;
 min-height: 100vh;
-height: max-content;
 `
 
 const InnerContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
-`
+  
+  height: max-content;
+  min-height: 700px;
+  
 
-const TempContainer = styled.div`
-  height: 100%;
-  display: flex;
-  /* flex-direction: column; */
-  justify-content: center;
-  align-items: center;
-`;
+  margin-top: 200px;
+  margin-bottom: 200px;
+`
 
 export const App = () => {
   const localStorage = window.localStorage
@@ -64,15 +72,22 @@ export const App = () => {
 
   return (
     <Container>
+      {/* <Signup /> */}
       <GlobalStyles />
       {/* <TempContainer></TempContainer> */}
       <Navbar isLogin={isLogin} />
-      <Routes>
-        <Route path="mypage/modify/" element={<ModifyMyinfo />} />
-        <Route path="mypage" element={<Mypage />} />
-        <Route path="add_post" element={<AddPost />} />
-        <Route path="naverLoginBtn" element={<NaverLoginBtn />} />
-      </Routes>
+      <InnerContainer>
+        <Routes>
+          <Route path="my_pics" element={<PostsBoard category="my_pics" />} />
+          <Route path="most_likes" element={<PostsBoard category="most_likes" />} />
+          <Route path="new_pics" element={<PostsBoard category="new_pics" />} />
+          <Route path="favorites" element={<PostsBoard category="favorites" />} />
+          <Route path="mypage/modify/" element={<ModifyMyinfo />} />
+          <Route path="posts/:id/modify/" element={<ModifyPost />} />
+          <Route path="mypage" element={<Mypage />} />
+          <Route path="add_post" element={<AddPost />} />
+        </Routes>
+      </InnerContainer>
       <Footer />
     </Container>
   );

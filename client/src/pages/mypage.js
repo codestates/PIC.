@@ -30,36 +30,23 @@ const ModifyBtn = styled.div`
   cursor: pointer;
 `;
 
-const dummy = {
-  userInfo: {
-    _id: "asdlkjasdflkj123",
-    email: "wooyong1234@gmail.com",
-    nickname: "handsome_guy",
-    password: "encryptedPassword",
-    image:
-      "https://i.ibb.co/tMVFYdr/no-image-709ea11ceed07452132945912fd5c436755e3eddd89d92eed4fd66128e8dcf7a.png",
-    likes: "13",
-    createdAt: "2022 - 03 - 04T05: 45: 13.706Z",
-    updatedAt: "2022 - 03 - 04T05: 45: 13.706Z",
-  },
-};
 export const Mypage = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
-  const userId = "로그인 과정에서 로컬 스토리지에 저장된 id값";
+  const userId = window.localStorage.getItem('userId')
 
   const [userInfo, setUserInfo] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    //   const getUserinfo = async () => {
-    //     const userInfo = await axios.get(`${serverPath}/api/user/${userId}`)
-    //     if (userInfo) {
-    //       setUserInfo(userInfo)
-    setUserInfo(dummy.userInfo);
-    //     }
-    //   }
-    //   getUserinfo()
+    const getUserinfo = async () => {
+      const res = await axios.get(`${serverPath}/api/users/${userId}`)
+      if (userInfo) {
+        setUserInfo(res.data.userInfo)
+        console.log(userInfo)
+      }
+    }
+    getUserinfo()
   }, []);
 
   const navigateToModify = () => {

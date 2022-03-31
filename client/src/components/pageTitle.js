@@ -29,7 +29,7 @@ const GoBackBtn = styled(BsChevronLeft)`
 
 const HLine = styled.div`
     display: block;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
     
     width: 600px;
     height: 1px;
