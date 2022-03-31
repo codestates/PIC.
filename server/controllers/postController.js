@@ -11,6 +11,9 @@ const uploadPost = asyncWrapper(async (req, res) => {
 	if (title && photo && location) {
 		const data = verifyToken(req.headers.authorization, "accessToken");
 		req.body.author = data.id;
+		req.body.nickname = await User.findById(data.id).then(
+			(res) => res.nickname
+		);
 		await Post.create(req.body);
 		res.status(201).json({ message: "success" });
 	} else {

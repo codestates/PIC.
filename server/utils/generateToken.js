@@ -7,7 +7,7 @@ const generateToken = (userInfo, type) => {
 				id: userInfo._id,
 			},
 			process.env.JWT_ACCESS_KEY,
-			{ expiresIn: "3h" }
+			{ expiresIn: "14d" }
 		);
 	} else if (type === "refreshToken") {
 		return jwt.sign(

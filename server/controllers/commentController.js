@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 const Comment = require("../models/Comment");
 const asyncWrapper = require("../middleware/async");
 const verifyToken = require("../utils/verifyToken");
@@ -7,6 +8,9 @@ const verifyToken = require("../utils/verifyToken");
 const addComment = asyncWrapper(async (req, res) => {
 	const { description } = req.body;
 	const userId = verifyToken(req.headers.authorization, "accessToken").id;
+	const userNickname = await User.findById(userId).then(
+		(res) => res.nickname
+	);
 	const postId = req.params.id;
 	const post = await Post.findById(postId);
 	if (!description) {
@@ -16,6 +20,7 @@ const addComment = asyncWrapper(async (req, res) => {
 	} else {
 		const newInfo = {
 			author: userId,
+			nickname: userNickname,
 			description,
 		};
 		// DB에 댓글 추가 및 게시글 업데이트

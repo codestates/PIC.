@@ -6,6 +6,12 @@ const CommentSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 		},
+		nickname: {
+			type: String,
+			trim: true,
+			unique: [true, "the nickname already exist"],
+			required: [true, "must provide nickname"],
+		},
 		description: {
 			type: String,
 			trim: true,
