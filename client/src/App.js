@@ -10,6 +10,7 @@ import { ModifyMyinfo } from "./pages/modifyMyinfo";
 import { AddPost } from "./pages/addPost";
 import { ModifyPost } from "./pages/modifyPost";
 import { PostsBoard } from "./pages/postsBoard";
+import { PostDetails } from "./pages/postDetails";
 
 import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
@@ -84,6 +85,8 @@ export const App = () => {
           <Route path="favorites" element={<PostsBoard category="favorites" />} />
           <Route path="mypage/modify/" element={<ModifyMyinfo />} />
           <Route path="posts/:id/modify/" element={<ModifyPost />} />
+          <Route path="posts/:id" element={<PostDetails />} />
+          
           <Route path="mypage" element={<Mypage />} />
           <Route path="add_post" element={<AddPost />} />
         </Routes>

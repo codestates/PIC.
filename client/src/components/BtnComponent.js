@@ -22,6 +22,7 @@ const Btn = styled.div`
   &:hover{
     transform: ${props => props.disabled ? 'null' : 'translateY(-2px)'};
     box-shadow: ${props => props.disabled ? 'null' : '0px 5px 4px rgba(0,0,0,0.1)'};
+    background-color: ${props => props.hover ? `${props.hover}` : null};
   }
 
     span{
@@ -30,9 +31,9 @@ const Btn = styled.div`
   }
 `
 
-export const BtnComponent = ({children, disabled, color, width, action}) => {
+export const BtnComponent = ({children, disabled, color, width, action, hover}) => {
 
   return (
-    <Btn disabled={disabled} color={color} width={width} onClick={action}>{children}</Btn>
+    <Btn disabled={disabled} color={color} width={width} onClick={action} hover={hover}>{children}</Btn>
   );
 };

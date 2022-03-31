@@ -152,7 +152,7 @@ export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags }) => {
     <div>
       <Wrapper usage={usage} isSelected={isSelected}>
         {!usage
-          ? <CommonTag onClick={e => selectHandler(e.target.textContent)} ref={tagDOM}>{children}</CommonTag>
+          ? <CommonTag onClick={e => selectHandler(e.target.textContent)} ref={tagDOM} >{children}</CommonTag>
           : null}
         {usage === 'added'
           ? <CommonTag usage={usage}>{children}</CommonTag>

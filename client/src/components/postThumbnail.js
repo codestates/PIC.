@@ -149,30 +149,14 @@ const NicknameSkeleton = styled.div`
 
 export const PostThumbnail = ({ data, action, idx }) => { // 실 사용시에는 해당 위치에 props 로 게시글의 정보를 받아옴.
 
-  const [nickname, setNickname] = useState('')
   const [comments, setComments] = useState([])
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
 
-  const { _id, photo, title, author, location, likes, comment } = data
+  const { _id, photo, title, location, likes, comment, nickname } = data
   // 여기서 _id 는 게시물 아이디임.
 
   // 유저 닉네임과 댓글 갯수 가져와야함 
-  useEffect(() => {
-    const getUserNickname = async () => {
-      const userInfo = await axios.get(`${serverPath}/api/users/${author}`)
-      setNickname(userInfo.data.userInfo.nickname)
-      // 사용자 아이디를 path 로 이용하여 요청을 보내고 해당 값을 상태에 저장한다.
-    }
-
-    // const getComments = async () => {
-    //   const comments = await axios.get(`${serverPath}/comment?id=${_id}`)
-    //   setComments(comments) // 여기 값 들어올때 수정해야함 까먹지 말기
-    //   // 게시물 아이디를 쿼리를 이용하여 요청을 보내고 해당 배열의 길이를 상태에 저장한다.
-    // }
-    getUserNickname()
-    // getComments()
-  }, [])
 
   let presentAdd
   if (location.roadAdd === null) {
@@ -187,11 +171,11 @@ export const PostThumbnail = ({ data, action, idx }) => { // 실 사용시에는
       <PostImg url={photo} />
       <PostInfo>
         <h3 className='title'>{title}</h3>
-        <p className='nickname'>{nickname ? nickname : <NicknameSkeleton />}</p>
-        <p className='address'>
+        <div className='nickname'>{nickname}</div>
+        <div className='address'>
           <BsGeoAltFill />
           {presentAdd}
-        </p>
+        </div>
 
         <div className='social-amounts'>
           <div className='like'>
