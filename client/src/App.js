@@ -24,8 +24,10 @@ import { OneBtnModal } from "./components/oneBtnModal";
 import { TwoBtnModal } from "./components/twoBtnModal";
 import { Login } from "./modals/login";
 import { Signup } from "./modals/signup";
-import { TagSearch } from "./pages/tagSearch";
-import { CommentContainer } from "./components/commentContainer";
+import { TagSearch } from './pages/tagSearch';
+import { CommentContainer } from './components/commentContainer';
+
+
 const GlobalStyles = createGlobalStyle`
     ${reset}
     .main{
@@ -89,8 +91,8 @@ export const App = () => {
           <Route path="add_post" element={<AddPost />} />
           <Route path="signup" element={<Signup />} />
           <Route path="posts/:id/comment" element={<CommentContainer />} />
+          <Route path="tags"  element={<TagSearch />} />
         </Routes>
-        {/* <TagSearch /> */}
       </InnerContainer>
       <Footer />
     </Container>

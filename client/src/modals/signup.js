@@ -175,7 +175,7 @@ export const Signup = () => {
     }
   };
 
-  // console.log(emailCode)
+  // console.log(emailCode) 
 
 
   // 이메일 코드 핸들러
@@ -237,7 +237,7 @@ export const Signup = () => {
       password: password,
     });
     if (res.status === 201) {
-      naviagate("/");
+      naviagate("./login");
       // 유즈네비게이트로 200시에 /login 으로 이동하겠다 의미.
     }
   };

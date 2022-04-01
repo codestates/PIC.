@@ -147,7 +147,7 @@ export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags }) => {
     // 게시글 수정에서 이미 포함된 키워드인 경우 선택된 상태를 true 로
     // 결국 모양만 수정해주는 거임
   }, [])
-
+  
   return (
     <div>
       <Wrapper usage={usage} isSelected={isSelected}>
