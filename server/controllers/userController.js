@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 const asyncWrapper = require("../middleware/async");
 const findWithPassword = require("../utils/findWithPassword");
 const generateToken = require("../utils/generateToken");
@@ -78,11 +80,9 @@ const login = asyncWrapper(async (req, res) => {
 		const userInfo = await findWithPassword({ email }, password);
 		if (!userInfo) {
 			// 해당 User가 없는 경우
-			res
-				.status(401)
-				.json({
-					message: "fail : there is no user with that email and password",
-				});
+			res.status(401).json({
+				message: "fail : there is no user with that email and password",
+			});
 		} else {
 			const accessToken = generateToken(userInfo, "accessToken");
 			const refreshToken = generateToken(userInfo, "refreshToken");
@@ -269,7 +269,27 @@ const deleteUser = asyncWrapper(async (req, res) => {
 	if (!userInfo) {
 		res.status(400).json({ message: "fail : invalid user id" });
 	} else {
+		// 유저 삭제
 		await User.deleteOne({ _id: req.params.id });
+
+		const userAllPosts = await Post.find({ author: req.params.id });
+		userAllPosts.forEach(async (post) => {
+			const postId = post._id;
+			// 내가 작성한 게시글 삭제
+			await Post.deleteOne({ _id: postId });
+			// 게시글에 포함되어 있던 댓글들 삭제
+			post.comment.forEach(async (commentId) => {
+				await Comment.findByIdAndDelete(commentId);
+			});
+			// 유저의 favorite에 해당 게시글의 id 삭제
+			post.likes.forEach(async (userId) => {
+				const userInfo = await User.findById(userId);
+				const newFavoriteArray = userInfo.favorite.filter(
+					(e) => e.toString() !== postId.toString()
+				);
+				await User.updateOne({ _id: userId }, { favorite: newFavoriteArray });
+			});
+		});
 		res.status(200).json({ message: "success" });
 	}
 });

@@ -124,7 +124,6 @@ const deletePost = asyncWrapper(async (req, res) => {
 	} else {
 		// 게시글 삭제
 		await Post.deleteOne({ _id: postId });
-		res.status(200).json({ message: "success" });
 		// 관련 댓글 삭제
 		post.comment.forEach(async (commentId) => {
 			await Comment.findByIdAndDelete(commentId);
@@ -137,6 +136,7 @@ const deletePost = asyncWrapper(async (req, res) => {
 			);
 			await User.updateOne({ _id: userId }, { favorite: newFavoriteArray });
 		});
+		res.status(200).json({ message: "success" });
 	}
 });
 
