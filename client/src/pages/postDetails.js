@@ -11,6 +11,7 @@ import { OneBtnModal } from '../components/oneBtnModal';
 import { PageTitle } from '../components/pageTitle';
 import { TwoBtnModal } from '../components/twoBtnModal';
 import { BsPencilSquare } from "react-icons/bs";
+import { ToggleLikeBtn } from '../components/toggleLikeBtn';
 
 const Container = styled.section`
   display: grid;
@@ -144,6 +145,9 @@ export const PostDetails = () => {
 
   const [isLoading, setIsLoading] = useState(false)
 
+  const [likeStat, setLikeStat] = useState(null)
+  const [likeAmount, setLikeAmount] = useState(0)
+
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const [openDoneModal, setOpenDoneModal] = useState(false)
 
@@ -175,8 +179,10 @@ export const PostDetails = () => {
 
   useEffect(() => {
     if (coords.latitude && coords.longitude) {
+
+
       const marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(coords.latitude, coords.longitude)
+        position: new kakao.maps.LatLng(coords.latitude, coords.longitude),
       })
 
       const staticMapContainer = kakaoMap.current, // 이미지 지도를 표시할 div  
@@ -193,8 +199,17 @@ export const PostDetails = () => {
     }
   }, [coords])
 
-  const { _id, title, description, photo, nickname } = postData
+  const { _id, title, description, photo, nickname, likes } = postData
 
+  // 로드시 내가 좋아요한 게시글인지 확인 및 좋아요 숫자 가져오기.
+  useEffect(() => {
+    if (likes) {
+      setLikeStat(likes.includes(userId))
+      setLikeAmount(likes.length)
+    }
+  }, [postData])
+
+  // 게시글 삭제
   const deletePost = async () => {
     try {
       const res = await axios.delete(`${serverPath}/api/posts/${params.id}`, {
@@ -235,7 +250,7 @@ export const PostDetails = () => {
       openDoneModal ? setOpenDoneModal(false) : setOpenDoneModal(true);
     }
   }
-  console.log(postData.nickname)
+
   return (
     <Container>
       {openDeleteModal ? <TwoBtnModal main={'정말로 게시글을 삭제하시겠습니까?'} close={() => modalHandler('delete')} action={deletePost} /> : null}
@@ -252,8 +267,11 @@ export const PostDetails = () => {
         }
         <div className='wrapper'>
           <TagContainer>
-            {tags.map((tag, idx) => <LinkTag key={idx} isActive={true}>{tag}</LinkTag>)}
+            {tags.map((tag, idx) => <LinkTag key={idx}>{tag}</LinkTag>)}
           </TagContainer>
+
+          <ToggleLikeBtn likeStat={likeStat}/>
+
         </div>
         <ImgContainer img={photo}>
           {isLoading ? <LoadingIndicator size={'7rem'} /> : null}
@@ -266,9 +284,9 @@ export const PostDetails = () => {
         </DescContainer>
         <CommentContainer />
         {
-          postData.author === userId 
-          ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
-          : null
+          postData.author === userId
+            ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
+            : null
         }
       </InnerContainer>
     </Container>

@@ -146,7 +146,7 @@ const PlaceResult = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-opacity: 0;
+  opacity: 0;
   width: 100%;
   height: 50px;
   padding-top: 2px;

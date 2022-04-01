@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { BsGeoAltFill, BsChatDots, BsSuitHeartFill } from "react-icons/bs";
+import { BsGeoAltFill, BsChatDots, BsFillHeartFill } from "react-icons/bs";
 
 
 const Container = styled.section`
@@ -149,8 +149,6 @@ const NicknameSkeleton = styled.div`
 
 export const PostThumbnail = ({ data, action, idx }) => { // 실 사용시에는 해당 위치에 props 로 게시글의 정보를 받아옴.
 
-  const [comments, setComments] = useState([])
-
   const serverPath = process.env.REACT_APP_SERVER_PATH
 
   const { _id, photo, title, location, likes, comment, nickname } = data
@@ -179,7 +177,7 @@ export const PostThumbnail = ({ data, action, idx }) => { // 실 사용시에는
 
         <div className='social-amounts'>
           <div className='like'>
-            <BsSuitHeartFill />
+            <BsFillHeartFill />
             <p className='amounts'>{likes.length}</p>
           </div>
           <div className='comment'>
