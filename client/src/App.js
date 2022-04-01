@@ -24,9 +24,8 @@ import { OneBtnModal } from "./components/oneBtnModal";
 import { TwoBtnModal } from "./components/twoBtnModal";
 import { Login } from "./modals/login";
 import { Signup } from "./modals/signup";
-
-
-
+import { TagSearch } from "./pages/tagSearch";
+import { CommentContainer } from "./components/commentContainer";
 const GlobalStyles = createGlobalStyle`
     ${reset}
     .main{
@@ -86,13 +85,14 @@ export const App = () => {
           <Route path="mypage/modify/" element={<ModifyMyinfo />} />
           <Route path="posts/:id/modify/" element={<ModifyPost />} />
           <Route path="posts/:id" element={<PostDetails />} />
-          
           <Route path="mypage" element={<Mypage />} />
           <Route path="add_post" element={<AddPost />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="posts/:id/comment" element={<CommentContainer />} />
         </Routes>
+        {/* <TagSearch /> */}
       </InnerContainer>
       <Footer />
     </Container>
   );
 };
-

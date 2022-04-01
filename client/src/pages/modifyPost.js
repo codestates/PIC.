@@ -227,32 +227,7 @@ export const ModifyPost = () => {
 
   // !!!! 태그가 문제임
 
-  // 이후 patch 요청을 보낸다.
-
-
-  // useState(() => {
-  //   // axios.get(`${serverPath}/posts/${params.id}`)
-  //   const data = {
-  //     title: "고양이",
-  //     description: "고앵이이이\n\n고\n\n앵\n\n이",
-  //     photo: "https://i.ibb.co/RSJ4DBk/468081180d1c.jpg",
-  //     location: {
-  //       latitude: 37.496683618601395,
-  //       longitude: 127.02467216931328,
-  //       roadAdd: "제주특별자치도 제주시 첨단로 242",
-  //       lotAdd: "제주특별자치도 제주시 영평동 2181",
-  //     },
-  //     hashtags: {
-  //       keywords: ["제주도", "일상", "신나는", "화창한", "밤",],
-  //       myTags: ["고앵이", "졸리다"]
-  //     }
-  //   };
-  //   setTitle(data.title)
-  //   setDesctription(data.description)
-  //   setLocation(data.location)
-  //   setTags(data.hashtags)
-  //   setImgHostUrl(data.photo)
-  // }, [])
+  // 이후 patch 요청을 보낸다
 
   useEffect(() => {
     (async () => {
