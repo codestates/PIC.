@@ -48,7 +48,6 @@ const getAllPosts = asyncWrapper(async (req, res) => {
 		// Hashtag 필터링
 		if (hashtags) {
 			filterHashtags = hashtags
-				.slice(1, hashtags.length - 1)
 				.split(",")
 				.map((e) => (e[0] === " " ? e.slice(1) : e));
 			posts = posts.filter((post) => {
