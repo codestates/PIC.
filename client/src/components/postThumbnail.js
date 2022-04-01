@@ -110,6 +110,9 @@ const PostInfo = styled.div`
     div{
       display: inherit;
     }
+    .like svg {
+      color : ${props => props.isLike ? '#ff796b' : null};
+    }
 
     .comment{
       margin-left: 8px;
@@ -150,11 +153,21 @@ const NicknameSkeleton = styled.div`
 export const PostThumbnail = ({ data, action, idx }) => { // 실 사용시에는 해당 위치에 props 로 게시글의 정보를 받아옴.
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
+  const userId = window.localStorage.getItem('userId')
+
+  const [isLike, setIsLike] = useState(null)
 
   const { _id, photo, title, location, likes, comment, nickname } = data
   // 여기서 _id 는 게시물 아이디임.
 
   // 유저 닉네임과 댓글 갯수 가져와야함 
+
+
+  useEffect(() => {
+    if (data) {
+      setIsLike(likes.includes(userId))
+    }
+  }, [data])
 
   let presentAdd
   if (location.roadAdd === null) {
@@ -167,7 +180,7 @@ export const PostThumbnail = ({ data, action, idx }) => { // 실 사용시에는
   return (
     <Container onClick={action} idx={idx}>
       <PostImg url={photo} />
-      <PostInfo>
+      <PostInfo isLike={isLike}>
         <h3 className='title'>{title}</h3>
         <div className='nickname'>{nickname}</div>
         <div className='address'>
