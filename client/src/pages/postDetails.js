@@ -12,6 +12,7 @@ import { PageTitle } from '../components/pageTitle';
 import { TwoBtnModal } from '../components/twoBtnModal';
 import { BsPencilSquare } from "react-icons/bs";
 import { ToggleLikeBtn } from '../components/toggleLikeBtn';
+import { CommentContainer } from '../components/commentContainer';
 
 const Container = styled.section`
   display: grid;
@@ -125,11 +126,11 @@ const DescContainer = styled.section`
   border-radius: 3px;
 `
 
-const CommentContainer = styled.section`
-  width: 100%;
-  min-height: 300px;
-  max-height: 500px;
-`
+// const CommentContainer = styled.section`
+//   width: 100%;
+//   min-height: 300px;
+//   max-height: 500px;
+// `
 
 export const PostDetails = () => {
   const kakao = window.kakao
@@ -225,6 +226,7 @@ export const PostDetails = () => {
       // err
     }
   }
+
   // 파라미터 이용
   // 데이터 가져오기
   // 뿌리기
@@ -282,13 +284,14 @@ export const PostDetails = () => {
         <DescContainer>
           <pre>{description}</pre>
         </DescContainer>
-        <CommentContainer />
+        {/* <CommentForm /> */}
         {
           postData.author === userId
             ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
             : null
         }
       </InnerContainer>
+      <CommentContainer />
     </Container>
   );
 };
