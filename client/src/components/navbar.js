@@ -80,7 +80,7 @@ const RightLinks = styled.div`
   place-items: center;
 `;
 
-export const Navbar = ({ setLoginToken, isLogin }) => {
+export const Navbar = ({ isLogin }) => {
   const navigate = useNavigate();
   const localStorage = window.localStorage
 
@@ -116,7 +116,7 @@ export const Navbar = ({ setLoginToken, isLogin }) => {
   return (
     <div>
       {/* 로그인 모달 */}
-      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setLoginTokenOnNavbar={setLoginToken} /> : null}
+      {openLoginModal ? <Login closeFn={() => modalHandler("login")} /> : null}
       {/* 회원가입 모달 */}
       {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
       {/* 로그아웃 시 확인 모달 */}
@@ -141,12 +141,10 @@ export const Navbar = ({ setLoginToken, isLogin }) => {
             <Link className="tags" to="tags">태그 검색</Link>
             {isLogin
               ? <Link className="mypage" to="mypage"> 마이페이지</Link>
-              : <div className="login" onClick={() => modalHandler("login")}>로그인</div>
-            }
+              : <div className="login" onClick={() => modalHandler("login")}>로그인</div>}
             {isLogin
               ? <div className="logout" onClick={() => modalHandler("logout")}>로그아웃</div>
-              : <div className="signup" onClick={() => modalHandler("signup")}>회원가입</div>
-            }
+              : <div className="signup" onClick={() => modalHandler("signup")}>회원가입</div>}
           </RightLinks>
         </InnerContainer>
       </Container>

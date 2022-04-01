@@ -7,7 +7,7 @@
 // 그 버튼 클릭하면 로그인 모달창 더서 작동 되도록 구현하기
 
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { GoogleLoginBtn } from "../components/googleLoginBtn";
@@ -108,24 +108,24 @@ export const Login = ({ closeFn }) => {
   };
 
   return (
-      <ModalContainer>
-        <ModalForm>
-          <ModalView><CloseBtn onClick={closeFn}>x</CloseBtn>
-            <Column> 이메일 </Column>
-            <Input placeholder="이메일을 입력해주세욤" onChange={(e) => setEmail(e.target.value)}></Input>
-            <Column> 비밀번호</Column>
-            <Input type="password" placeholder="비밀번호를 입력해보시지요" onChange={(e) => setPassword(e.target.value)}></Input>
-            <Column>
-              <Btn onClick={submit}>로그인</Btn>
-            </Column>
-            <GoogleLoginBtn />
-            {/* <NaverLoginBtn /> */}
-            <Column>
-              <Btn onClick={navSignup}>회원가입</Btn>
-            </Column>
-          </ModalView>
-        </ModalForm>
-      </ModalContainer>
+    <ModalContainer>
+      <ModalForm>
+        <ModalView><CloseBtn onClick={closeFn}>x</CloseBtn>
+          <Column> 이메일 </Column>
+          <Input placeholder="이메일을 입력해주세욤" onChange={(e) => setEmail(e.target.value)}></Input>
+          <Column> 비밀번호</Column>
+          <Input type="password" placeholder="비밀번호를 입력해보시지요" onChange={(e) => setPassword(e.target.value)}></Input>
+          <Column>
+            <Btn onClick={submit}>로그인</Btn>
+          </Column>
+          <GoogleLoginBtn />
+          {/* <NaverLoginBtn /> */}
+          <Column>
+            <Btn onClick={navSignup}>회원가입</Btn>
+          </Column>
+        </ModalView>
+      </ModalForm>
+    </ModalContainer>
   );
 };
 

@@ -5,7 +5,7 @@ const Btn = styled.div`
   display: grid;
   place-items: center;
 
-  width: ${props => props.width ? props.width : '305px' };
+  width: ${props => props.width ? props.width : '305px'};
   height: 40px;
 
   background-color: ${props => props.color ? `${props.color}` : '#FFD600'};
@@ -31,9 +31,10 @@ const Btn = styled.div`
   }
 `
 
-export const BtnComponent = ({children, disabled, color, width, action, hover}) => {
+export const BtnComponent = ({ children, disabled, color, width, action, hover }) => {
 
   return (
     <Btn disabled={disabled} color={color} width={width} onClick={action} hover={hover}>{children}</Btn>
   );
 };
+
