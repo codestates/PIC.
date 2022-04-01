@@ -201,8 +201,6 @@ export const PlaceSearch = ({ setLocation, closeFn }) => {
   const [searchValue, setSearchValue] = useState('')
   const [placeData, setPlaceData] = useState([])
 
-  const searchBtn = useRef()
-
   const inputHandler = (e) => {
     setSearchValue(e.target.value)
 
@@ -216,7 +214,6 @@ export const PlaceSearch = ({ setLocation, closeFn }) => {
     const ps = new kakao.maps.services.Places()
 
     const psCallback = (data, status, pagination) => {
-      console.log(status)
       if (status === kakao.maps.services.Status.OK) {
         setPlaceData([])
         setPlaceData(data)
@@ -247,7 +244,7 @@ export const PlaceSearch = ({ setLocation, closeFn }) => {
         <InnerContainer>
           <SearchContainer>
             <input spellCheck={false} placeholder="찾으시는 장소를 입력해주세요! 예) 여의도공원" onKeyDown={e => inputHandler(e)} />
-            <div className="searchBtn" onClick={getPlaces} ref={searchBtn}>
+            <div className="searchBtn" onClick={getPlaces}>
               <span>검색</span>
               <IoSearch />
             </div>

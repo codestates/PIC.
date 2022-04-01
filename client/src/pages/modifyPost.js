@@ -3,11 +3,14 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsCameraFill } from "react-icons/bs";
+import { IoLocateSharp as LocationPin, IoSearch } from "react-icons/io5";
 
 import { PageTitle } from '../components/pageTitle';
 import { TagSelection } from '../components/tagSelection';
 import { LoadingIndicator } from "../components/loadingIndicator";
 import { BtnComponent as Btn } from '../components/BtnComponent';
+
+import { PlaceSearch } from '../modals/placeSearch';
 
 
 const Container = styled.section`
@@ -39,6 +42,7 @@ const InnerContainer = styled.div`
 
 const BoxContianer = styled.section`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 `
 
@@ -87,8 +91,57 @@ const KakaoMapBox = styled.section`
   box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
 
   border-radius: 10px;
-
 `
+
+const BtnOnMap = styled.div`
+  position: absolute;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: max-content;
+  height: 1.5rem;
+  padding: 0 6px;
+
+  background-color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+
+  color: #666;
+
+  z-index: 2;
+
+  cursor : pointer;
+
+  span {  
+    position: relative;
+    top: 1px;
+
+    font-size: 0.9rem;
+  }
+
+  svg {
+    margin-left: 5px;
+  }
+
+  transition: 0.1s;
+
+  &:hover {
+    background-color: #ffd600;
+    color: #000;
+  }
+`
+const MyLocationBtn = styled(BtnOnMap)`
+  top: 17px;
+  right: 17px;
+`
+
+const LocationSearchBtn = styled(BtnOnMap)`
+  bottom: 17px;
+  right: 17px;
+`
+
 
 const TitleContainer = styled.section`
   input {
@@ -100,6 +153,7 @@ const TitleContainer = styled.section`
     padding-left: 10px;
     font-size: 1.2rem;
 
+    outline : none;
     &:focus {
       outline: 3px solid #FFD600;
       border: #FFD600;
@@ -119,7 +173,7 @@ const DescContainer = styled.section`
     padding: 10px;
 
     font-family: sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 
     resize: none;
     overflow: hidden;
@@ -129,6 +183,7 @@ const DescContainer = styled.section`
       outline: 3px solid #FFD600;
       border: #FFD600;
     }
+
   }
 `
 
@@ -140,20 +195,22 @@ export const ModifyPost = () => {
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
-  const accessToken = "recivedaccesstokenwhenlogin"
+  const accessToken = window.localStorage.getItem('loginToken')
 
   const [imgBase64, setImgBase64] = useState(null)
   const [imgHostUrl, setImgHostUrl] = useState('')
 
-  const [currentLocation, setCurrentLocation] = useState([]) // 지오로케이션 사용하면 쓰기
   const [location, setLocation] = useState(null)
   const [address, setAddress] = useState([])
 
   const [isUploading, setIsUploading] = useState(false)
+  const [isLoadingMyLocation, setIsLoadingMyLocation] = useState(false)
 
   const [title, setTitle] = useState('')
   const [description, setDesctription] = useState('')
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState(null)
+
+  const [openSearchModal, setOpenSearchModal] = useState(false)
 
   const params = useParams()
 
@@ -173,29 +230,46 @@ export const ModifyPost = () => {
   // 이후 patch 요청을 보낸다.
 
 
-  useState(() => {
-    // axios.get(`${serverPath}/posts/${params.id}`)
-    const data = {
-      title: "고양이",
-      description: "고앵이이이\n\n고\n\n앵\n\n이",
-      photo: "https://i.ibb.co/RSJ4DBk/468081180d1c.jpg",
-      location: {
-        latitude: 37.496683618601395,
-        longitude: 127.02467216931328,
-        roadAdd: "제주특별자치도 제주시 첨단로 242",
-        lotAdd: "제주특별자치도 제주시 영평동 2181",
-      },
-      hashtags: {
-        keywords: ["제주도", "일상", "신나는", "화창한", "밤",],
-        myTags: ["고앵이", "졸리다"]
+  // useState(() => {
+  //   // axios.get(`${serverPath}/posts/${params.id}`)
+  //   const data = {
+  //     title: "고양이",
+  //     description: "고앵이이이\n\n고\n\n앵\n\n이",
+  //     photo: "https://i.ibb.co/RSJ4DBk/468081180d1c.jpg",
+  //     location: {
+  //       latitude: 37.496683618601395,
+  //       longitude: 127.02467216931328,
+  //       roadAdd: "제주특별자치도 제주시 첨단로 242",
+  //       lotAdd: "제주특별자치도 제주시 영평동 2181",
+  //     },
+  //     hashtags: {
+  //       keywords: ["제주도", "일상", "신나는", "화창한", "밤",],
+  //       myTags: ["고앵이", "졸리다"]
+  //     }
+  //   };
+  //   setTitle(data.title)
+  //   setDesctription(data.description)
+  //   setLocation(data.location)
+  //   setTags(data.hashtags)
+  //   setImgHostUrl(data.photo)
+  // }, [])
+
+  useEffect(() => {
+    (async () => {
+      const res = await axios.get(`${serverPath}/api/posts/${params.id}`)
+      const data = res.data.post
+      console.log(data)
+
+      if (res.status === 200) {
+        setTitle(data.title)
+        setDesctription(data.description)
+        setLocation(data.location)
+        setTags(data.hashtags)
+        setImgHostUrl(data.photo)
       }
-    };
-    setTitle(data.title)
-    setDesctription(data.description)
-    setLocation(data.location)
-    setTags(data.hashtags)
-    setImgHostUrl(data.photo)
+    })()
   }, [])
+
 
   // 이미지 읽어오기
   const uploadImage = (e) => {
@@ -236,34 +310,44 @@ export const ModifyPost = () => {
 
   // 카카오 지도 API 사용
   useEffect(() => {
+    console.log('맵리렌더')
     const container = kakaoMap.current
     let options = {
-      center: new kakao.maps.LatLng(location.latitude, location.longitude), //지도의 중심좌표, 추후에 위치 지정하기.
+      center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표, 추후에 위치 지정하기.
       level: 3
     }
 
     const map = new kakao.maps.Map(container, options)
 
-    const marker = new kakao.maps.Marker({
-      position: new kakao.maps.LatLng(location.latitude, location.longitude)
-    })
+    const marker = new kakao.maps.Marker()
 
     marker.setMap(map)
+
+    // 현재 위치가 있는 경우 해당 위치에 마커를 표시한다.
+    if (location) {
+      marker.setPosition(new kakao.maps.LatLng(location.latitude, location.longitude))
+      const latlng = marker.getPosition() // 이동한 좌표
+      map.setCenter(latlng)
+    }
 
 
     kakao.maps.event.addListener(map, 'click', (mouseEvent) => {
       let latlng = mouseEvent.latLng
-      console.log(latlng)
-      marker.setPosition(latlng)
+      marker.setPosition(latlng) // 클릭한 좌표
 
       setLocation({
         latitude: latlng.getLat(), //위도
         longitude: latlng.getLng() //경도
       })
+    })
+  }, [location])
 
-      let geocoder = new kakao.maps.services.Geocoder()
+  // location 상태가 바뀔 때 
+  useEffect(() => {
+    let geocoder = new kakao.maps.services.Geocoder()
+    if (location) {
 
-      geocoder.coord2Address(latlng.La, latlng.Ma, (result, status) => {
+      geocoder.coord2Address(location.longitude, location.latitude, (result, status) => {
         if (status === kakao.maps.services.Status.OK && result[0].road_address) {
           setAddress(
             {
@@ -281,9 +365,30 @@ export const ModifyPost = () => {
           )
         }
       })
-    })
-  }, [])
 
+    }
+  }, [kakao.maps.services.Geocoder, kakao.maps.services.Status.OK, location])
+
+  // 내 위치 가져오기
+  const getMyLocation = () => {
+    setIsLoadingMyLocation(true)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        if (position) {
+          setLocation(
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }
+          )
+          setIsLoadingMyLocation(false)
+        }
+      })
+    } else {
+      setIsLoadingMyLocation(false)
+      // 모달 상태
+    }
+  }
 
   const autoResizing = () => {
     const textarea = descArea.current
@@ -320,18 +425,25 @@ export const ModifyPost = () => {
       newDescription: description,
       newPhoto: imgHostUrl,
       newLocation: {
-        newLatitude: location.latitude,
-        newLongitude: location.longitude,
-        newRoadAdd: address.roadAdd,
-        newLotAdd: address.lotAdd
+        latitude: location.latitude,
+        longitude: location.longitude,
+        roadAdd: address.roadAdd,
+        lotAdd: address.lotAdd
       },
       newHashtags: tags
     }
-    axios.patch(`${serverPath}/api/${params.id}/posts`, body, headers)
+    axios.patch(`${serverPath}/api/posts/${params.id}`, body, headers)
+  }
+
+  const modalHandler = (modal) => {
+    if (modal === "search") {
+      openSearchModal ? setOpenSearchModal(false) : setOpenSearchModal(true);
+    }
   }
 
   return (
     <Container>
+      {openSearchModal ? <PlaceSearch setLocation={setLocation} closeFn={() => modalHandler('search')} /> : null}
       <InnerContainer>
         <PageTitle>게시글 수정</PageTitle>
         <BoxContianer>
@@ -339,7 +451,16 @@ export const ModifyPost = () => {
           <UploadImageBox onClick={() => imgInput.current.click()} img={imgHostUrl}>
             <ImageContainer />
           </UploadImageBox>
-          <KakaoMapBox ref={kakaoMap} />
+          <KakaoMapBox ref={kakaoMap}>
+            <MyLocationBtn onClick={getMyLocation}>
+              <span>{isLoadingMyLocation ? '위치를 가져오는 중...' : '내 위치'}</span>
+              <LocationPin />
+            </MyLocationBtn>
+            <LocationSearchBtn onClick={() => modalHandler('search')}>
+              <span>주소로 검색하기</span>
+              <IoSearch />
+            </LocationSearchBtn>
+          </KakaoMapBox>
         </BoxContianer>
         <TitleContainer>
           <h3 className='category'>사진 이름</h3>
@@ -347,7 +468,7 @@ export const ModifyPost = () => {
         </TitleContainer>
         <TagContainer>
           <h3 className='category'>태그</h3>
-          <TagSelection setTags={setTags} tags={tags} />
+          { tags ? <TagSelection setTags={setTags} tags={tags} /> : null}
         </TagContainer>
         <DescContainer>
           <h3 className='category'>사진 설명</h3>

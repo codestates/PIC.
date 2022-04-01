@@ -10,11 +10,34 @@ const Container = styled.div`
     width: 100%;
 `
 
-const Title = styled.h2`
+const Title = styled.div`
+  display: flex;
+
   position: relative;
-  margin-bottom: 20px;
+
+  width: 70%;
+  margin-bottom: 15px;
   
   font-size: 1.5rem;  
+
+  h2 {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  div {
+    width: 200px;
+    text-align: center;
+    
+    position: absolute;
+    left: calc(50% - 100px);
+    top : -23px;
+    font-size: 0.8rem;
+    color: #888;
+  }
 `
 
 const GoBackBtn = styled(BsChevronLeft)`
@@ -37,12 +60,15 @@ const HLine = styled.div`
     background-color: #aaa;
 `
 
-export const PageTitle = ({children}) => {
+export const PageTitle = ({ children, author }) => {
   const navigate = useNavigate()
 
   return (
     <Container>
-      <Title>{children}</Title>
+      <Title>
+        <h2>{children}</h2>
+        {author ? <div>by. {author}</div> : null}
+      </Title>
       <GoBackBtn onClick={() => navigate(-1)}/>
       <HLine />
     </Container>

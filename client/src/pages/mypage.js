@@ -43,7 +43,6 @@ export const Mypage = () => {
       const res = await axios.get(`${serverPath}/api/users/${userId}`)
       if (userInfo) {
         setUserInfo(res.data.userInfo)
-        console.log(userInfo)
       }
     }
     getUserinfo()

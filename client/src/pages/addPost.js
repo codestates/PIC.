@@ -177,7 +177,7 @@ const DescContainer = styled.section`
     padding: 10px;
 
     font-family: sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 
     resize: none;
     overflow: hidden;
@@ -340,23 +340,6 @@ export const AddPost = () => {
   }
   // 현재위치를 불러오는 중입니다.
   // 현재위치를 불러올수없습니다 -> 모달
-
-  const searchAddress = () => {
-    const width = 500; //팝업의 너비
-    const height = 600;
-
-    new daum.Postcode({
-      oncomplete: (data) => {
-        console.log(data) // 여기서 받아온 지번주소를 이용하기
-      }
-    }).open({
-      width: 500,
-      height: 600,
-      left: (window.screen.width / 2) - (width / 2),
-      top: (window.screen.height / 2) - (height / 2)
-    })
-  }
-
 
   // 본문 작성 페이지 리사이징
   const autoResizing = () => {
