@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
+const Comment = require("../models/Comment");
 const asyncWrapper = require("../middleware/async");
 const verifyToken = require("../utils/verifyToken");
 const isSubsetOf = require("../utils/isSubsetOf");
@@ -116,12 +117,24 @@ const updatePost = asyncWrapper(async (req, res) => {
 
 // 게시글 삭제
 const deletePost = asyncWrapper(async (req, res) => {
-	const post = await Post.findById(req.params.id);
+	const postId = req.params.id
+	const post = await Post.findById(postId);
 	if (!post) {
 		res.status(400).json({ message: "fail : there's no post with the id" });
 	} else {
-		await Post.deleteOne({ _id: req.params.id });
+		// 게시글 삭제
+		await Post.deleteOne({ _id: postId });
 		res.status(200).json({ message: "success" });
+		// 관련 댓글 삭제
+		post.comment.forEach(async (commentId) => {
+			await Comment.findByIdAndDelete(commentId);
+		})
+		// 유저의 favorite에 해당 게시글 id 삭제
+		post.likes.forEach(async (userId) =>  {
+			const userInfo = await User.findById(userId);
+			const newFavoriteArray = userInfo.favorite.filter(e => e.toString() !== postId);
+			await User.updateOne({ _id: userId }, {	favorite: newFavoriteArray });
+		})
 	}
 });
 
