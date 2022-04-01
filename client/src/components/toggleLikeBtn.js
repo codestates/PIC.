@@ -19,8 +19,11 @@ const Container = styled.section`
 
   font-size: 2rem;
 
+  transition: 0.1s;
+
   color: ${props => props.isLikePost ? '#ff796b' : '#ddd'};
 
+  cursor: pointer;
 `
 
 export const ToggleLikeBtn = ({ likeStat, setLikeStat }) => {
@@ -46,7 +49,7 @@ export const ToggleLikeBtn = ({ likeStat, setLikeStat }) => {
       }
     })
     isLikePost ? setIsLikePost(false) : setIsLikePost(true)
-    likeStat ? setLikeStat(false) : setLikeStat(true)
+    if (likeStat) likeStat ? setLikeStat(false) : setLikeStat(true)
   }
 
   return (
