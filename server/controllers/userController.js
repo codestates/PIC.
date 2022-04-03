@@ -196,6 +196,11 @@ const oauthNaverLogin = asyncWrapper(async (req, res) => {
 	}
 });
 
+// OAuth 2.0 네이버 로그인
+const oauthKakaoLogin = asyncWrapper(async (req, res) => {
+	res.send('ok')
+})
+
 // 로그아웃
 const logout = asyncWrapper(async (req, res) => {
 	res.clearCookie("refreshToken", { path: "/api/users/refresh-token" });
@@ -351,6 +356,7 @@ module.exports = {
 	login,
 	oauthGoogleLogin,
 	oauthNaverLogin,
+	oauthKakaoLogin,
 	logout,
 	refreshToken,
 	getUserInfo,
