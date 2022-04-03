@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { OneBtnModal } from "./oneBtnModal";
 import { TwoBtnModal } from "./twoBtnModal";
 import { Login } from "../modals/login";
+import { Signup } from '../modals/signup';
 
 const Container = styled.header`
   position : relative;
@@ -118,7 +119,7 @@ export const Navbar = ({ isLogin }) => {
       {/* 로그인 모달 */}
       {openLoginModal ? <Login closeFn={() => modalHandler("login")} /> : null}
       {/* 회원가입 모달 */}
-      {/* {openSignupModal ? <SignupModal onClick={() => modalHandler('signup')} /> : null} */}
+      {openSignupModal ? <Signup closeFn={() => modalHandler('signup')} /> : null}
       {/* 로그아웃 시 확인 모달 */}
       {openTwoBtnModal
         ? <TwoBtnModal main={"로그아웃 하시겠습니까?"} close={() => modalHandler("logout")} action={() => handleLogout()} nav={"/main"} /> 

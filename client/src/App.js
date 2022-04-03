@@ -87,10 +87,10 @@ export const App = () => {
           <Route path="posts/:id" element={<PostDetails />} />
           <Route path="mypage" element={<Mypage />} />
           <Route path="add_post" element={<AddPost />} />
-          <Route path="signup" element={<Signup />} />
+          {/* <Route path="signup" element={<Signup />} /> */}
           <Route path="posts/:id/comment" element={<CommentContainer />} />
+          <Route path="tags"  element={<TagSearch />} />
         </Routes>
-        {/* <TagSearch /> */}
       </InnerContainer>
       <Footer />
     </Container>
