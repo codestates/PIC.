@@ -46,7 +46,7 @@ export const TagSearch = () => {
   const [postData, setPostData] = useState([])
   // 추가된 태그키워드와 일치하는 썸네일을 저장하고 값을 가져오기 위한 상태함수 (초기 빈배열_통신에 맞는 태그와 관련된 썸네일 담기)
   const navigate = useNavigate()
-
+ 
   //! 1. ---------------------------------- 입력창에 작성된 태그를 배열에 저장 
   const addTag = () => {
     setTags(
