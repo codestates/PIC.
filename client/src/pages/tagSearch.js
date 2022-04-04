@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { PageTitle } from '../components/pageTitle';
-// import { Tag } from '../components/tagSelection';
-
+import { Tag } from '../components/tagComponent';
+import { PostThumbnail } from '../components/postThumbnail';
 
 const Container = styled.section`
   display: grid;
@@ -34,108 +34,92 @@ const InnerContainer = styled.div`
   margin-bottom: 300px;
   height: max-content;
 `
-const TitleContainer = styled.section`
-  input {
-    width: 30%;
-    height: 35px;
-   
-    box-sizing: border-box;
 
-    padding-left: 10px;
-    font-size: 1.2rem;
-  }
-`
-const TagContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap : 12px 10px;
-  width: 100%;
 
-  height: max-content;
-  margin-left: 5px;
-
-  transition : 0.3s;
-`
 export const TagSearch = () => {
-  //! -------------------------------------- 1. 상태선언 ------------------------------------
-  const serverPath = process.env.REACT_APP_SERVER_PATH
+  const serverPath = process.env.REACT_APP_SERVER_PATH;
 
-  const [hashtag, setHashtag] = useState([]);
-  // onChange로 관리할 문자열
-  const [hashArr, setHashArr] = useState([]);
-  // 해시태그를 담을 배열
-
+  const [inputValue, setInputValue] = useState('');
+  // 검색창에 검색되는 태그키워드들을 담는 상태함수 (초기 빈문자열)
   const [tags, setTags] = useState([]);
+  // 검색된 태그키워드들 배열에 저장하는 상태함수 (초기 빈배열)
+  const [postData, setPostData] = useState([])
+  // 추가된 태그키워드와 일치하는 썸네일을 저장하고 값을 가져오기 위한 상태함수 (초기 빈배열_통신에 맞는 태그와 관련된 썸네일 담기)
+  const navigate = useNavigate()
+  //! 1. ---------------------------------- 입력창에 작성된 태그를 배열에 저장 
+  const addTag = () => {
+    setTags(
+      [...tags, inputValue]
+      // setInputValue 로 인해 입력창에 쓰여진 키워드는 inputValue 에 저장이 되고
+      // 그 inputValue 를 쓰여지는 족족 나열하며 저장하기 위해 스프레드 문법사용
+    )
 
-  // 태그를 삭제하는 메소드 구현
-  const removeTags = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
-  };
+  }
+  // console.log(tags, '저장된 태그') _ onClick 시 addTag 가 실행이 되는데 콘솔을 이용해서 어떤식으로 저장이 되는지 보기 위해서
 
-  // 새로운 태그를 추가하는 메소드
-  const addTags = (event) => {
-    // 이미 있는 태그라면 추가하지 않기 : filter 메소드로 판별
-    // 아무것도 입력하지 않은 채 Enter 키 입력시 메소드 실행하지 않기
+  // useEffect(() => {
+  //   setInputValue 
+  // }, [tags])
 
-    const filtered = tags.filter((el) => el === event.target.value);
-    if (event.target.value !== '' && filtered.length === 0) {
-      setTags([...tags, event.target.value]);     // spread 문법 사용
 
-      // 태그가 추가되면 input 창 비우기
-      event.target.value = '';
+  //! 2. ---------------------------------- 생성된 태그 조건에 안맞으면 !== -> 삭제 
+  const removeTag = (value) => {
+    setTags(
+      tags.filter((el) => {
+        return el !== value
+      })
+    )
+  }
+
+  //! 3. ---------------------------------- 생성된 태그 -> 통신 연결 
+  const sendReq = async () => {
+    try {
+      const res = await axios.get(`${serverPath}/api/posts?date=true&hashtags=${tags}`)
+
+      // [${tags}]
+      if (res.status === 200) {
+        setPostData(res.data.posts)
+        // console.log(res.data.posts, "뭐니?")
+      }
+    } catch (err) {
+
     }
-    // console.log(tags, "뭐냐")
-    // console.log(event, "뭐냐")
-  };
-
-  const clickClick = () => {
-
-  };
-
-  const onCreateHashtagAdd = (e) => {
-    setHashArr(hashArr => [...hashArr, hashtag]);
-    setHashtag('');
-    console.log(e)
-  };
-
-  const HandleSubmit = () => {
-    if (hashtag.length < 1) {
-      alert("최소 1글자 이상 입력해주세요.")
-      return
+  }
+  // 랜더링시 실행 , tags 가 추가 될 때 마다 실행
+  useEffect(() => {
+    if(tags.length){
+      sendReq()
     }
-    alert("저장 성공!");
-    console.log(tags, "누구야")
-    // 리턴 다음의 값을 알게다 싶으면 
-  };
+    else{
+      setPostData([]);
+    }
+  }, [tags])
 
+
+
+  const goDetails = (value) => {
+    navigate(`/posts/${value._id}`)
+  }
 
   return (
     <Container>
       <InnerContainer>
         <PageTitle>태그 검색</PageTitle>
-        <TitleContainer>
-          <input
-            type="text"
-            value={hashtag}
-            onChange={(e) => { setHashtag(e.target.value) }}
-            placeholder="검색할 태그를 적어주세요."
-            onKeyUp={(event) => (event.key === 'Enter' ? addTags(event) : null)}
-          />
-          <button>검색</button>
-        </TitleContainer>
-        <TagContainer>
-
-          {tags.map((tag, index) => (
-            <li key={index} className='tag'>
-              <span className='tag-title'>{tag}</span>
-              <span className='tag-close-icon' onClick={() => removeTags(index)}>
-                &times;
-              </span>
-            </li>
-          ))}
-
-        </TagContainer>
+        <input type='text' onChange={(e) => { setInputValue(e.target.value) }} />
+        <button onClick={addTag}>태그검색</button>
+        {
+          tags
+            ? (tags.map((el, idx) => {
+              return <Tag usage={'added'} removeFn={removeTag} key={idx}>{el}</Tag>
+              // tagComponent에서 props로 가져와서 사용 , - 버튼 누를 시 삭제는 안되기 때문에 여기서 만들어서 사용
+            }))
+            : null
+        }
+        {postData ? postData.map((el, idx) => {
+          return <PostThumbnail data={el} key={idx} action={() => goDetails(el)} />
+          // 작성된 태그를 가지고 get 요청을 해서 해당 값에 맞는 태그가 있으면 가지고 오기
+        }) : null}
       </InnerContainer>
-    </Container >
-  );
-};
+    </Container>
+  )
+}

@@ -3,51 +3,32 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Container = styled.div`
-  position: relative;
-  display: grid;
-  place-items: center;
 
-  width: 100%;
-  height: 100%;
-
-  /* z-index: 999; */
-`;
-
-const Btn = styled.div`
-  display: grid;
-  place-items: center;
-  width: 305px;
-  height: 40px;
-  background-color: ${(props) => (props.disabled ? "#DDDDDD" : "#FFD600")};
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
-  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
-  transition: 0.1s;
-  &:hover {
-    transform: ${(props) => (props.disabled ? "null" : "translateY(-2px)")};
-    box-shadow: ${(props) => (props.disabled ? "null" : "0px 5px 4px rgba(0,0,0,0.1)")};
-  }
-  span {
-    position: relative;
-    top: 2px;
-  }
-`;
-const Forms = styled.div`
+const ModalContainer = styled.div`
   position: absolute;
-  top: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+`;
+const ModalForm = styled.div`
+  position: absolute;
+  top: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 600px;
-  height: 1000px;
+  height: 700px;
   .fields {
     display: grid;
     justify-content: center;
     width: 305px;
-    min-height: 50px;
-    margin-top: 50px;
+    min-height: 30px;
+    margin-top: 30px;
   }
   .fields > div {
     margin-bottom: 20px;
@@ -68,6 +49,43 @@ const Forms = styled.div`
     position: relative;
   }
 `;
+const ModalView = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  width: 400px;
+  height: 800px;
+  border-radius: 1rem;
+  position: relative;
+  /* > .close-btn {
+    position: absolute;
+    top: 2px;
+    right: 7px;
+    cursor: pointer;
+  } */
+`;
+const Btn = styled.div`
+  display: grid;
+  place-items: center;
+  width: 305px;
+  height: 40px;
+  background-color: ${(props) => (props.disabled ? "#DDDDDD" : "#FFD600")};
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+  transition: 0.1s;
+  &:hover {
+    transform: ${(props) => (props.disabled ? "null" : "translateY(-2px)")};
+    box-shadow: ${(props) => (props.disabled ? "null" : "0px 5px 4px rgba(0,0,0,0.1)")};
+  }
+  span {
+    position: relative;
+    top: 2px;
+  }
+`;
 const StyledSubmitBtn = styled.button`
   margin-top: 20px;
   width: 100%;
@@ -84,7 +102,7 @@ const Nofication = styled.div`
   font-size: 0.8rem; ;
 `;
 
-export const Signup = () => {
+export const Signup = ({ closeFn }) => {
   //! -------------------------------------- 1. 상태선언 ------------------------------------
 
   const serverPath = process.env.REACT_APP_SERVER_PATH;
@@ -175,7 +193,7 @@ export const Signup = () => {
     }
   };
 
-  // console.log(emailCode)
+  // console.log(emailCode) 
 
 
   // 이메일 코드 핸들러
@@ -220,14 +238,14 @@ export const Signup = () => {
     })();
   }, [nickname, serverPath]);
 
- // 비밀번호 , 비밀번호확인
- useEffect(() => {
-  if (password === retypePassword) {
-    setPasswordCheck(true)
-  } else {
-    setPasswordCheck(false)
-  }
-}, [password, retypePassword])
+  // 비밀번호 , 비밀번호확인
+  useEffect(() => {
+    if (password === retypePassword) {
+      setPasswordCheck(true)
+    } else {
+      setPasswordCheck(false)
+    }
+  }, [password, retypePassword])
 
   // 회원가입
   const SignupHandler = async () => {
@@ -237,7 +255,7 @@ export const Signup = () => {
       password: password,
     });
     if (res.status === 201) {
-      naviagate("/");
+      naviagate("./login");
       // 유즈네비게이트로 200시에 /login 으로 이동하겠다 의미.
     }
   };
@@ -337,66 +355,70 @@ export const Signup = () => {
 
   return (
     <div>
-      <Container>
-        <Forms>
-          {/* 이메일 입력 */}
-          <div className="fields">
-            <div className="form">
-              <div>이메일</div>
-              <EmailNotification />
-              <input type="email" placeholder="이메일 입력" onChange={emailCheckHandler} />
-              <EmailCodeBtn />
-            </div>
+      <ModalContainer>
+        <ModalForm>
+          <ModalView><button onClick={closeFn}>x</button>
 
-            {/* // onChange={() => setIsNotUsingEmail(false)}  */}
-
-
-            {/* 이메일 코드 6자리 입력 */}
+            {/* 이메일 입력 */}
             <div className="fields">
               <div className="form">
-                <div>인증코드</div>
-                <EmailCodeNotification />
-                <input type="text" placeholder="6자리 인증코드 입력" onChange={emailCodeHandler} />
+                <div>이메일</div>
+                <EmailNotification />
+                <input type="email" placeholder="이메일 입력" onChange={emailCheckHandler} />
+                <EmailCodeBtn />
               </div>
-            </div>
 
-            {/* 닉네임 입력 */}
-            <div className="fields">
+              {/* // onChange={() => setIsNotUsingEmail(false)}  */}
+
+
+              {/* 이메일 코드 6자리 입력 */}
+              <div className="fields">
+                <div className="form">
+                  <div>인증코드</div>
+                  <EmailCodeNotification />
+                  <input type="text" placeholder="6자리 인증코드 입력" onChange={emailCodeHandler} />
+                </div>
+              </div>
+
+              {/* 닉네임 입력 */}
+              <div className="fields">
+                <div className="form">
+                  <div>닉네임</div>
+                  <NicknameNofication />
+                  <input type="text" placeholder="닉네임을 입력합니다." onBlur={nicknameCheckHandler} />
+                </div>
+              </div>
+
+              {/* 비밀번호 및 비밀번호 확인 */}
               <div className="form">
-                <div>닉네임</div>
-                <NicknameNofication />
-                <input type="text" placeholder="닉네임을 입력합니다." onBlur={nicknameCheckHandler} />
+                <div>비밀번호 입력</div>
+                <PasswordNofication />
+                <input
+                  type={"password"}
+                  placeholder="비밀번호를 입력합니다."
+                  onBlur={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+              </div>
+
+              <div className="form">
+                <div>비밀번호 입력 확인</div>
+                <RetypePasswordNofication />
+                <input
+                  type={"password"}
+                  placeholder="다시 한 번 비밀번호를 입력합니다."
+                  onChange={(e) => {
+                    setRetypePassword(e.target.value);
+                  }}
+                />
               </div>
             </div>
+            <ConfirmBtnByCondition />
 
-            {/* 비밀번호 및 비밀번호 확인 */}
-            <div className="form">
-              <div>비밀번호 입력</div>
-              <PasswordNofication />
-              <input
-                type={"password"}
-                placeholder="비밀번호를 입력합니다."
-                onBlur={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-            </div>
-
-            <div className="form">
-              <div>비밀번호 입력 확인</div>
-              <RetypePasswordNofication />
-              <input
-                type={"password"}
-                placeholder="다시 한 번 비밀번호를 입력합니다."
-                onChange={(e) => {
-                  setRetypePassword(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <ConfirmBtnByCondition />
-        </Forms>
-      </Container>
+          </ModalView>
+        </ModalForm>
+      </ModalContainer>
     </div>
   );
 };
