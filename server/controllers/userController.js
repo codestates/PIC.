@@ -153,7 +153,7 @@ const oauthNaverLogin = asyncWrapper(async (req, res) => {
 	const { code, state } = req.body;
 	if (code && state) {
 		const response = await fetch(
-			`https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_CLIENT_ID}&client_secret=${process.env.NAVER_CLIENT_SECRET}&code=${code}&state=${code}`
+			`https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_CLIENT_ID}&client_secret=${process.env.NAVER_CLIENT_SECRET}&code=${code}&state=${state}`
 		).then((res) => res.json());
 		const naverAccessToken = response.access_token;
 		const naverUserInfo = await fetch(`https://openapi.naver.com/v1/nid/me`, {
@@ -196,10 +196,25 @@ const oauthNaverLogin = asyncWrapper(async (req, res) => {
 	}
 });
 
-// OAuth 2.0 네이버 로그인
+// OAuth 2.0 카카오 로그인
 const oauthKakaoLogin = asyncWrapper(async (req, res) => {
-	res.send('ok')
-})
+	// const { code } = req.body;
+	// if (code) {
+	// 	const response = await fetch("https://kauth.kakao.com/oauth/token", {
+	// 		method: 'POST',
+	// 		body: JSON.stringify({
+	// 			grant_type: authorization_code,
+	// 			client_id: process.env.KAKAO_CLIENT_ID,
+	// 			redirect_uri = process.env.KAKAO_REDIRECT_URI,
+	// 			code: code
+	// 		})
+	// 	})
+	// 	res.json({response})
+	// } else {
+	// 	// authorization code가 전달되지 않았을 경우
+	// 	res.status(400).json({ message: "fail : require authorization code" });
+	// }
+});
 
 // 로그아웃
 const logout = asyncWrapper(async (req, res) => {
