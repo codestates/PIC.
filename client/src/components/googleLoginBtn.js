@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import { useNavigate } from "react-router-dom";
 
-const clientId = "353069671930-smkb2729kl0ebt25o2bmkqjj4hbkjvvv.apps.googleusercontent.com";
+const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENTID;
 
 export const GoogleLoginBtn = () => {
   const localStorage = window.localStorage
