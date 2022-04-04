@@ -117,7 +117,7 @@ export const Navbar = ({ isLogin }) => {
   return (
     <div>
       {/* 로그인 모달 */}
-      {openLoginModal ? <Login closeFn={() => modalHandler("login")} /> : null}
+      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal}/> : null}
       {/* 회원가입 모달 */}
       {openSignupModal ? <Signup closeFn={() => modalHandler('signup')} /> : null}
       {/* 로그아웃 시 확인 모달 */}
