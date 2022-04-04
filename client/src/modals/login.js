@@ -76,7 +76,7 @@ const CloseBtn = styled.button`
 `
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
-export const Login = ({ closeFn }) => {
+export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
   const localStorage = window.localStorage
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -97,14 +97,14 @@ export const Login = ({ closeFn }) => {
     if (res) {
       localStorage.setItem("userId", res.data._id)
       localStorage.setItem("loginToken", res.data.accessToken)
-      navSignup();
       closeFn();
       window.location.reload()
     }
   };
 
-  const navSignup = () => {
-    navigate("../mypage");
+  const openSignup = () => {
+    setOpenLoginModal(false)
+    setOpenSignupModal(true)
   };
 
   return (
@@ -121,7 +121,7 @@ export const Login = ({ closeFn }) => {
           <GoogleLoginBtn />
           {/* <NaverLoginBtn /> */}
           <Column>
-            <Btn onClick={navSignup}>회원가입</Btn>
+            <Btn onClick={openSignup}>회원가입</Btn>
           </Column>
         </ModalView>
       </ModalForm>
