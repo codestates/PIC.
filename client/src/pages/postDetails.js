@@ -4,15 +4,18 @@ import { useRef } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { BsPencilSquare, BsMap, BsGeoAltFill, BsMapFill } from "react-icons/bs";
+
 import { BtnComponent as Btn } from '../components/BtnComponent';
 import { LinkTag } from '../components/linkTag';
 import { LoadingIndicator } from '../components/loadingIndicator';
 import { OneBtnModal } from '../components/oneBtnModal';
 import { PageTitle } from '../components/pageTitle';
 import { TwoBtnModal } from '../components/twoBtnModal';
-import { BsPencilSquare } from "react-icons/bs";
 import { ToggleLikeBtn } from '../components/toggleLikeBtn';
 import { CommentContainer } from '../components/commentContainer';
+
+import markerImg from "../img/marker.png";
 
 const Container = styled.section`
   display: grid;
@@ -111,6 +114,49 @@ const MapContainer = styled.section`
   border-radius: 10px;
 `
 
+const LocationLink = styled.div`
+  position: absolute;
+
+  right: 20px;
+  bottom: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: max-content;
+  height: 1.5rem;
+  padding: 0 6px;
+
+  background-color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+
+  color: #666;
+
+  z-index: 2;
+
+  cursor : pointer;
+
+  .wrapper span {  
+    position: relative;
+    top: 2px;
+
+    font-size: 0.9rem;
+  }
+
+  .wrapper svg {
+    margin-right: 5px;
+  }
+
+  transition: 0.1s;
+
+  &:hover {
+    background-color: #ffd600;
+    color: #000;
+  }
+`
+
 const DescContainer = styled.section`
   width: 100%;
   min-height: 300px;
@@ -147,7 +193,7 @@ export const PostDetails = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const [likeStat, setLikeStat] = useState(null)
-  const [likeAmount, setLikeAmount] = useState(0)
+  const [showOnMap, setShowOnMap] = useState(false)
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const [openDoneModal, setOpenDoneModal] = useState(false)
@@ -156,7 +202,7 @@ export const PostDetails = () => {
   const navigate = useNavigate()
   const kakaoMap = useRef()
 
-  window.scrollTo(0, 0)
+  // window.scrollTo(0, 0)
 
   useEffect(() => {
     (async () => {
@@ -181,15 +227,20 @@ export const PostDetails = () => {
   useEffect(() => {
     if (coords.latitude && coords.longitude) {
 
+      const imageSrc = markerImg, // 마커이미지의 주소입니다    
+        imageSize = new kakao.maps.Size(45, 48), // 마커이미지의 크기입니다
+        imageOption = { offset: new kakao.maps.Point(10, 40) };
 
+      const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
       const marker = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(coords.latitude, coords.longitude),
+        image: markerImage
       })
 
       const staticMapContainer = kakaoMap.current, // 이미지 지도를 표시할 div  
         staticMapOption = {
           center: new kakao.maps.LatLng(coords.latitude, coords.longitude), // 이미지 지도의 중심좌표
-          level: 5, // 이미지 지도의 확대 레벨,
+          level: 3, // 이미지 지도의 확대 레벨,
         };
 
       const map = new kakao.maps.Map(staticMapContainer, staticMapOption);
@@ -206,9 +257,13 @@ export const PostDetails = () => {
   useEffect(() => {
     if (likes) {
       setLikeStat(likes.includes(userId))
-      setLikeAmount(likes.length)
     }
   }, [postData])
+
+  const openKakaoMap = () => {
+    const address = coords.roadAdd ? coords.roadAdd : coords.lotAdd
+    window.open(`https://map.kakao.com/link/map/${address},${coords.latitude},${coords.longitude}`);
+  }
 
   // 게시글 삭제
   const deletePost = async () => {
@@ -272,14 +327,31 @@ export const PostDetails = () => {
             {tags.map((tag, idx) => <LinkTag key={idx}>{tag}</LinkTag>)}
           </TagContainer>
 
-          <ToggleLikeBtn likeStat={likeStat}/>
+          <ToggleLikeBtn likeStat={likeStat} />
 
         </div>
         <ImgContainer img={photo}>
           {isLoading ? <LoadingIndicator size={'7rem'} /> : null}
         </ImgContainer>
         <h3 className='category'>장소</h3>
-        <MapContainer ref={kakaoMap} />
+        <MapContainer ref={kakaoMap}>
+          <LocationLink onClick={openKakaoMap} onMouseOver={() => setShowOnMap(true)} onMouseLeave={() => setShowOnMap(false)}>
+            {showOnMap
+              ? (
+                <div className='wrapper'>
+                  <BsMapFill/>
+                  <span>카카오 지도에서 보기</span>
+                </div>
+              )
+              : (
+                <div className='wrapper'>
+                  <BsGeoAltFill />
+                  <span>{coords.roadAdd ? coords.roadAdd : coords.lotAdd}</span>
+                </div>
+              )
+              }
+          </LocationLink>
+        </MapContainer>
         <h3 className='category'>사진 설명</h3>
         <DescContainer>
           <pre>{description}</pre>

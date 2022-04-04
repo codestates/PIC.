@@ -15,6 +15,8 @@ import { BtnComponent as Btn } from '../components/BtnComponent';
 
 import { PlaceSearch } from '../modals/placeSearch';
 
+import markerImg from "../img/marker.png";
+
 
 
 const Container = styled.section`
@@ -259,7 +261,6 @@ export const AddPost = () => {
 
   // 카카오 지도 API 사용
   useEffect(() => {
-    console.log('맵리렌더')
     const container = kakaoMap.current
     let options = {
       center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표, 추후에 위치 지정하기.
@@ -268,7 +269,13 @@ export const AddPost = () => {
 
     const map = new kakao.maps.Map(container, options)
 
-    const marker = new kakao.maps.Marker()
+    const imageSrc = markerImg, // 마커이미지의 주소입니다    
+      imageSize = new kakao.maps.Size(45, 48), // 마커이미지의 크기입니다
+      imageOption = { offset: new kakao.maps.Point(10, 40) };
+
+    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
+
+    const marker = new kakao.maps.Marker({ image: markerImage })
 
     marker.setMap(map)
 
