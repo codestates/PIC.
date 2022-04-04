@@ -11,6 +11,7 @@ import { LoadingIndicator } from "../components/loadingIndicator";
 import { BtnComponent as Btn } from '../components/BtnComponent';
 
 import { PlaceSearch } from '../modals/placeSearch';
+import markerImg from "../img/marker.png";
 
 
 const Container = styled.section`
@@ -285,7 +286,6 @@ export const ModifyPost = () => {
 
   // 카카오 지도 API 사용
   useEffect(() => {
-    console.log('맵리렌더')
     const container = kakaoMap.current
     let options = {
       center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표, 추후에 위치 지정하기.
@@ -294,7 +294,13 @@ export const ModifyPost = () => {
 
     const map = new kakao.maps.Map(container, options)
 
-    const marker = new kakao.maps.Marker()
+    const imageSrc = markerImg, // 마커이미지의 주소입니다    
+      imageSize = new kakao.maps.Size(45, 48), // 마커이미지의 크기입니다
+      imageOption = { offset: new kakao.maps.Point(10, 40) };
+
+    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
+
+    const marker = new kakao.maps.Marker({ image: markerImage })
 
     marker.setMap(map)
 
@@ -443,14 +449,14 @@ export const ModifyPost = () => {
         </TitleContainer>
         <TagContainer>
           <h3 className='category'>태그</h3>
-          { tags ? <TagSelection setTags={setTags} tags={tags} /> : null}
+          {tags ? <TagSelection setTags={setTags} tags={tags} /> : null}
         </TagContainer>
         <DescContainer>
           <h3 className='category'>사진 설명</h3>
           <textarea ref={descArea} onKeyUp={autoResizing} spellCheck={false} onChange={(e) => setDesctription(e.target.value)} value={description}></textarea>
         </DescContainer>
-        {title 
-          ? <Btn action={patchPost} width={'100%'}>게시글 수정하기</Btn> 
+        {title
+          ? <Btn action={patchPost} width={'100%'}>게시글 수정하기</Btn>
           : <Btn disabled={true} width={'100%'}>게시글 수정하기</Btn>
         }
       </InnerContainer>
