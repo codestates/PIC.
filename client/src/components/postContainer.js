@@ -9,7 +9,7 @@ import { PostThumbnail } from './postThumbnail';
 
 import { Login } from "../modals/login";
 import { Signup } from "../modals/signup";
-import { BsChevronDoubleDown } from 'react-icons/bs';
+import { BsChevronDoubleDown, BsCheckCircle } from 'react-icons/bs';
 
 const Container = styled.section`
 
@@ -59,30 +59,46 @@ const SuggetionContainer = styled.div`
   }
 `
 
-const ViewmoreContainer = styled.section`
-  position: relative;
-  top: 100px;
+const BottomContainer = styled.section`
+  position: absolute;
+  bottom: -400px;
 
-  z-index: -1;
+  /* z-index: -1; */
 
+  margin-top: 100px;
   display: flex;
   justify-content: center;
   
   width: 100%;
-  height: 200px;
+  height: 250px;
 
   color: #888;
 
-  .viewmore {
-    bottom : 35%;
+  user-select: none;
+
+  .wrapper {
+    position: relative;
+    top : -88px;
+    text-align: center;
 
     font-size: 1rem;
+
+    svg {
+      margin-bottom: 20px;
+    }
+
+    .to_top {
+      margin-top: 8px;
       
+      font-size: 0.9rem;
+      text-decoration: underline;
+
+      cursor: pointer;
     }
   }
 `
-// ! 사용 보류
-export const PostContainer = ({ category, data }) => {
+
+export const PostContainer = ({ category, tags }) => {
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const loginToken = window.localStorage.getItem('loginToken')
@@ -111,6 +127,8 @@ export const PostContainer = ({ category, data }) => {
     if (category === 'most_likes') setReqEndpoint(`${serverPath}/api/posts?like=true`)
     if (category === 'new_pics') setReqEndpoint(`${serverPath}/api/posts?date=true`)
     if (category === 'favorites') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
+
+    if (category === 'tag_search') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
   }, [category])
 
 
@@ -127,37 +145,6 @@ export const PostContainer = ({ category, data }) => {
         setPageLevel(pageLevel + 1)
       }
 
-      if (prevData.length > 0 && prevData.length < 12 && !isLoading) {
-        // 새로운 데이터가 1개에서 11개인 경우
-        // 레벨을 추가하지 않는다.
-        // 이전 데이터와 현재 받아온 데이터를 비교하고,
-        // 중복되지 않은 데이터만 상태에 추가한다.
-        // (async () => {
-        //   if (reqEndpoint) {
-        //     try {
-        //       const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
-        //       if (res.status === 200) {
-        //         setNewData(
-        //           postsData.filter((post) => {
-        //             return !prevData._id === post._id
-        //           })
-        //         )
-        //         // 중복되지 않는 데이터를 newData 에 저장한다.
-        //         console.log(newData)
-        //         setPostsData([...postsData, ...newData])
-        //         setPrevData(res.data.posts)
-        //         setIsLoading(false)
-        //         // 스크롤을 위로 이동하여 무한 요청 막기.
-        //         window.scrollBy(0, -200)
-        //       }
-        //     }
-        //     catch (err) {
-        //       // console.log(err)
-        //     }
-        //   }
-        // })()
-      }
-
       if (prevData.length === 0) return
       // 새로운 데이터가 없는 경우, 
       // 레벨을 추가 하지 않는다.
@@ -172,7 +159,7 @@ export const PostContainer = ({ category, data }) => {
   // 엔드포인트의 변경, 즉 카테고리를 이동한 경우의 게시글 데이터를 설정한다.
   useEffect(() => {
     (async () => {
-      setIsLoading(true)
+      // setIsLoading(true)
       setPostsData([])
       // 데이터 초기화
       setPageLevel(1)
@@ -196,7 +183,7 @@ export const PostContainer = ({ category, data }) => {
   // 페이지 레벨이 변경되는 경우 기존 데이터에 새로운 데이터를 추가한다.
   useEffect(() => {
     (async () => {
-      setIsLoading(true)
+      // setIsLoading(true)
       if (reqEndpoint) {
         try {
           const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
@@ -282,17 +269,29 @@ export const PostContainer = ({ category, data }) => {
           }
           <SuggestionMsg />
         </ThumbnailContainer>
-        {postsData.length > 11
+        {/* 데이터가 12개 보다 적은 경우 렌더링 하게되면 원치않은 동작을 함. */}
+        {postsData.length >= 12
           ? (
-            <ViewmoreContainer ref={viewmore}>
-              <div>
-                <BsChevronDoubleDown size={'2rem'} />
-                <div >더 보기</div>
-              </div>
-            </ViewmoreContainer>
+            <BottomContainer ref={viewmore}>
+              {postsData.length % 12 !== 0
+                ? (
+                  <div className='wrapper'>
+                    <BsCheckCircle size={'2rem'} />
+                    <div>마지막 사진을 불러왔습니다</div>
+                    <div className='to_top' onClick={() => window.scrollTo({top : 0, behavior : "smooth"})}>위로 가기</div>
+                  </div>
+                )
+                : (
+                  <div className='wrapper'>
+                    <BsChevronDoubleDown size={'2rem'} />
+                    <div>더보기</div>
+                    
+                  </div>
+                )}
+            </BottomContainer>
           )
           : null}
       </InnerContainer>
-    </Container>
+    </Container >
   );
 };

@@ -8,7 +8,6 @@ import { TiSpanner } from "react-icons/ti";
 
 const Container = styled.div`
   position: relative;
-  bottom: 0;
 
   display: grid;
   place-items: center;
