@@ -117,12 +117,12 @@ export const Navbar = ({ isLogin }) => {
   return (
     <div>
       {/* 로그인 모달 */}
-      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal}/> : null}
+      {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal} /> : null}
       {/* 회원가입 모달 */}
       {openSignupModal ? <Signup closeFn={() => modalHandler('signup')} /> : null}
       {/* 로그아웃 시 확인 모달 */}
       {openTwoBtnModal
-        ? <TwoBtnModal main={"로그아웃 하시겠습니까?"} close={() => modalHandler("logout")} action={() => handleLogout()} nav={"/main"} /> 
+        ? <TwoBtnModal main={"로그아웃 하시겠습니까?"} close={() => modalHandler("logout")} action={() => handleLogout()} navigate={"/main"} />
         : null}
 
       {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}

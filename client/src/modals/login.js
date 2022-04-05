@@ -9,9 +9,9 @@
 import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { GoogleLoginBtn } from "../components/googleLoginBtn";
 import { NaverLoginBtn } from "../components/naverLoginBtn";
+import { KakaoLoginBtn } from "../components/kakaoLoginBtn"
 
 const ModalContainer = styled.div`
   position: absolute;
@@ -64,6 +64,9 @@ const ModalView = styled.div`
   height: 800px;
   border-radius: 1rem;
   position: relative;
+  .nofi {
+    color: red;
+  }
   /* > .close-btn {
     position: absolute;
     top: 2px;
@@ -80,27 +83,33 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
   const localStorage = window.localStorage
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const navigate = useNavigate();
-
-  const loginHandler = async () => {
-    const response = await axios.post(`${serverPath}/api/users/login`, {
-      email: email,
-      password: password,
-    })
-    return response
-  }
+  const [failedLogin, setFailedLogin] = useState(false)
 
   const submit = async (e) => {
-    e.preventDefault();
-    const res = await loginHandler();
-    if (res) {
-      localStorage.setItem("userId", res.data._id)
-      localStorage.setItem("loginToken", res.data.accessToken)
-      closeFn();
-      window.location.reload()
+    // e.preventDefault();
+    try {
+      const res = await axios.post(`${serverPath}/api/users/login`, {
+        email: email,
+        password: password,
+      })
+      console.log(res, "RES")
+      if (res) {
+        localStorage.setItem("userId", res.data._id)
+        localStorage.setItem("loginToken", res.data.accessToken)
+        localStorage.setItem("loginMethod", "common")
+        closeFn();
+        window.location.reload()
+      }
+    } catch (err) {
+      setFailedLogin(true)
     }
   };
+
+  const enterEvent = (e) => {
+    if (window.event.keyCode == 13) {
+      submit()
+    }
+  }
 
   const openSignup = () => {
     setOpenLoginModal(false)
@@ -112,14 +121,16 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
       <ModalForm>
         <ModalView><CloseBtn onClick={closeFn}>x</CloseBtn>
           <Column> 이메일 </Column>
-          <Input placeholder="이메일을 입력해주세욤" onChange={(e) => setEmail(e.target.value)}></Input>
+          <Input placeholder="이메일을 입력해주세요" onChange={(e) => setEmail(e.target.value)}></Input>
           <Column> 비밀번호</Column>
-          <Input type="password" placeholder="비밀번호를 입력해보시지요" onChange={(e) => setPassword(e.target.value)}></Input>
-          <Column>
-            <Btn onClick={submit}>로그인</Btn>
+          <Input type="password" onKeyUp={enterEvent} placeholder="비밀번호를 입력해주세요" onChange={(e) => setPassword(e.target.value)}></Input>
+          {failedLogin ? <div className="nofi">이메일과 비밀번호를 확인해 주세요</div> : null}
+          <Column onClick={submit}>
+            <Btn>로그인</Btn>
           </Column>
           <GoogleLoginBtn />
-          {/* <NaverLoginBtn /> */}
+          <NaverLoginBtn />
+          <KakaoLoginBtn />
           <Column>
             <Btn onClick={openSignup}>회원가입</Btn>
           </Column>
@@ -128,5 +139,3 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
     </ModalContainer>
   );
 };
-
-

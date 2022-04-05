@@ -16,16 +16,14 @@ import { Navbar } from "./components/navbar";
 import { PostThumbnail } from "./components/postThumbnail";
 import { AddPostFloatBtn } from "./components/addPostFloatBtn";
 import { Tag } from "./components/tagComponent";
-import { GoogleLoginBtn } from "./components/googleLoginBtn";
 import { Footer } from "./components/footer";
-import { NaverLoginBtn } from "./components/naverLoginBtn";
 
 import { OneBtnModal } from "./components/oneBtnModal";
 import { TwoBtnModal } from "./components/twoBtnModal";
-import { Login } from "./modals/login";
-import { Signup } from "./modals/signup";
 import { TagSearch } from "./pages/tagSearch";
 import { CommentContainer } from "./components/commentContainer";
+import { NaverCallback } from "./pages/naverCallback";
+import { KakaoCallback } from "./pages/kakaoCallback";
 const GlobalStyles = createGlobalStyle`
     a {
       color : black;
@@ -90,7 +88,9 @@ export const App = () => {
           <Route path="mypage" element={<Mypage />} />
           <Route path="add_post" element={<AddPost />} />
           <Route path="posts/:id/comment" element={<CommentContainer />} />
-          <Route path="tags"  element={<TagSearch />} />
+          <Route path="tags" element={<TagSearch />} />
+          <Route path="callback/naver" element={<NaverCallback />} />
+          <Route path="callback/kakao" element={<KakaoCallback />} />
         </Routes>
       </InnerContainer>
       <Footer />

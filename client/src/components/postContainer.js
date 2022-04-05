@@ -61,7 +61,7 @@ const SuggetionContainer = styled.div`
 
 const ViewmoreContainer = styled.section`
   position: relative;
-  top: 50px;
+  top: 100px;
 
   z-index: -1;
 
@@ -75,7 +75,7 @@ const ViewmoreContainer = styled.section`
 
   .viewmore {
     position: absolute;
-    bottom : 30%;
+    bottom : 35%;
 
     font-size: 1rem;
   }
@@ -93,6 +93,8 @@ export const PostContainer = ({ category, data }) => {
 
   const [postsData, setPostsData] = useState([])
   const [pageLevel, setPageLevel] = useState(1);
+  const [prevData, setPrevData] = useState([])
+  const [newData, setNewData] = useState([])
 
   const [openLoginModal, setOpenLoginModal] = useState(false)
   const [openSignupModal, setOpenSignupModal] = useState(false);
@@ -101,17 +103,64 @@ export const PostContainer = ({ category, data }) => {
 
   const viewmore = useRef()
 
-  useEffect(() => {
-    if (category === 'my_pics') setReqEndpoint(`${serverPath}/api/posts?date=true&mypost=${userId}&level=${pageLevel}`)
-    if (category === 'most_likes') setReqEndpoint(`${serverPath}/api/posts?like=true&level=${pageLevel}`)
-    if (category === 'new_pics') setReqEndpoint(`${serverPath}/api/posts?date=true&level=${pageLevel}`)
-    if (category === 'favorites') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}&level=${pageLevel}`)
-  }, [])
 
+  useEffect(() => {
+    // 카테고리 props 가 변경되는 것을 감지하고, 그에 필요한 엔드포인트를 상태에 저장한다.
+    if (category === 'my_pics') setReqEndpoint(`${serverPath}/api/posts?date=true&mypost=${userId}`)
+    if (category === 'most_likes') setReqEndpoint(`${serverPath}/api/posts?like=true`)
+    if (category === 'new_pics') setReqEndpoint(`${serverPath}/api/posts?date=true`)
+    if (category === 'favorites') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
+  }, [category])
+
+
+  // 교차 감시 선언
   const io = new IntersectionObserver((entries, observer) => {
+    if (isLoading) return
+    // 데이터 로딩 중에는 실행안한다.
     if (entries[0].isIntersecting) {
-      // 바닥치면 요청 보내서 새로 저장해야함.
-      console.log('seeit!')
+      // 감시하는 요소가 조건에 따라 보여지면 아래의 함수를 실행한다.
+      setIsLoading(true)
+
+      if (prevData.length === 12 && !isLoading) {
+        // 새로운 데이터가 12개인 경우 -> 불러올 데이터가 있을 수 있으니 +1
+        setPageLevel(pageLevel + 1)
+      }
+
+      if (prevData.length > 0 && prevData.length < 12 && !isLoading) {
+        // 새로운 데이터가 1개에서 11개인 경우
+        // 레벨을 추가하지 않는다.
+        // 이전 데이터와 현재 받아온 데이터를 비교하고,
+        // 중복되지 않은 데이터만 상태에 추가한다.
+        (async () => {
+          if (reqEndpoint) {
+            try {
+              const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
+              if (res.status === 200) {
+                setNewData(
+                  postsData.filter((post) => {
+                    return !prevData._id === post._id
+                  })
+                )
+                // 중복되지 않는 데이터를 newData 에 저장한다.
+                console.log(newData)
+                setPostsData([...postsData, ...newData])
+                setPrevData(res.data.posts)
+                setIsLoading(false)
+                // 스크롤을 위로 이동하여 무한 요청 막기.
+                // window.scrollBy(0, -3)
+              }
+            }
+            catch (err) {
+              // console.log(err)
+            }
+          }
+        })()
+      }
+
+      if (prevData.length === 0) return
+      // 새로운 데이터가 없는 경우, 
+      // 레벨을 추가 하지 않는다.
+      // 명시적으로 작성.
     }
   }, { root: null, threshold: 1 })
 
@@ -119,25 +168,50 @@ export const PostContainer = ({ category, data }) => {
     io.observe(viewmore.current)
   }
 
+  // 엔드포인트의 변경, 즉 카테고리를 이동한 경우의 게시글 데이터를 설정한다.
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true)
+      setPostsData([])
+      // 데이터 초기화
+      setPageLevel(1)
+      // 페이지 레벨 초기화
+      if (reqEndpoint) {
+        try {
+          const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
+          if (res.status === 200) {
+            setPostsData(res.data.posts)
+            setPrevData(res.data.posts)
+            setIsLoading(false)
+          }
+        }
+        catch (err) {
+          // console.log(err)
+        }
+      }
+    })()
+  }, [reqEndpoint])
+
+  // 페이지 레벨이 변경되는 경우 기존 데이터에 새로운 데이터를 추가한다.
   useEffect(() => {
     (async () => {
       setIsLoading(true)
       if (reqEndpoint) {
         try {
-          console.log(reqEndpoint)
-          const res = await axios.get(reqEndpoint)
+          const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
           if (res.status === 200) {
-            setPostsData(res.data.posts)
+            setPostsData([...postsData, ...res.data.posts])
+            // 카테고리 이동과는 다르게, 
+            setPrevData(res.data.posts)
             setIsLoading(false)
           }
         }
         catch (err) {
-          // 서버와 연결할 수 없습니다 이런거 띄워주면 좋을 듯
           // console.log(err)
         }
       }
     })()
-  }, [])
+  }, [pageLevel])
 
   const SuggestionMsg = () => {
     // 로그인 되어있지 않은 경우
@@ -207,7 +281,7 @@ export const PostContainer = ({ category, data }) => {
           }
           <SuggestionMsg />
         </ThumbnailContainer>
-        {userId && postsData.length
+        {postsData.length > 11
           ? (
             <ViewmoreContainer ref={viewmore}>
               <BsChevronDoubleDown size={'2rem'} />
