@@ -74,7 +74,7 @@ export const TagSearch = () => {
   //! 3. ---------------------------------- 생성된 태그 -> 통신 연결 
   const sendReq = async () => {
     try {
-      const res = await axios.get(`${serverPath}/api/posts?date=true&hashtags=${tags}`)
+      const res = await axios.get(`${serverPath}/api/posts?date=true&hashtags=${tags}&level=1`)
 
       // [${tags}]
       if (res.status === 200) {

@@ -10,6 +10,7 @@ router.post("/", controllers.signup);
 router.post("/login", controllers.login);
 router.post("/oauth/google", controllers.oauthGoogleLogin);
 router.post("/oauth/naver", controllers.oauthNaverLogin);
+router.post("/oauth/kakao", controllers.oauthKakaoLogin);
 router.get("/logout", controllers.logout);
 router.get("/auth/token", controllers.refreshToken);
 router.get("/:id", controllers.getUserInfo);

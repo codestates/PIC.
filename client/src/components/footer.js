@@ -1,7 +1,10 @@
 import React from "react";
-import styled, { StyledComponent } from "styled-components";
-import { Link } from "react-router-dom";
+import styled from "styled-components";
 import { GoMarkGithub } from "react-icons/go";
+import { SiBloglovin } from "react-icons/si";
+import { TiSpanner } from "react-icons/ti";
+
+
 
 const Container = styled.div`
   position: relative;
@@ -46,8 +49,11 @@ const InnerContainer = styled.div`
     margin-bottom: 17px;
   }
   .position {
-    font-weight: lighter;
+    font-weight: 500;
     font-size: 0.8rem;
+  }
+  .mail {
+    font-size: smaller;
   }
 `;
 
@@ -88,6 +94,7 @@ export const Footer = () => {
           <a href="https://github.com/codestates/PIC.">
             <GoMarkGithub />
           </a>
+          <a href="https://github.com/codestates/PIC./wiki/Worklog"><TiSpanner /></a>
         </div>
       </Title>
       <InnerContainer>
@@ -97,6 +104,7 @@ export const Footer = () => {
           <a href="https://github.com/Lpickle">
             <GoMarkGithub />
           </a>
+          <a className="mail" href="mailto:pwooy2@gmail.com">pwooy2@gmail.com</a>
         </div>
         <div className="card">
           <div className="name">최경락</div>
@@ -104,6 +112,8 @@ export const Footer = () => {
           <a href="https://github.com/CHOI-K-ROCK">
             <GoMarkGithub />
           </a>
+          <a href="https://velog.io/@chl4842"><SiBloglovin /></a>
+          <a className="mail" href="mailto:chl4842@gmail.com">chl4842@gmail.com</a>
         </div>
         <div className="card">
           <div className="name">조승호</div>
@@ -111,6 +121,8 @@ export const Footer = () => {
           <a href="https://github.com/jo-seungho">
             <GoMarkGithub />
           </a>
+          <a href="https://ahsldzjvl1.tistory.com/"><SiBloglovin /></a>
+          <a className="mail" href="mailto:dkarlfurQkd1@gmail.com">dkarlfurQkd1@gmail.com</a>
         </div>
         <div className="card">
           <div className="name">이상훈</div>
@@ -118,6 +130,8 @@ export const Footer = () => {
           <a href="https://github.com/tkdgns25300">
             <GoMarkGithub />
           </a>
+          <a href="https://begin-to-end-project.tistory.com/"><SiBloglovin /></a>
+          <a className="mail" href="mailto:tkdgns25300@gmail.com">tkdgns25300@gmail.com</a>
         </div>
       </InnerContainer>
       <Copyright>
