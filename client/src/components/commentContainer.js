@@ -5,19 +5,41 @@ import { useParams } from "react-router-dom";
 import { Comment } from "../components/comment"
 
 const Container = styled.section`
+margin-top: 10px;
+
 `
 
-const CommentLayout = styled.section`
-`
 
 const CommentList = styled.section`
-  width: calc(80% - 5px);
+  width: calc(101%);
   background-color: #aaa;
   box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
   
-  border-radius: 10px;`;
+  border-radius: 10px;
+  .nick {
+    font-weight: 550;
+    font-size: calc(110%);
+    margin-bottom: 10px;
+  }
+  .option {
+    border-radius: 8px;
+    background-color: lightcoral;
+    color: white;
+  }
+  .eachComment {
+    margin-bottom: 10px;
+  }
+  `;
 
-const CommentForm = styled.div``
+const CommentForm = styled.div`
+    display: block;
+    margin-bottom: 50px;
+    
+    width: 600px;
+    height: 1px;
+
+    background-color: #aaa;
+    `
 
 const ListForm = styled.div``
 
@@ -43,9 +65,7 @@ const DeleteBtn = styled.button`
 export const CommentContainer = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
   const token = localStorage.getItem("loginToken")
-  const userId = localStorage.getItem("userId")
   const { id } = useParams()
-  const { commentId } = useParams()
 
   const [input, setInput] = useState("")
   const [comments, setComments] = useState([]);
@@ -87,21 +107,19 @@ export const CommentContainer = () => {
   }, [])
 
   return (
-    <Container>
-      <CommentLayout>
-        <CommentList>
-          <div className="comment">
-            {comments.map((el, idx) => {
-              return <Comment data={el} key={idx}>nick: {el.nickname}  댓글 : {el.description}</Comment>
-            })}
-          </div>
-        </CommentList>
-        <CommentForm>
-          <h3 className="category">댓글 입력</h3>
-          <input value={input} type="text" onChange={onChange} placeholder="댓글금지"></input>
-          <button onClick={postComment}>POST</button>
-        </CommentForm>
-      </CommentLayout>
+    <Container><div className="category">댓글목록</div>
+      <CommentList>
+        <div className="comment">
+          {comments.map((el, idx) => {
+            return <Comment data={el} key={idx}>nick: {el.nickname}  댓글 : {el.description}</Comment>
+          })}
+        </div>
+      </CommentList>
+      <CommentForm>
+        <h3 className="category">댓글 입력</h3>
+        <input value={input} type="text" onChange={onChange} placeholder="댓글금지"></input>
+        <button onClick={postComment}>확인</button>
+      </CommentForm>
     </Container>
   );
 };

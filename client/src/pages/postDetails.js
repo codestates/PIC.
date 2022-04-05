@@ -339,7 +339,7 @@ export const PostDetails = () => {
             {showOnMap
               ? (
                 <div className='wrapper'>
-                  <BsMapFill/>
+                  <BsMapFill />
                   <span>카카오 지도에서 보기</span>
                 </div>
               )
@@ -349,7 +349,7 @@ export const PostDetails = () => {
                   <span>{coords.roadAdd ? coords.roadAdd : coords.lotAdd}</span>
                 </div>
               )
-              }
+            }
           </LocationLink>
         </MapContainer>
         <h3 className='category'>사진 설명</h3>
@@ -362,8 +362,8 @@ export const PostDetails = () => {
             ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
             : null
         }
+        <CommentContainer />
       </InnerContainer>
-      <CommentContainer />
     </Container>
   );
 };
