@@ -69,23 +69,20 @@ const ViewmoreContainer = styled.section`
   justify-content: center;
   
   width: 100%;
-  height: 100px;
+  height: 200px;
 
   color: #888;
 
   .viewmore {
-    position: relative;
+    bottom : 35%;
 
-    top: 50%;
-    text-align: center;
     font-size: 1rem;
-    svg {
-      margin-bottom: 10px;
+      
     }
   }
 `
-
-export const PostContainer = ({ category }) => {
+// ! 사용 보류
+export const PostContainer = ({ category, data }) => {
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const loginToken = window.localStorage.getItem('loginToken')
@@ -130,6 +127,37 @@ export const PostContainer = ({ category }) => {
         setPageLevel(pageLevel + 1)
       }
 
+      if (prevData.length > 0 && prevData.length < 12 && !isLoading) {
+        // 새로운 데이터가 1개에서 11개인 경우
+        // 레벨을 추가하지 않는다.
+        // 이전 데이터와 현재 받아온 데이터를 비교하고,
+        // 중복되지 않은 데이터만 상태에 추가한다.
+        // (async () => {
+        //   if (reqEndpoint) {
+        //     try {
+        //       const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
+        //       if (res.status === 200) {
+        //         setNewData(
+        //           postsData.filter((post) => {
+        //             return !prevData._id === post._id
+        //           })
+        //         )
+        //         // 중복되지 않는 데이터를 newData 에 저장한다.
+        //         console.log(newData)
+        //         setPostsData([...postsData, ...newData])
+        //         setPrevData(res.data.posts)
+        //         setIsLoading(false)
+        //         // 스크롤을 위로 이동하여 무한 요청 막기.
+        //         window.scrollBy(0, -200)
+        //       }
+        //     }
+        //     catch (err) {
+        //       // console.log(err)
+        //     }
+        //   }
+        // })()
+      }
+
       if (prevData.length === 0) return
       // 새로운 데이터가 없는 경우, 
       // 레벨을 추가 하지 않는다.
@@ -154,11 +182,7 @@ export const PostContainer = ({ category }) => {
           const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
           if (res.status === 200) {
             setPostsData(res.data.posts)
-            setPrevData(
-              res.data.posts.map((post) => {
-                return post._id
-              })
-            )
+            setPrevData(res.data.posts)
             setIsLoading(false)
           }
         }
@@ -179,11 +203,7 @@ export const PostContainer = ({ category }) => {
           if (res.status === 200) {
             setPostsData([...postsData, ...res.data.posts])
             // 카테고리 이동과는 다르게, 
-            setPrevData(
-              res.data.posts.map((post) => {
-                return post._id
-              })
-            )
+            setPrevData(res.data.posts)
             setIsLoading(false)
           }
         }
@@ -193,8 +213,6 @@ export const PostContainer = ({ category }) => {
       }
     })()
   }, [pageLevel])
-
-  console.log(prevData)
 
   const SuggestionMsg = () => {
     // 로그인 되어있지 않은 경우
@@ -267,9 +285,9 @@ export const PostContainer = ({ category }) => {
         {postsData.length > 11
           ? (
             <ViewmoreContainer ref={viewmore}>
-              <div className="viewmore">
+              <div>
                 <BsChevronDoubleDown size={'2rem'} />
-                <div>더 보기</div>
+                <div >더 보기</div>
               </div>
             </ViewmoreContainer>
           )

@@ -242,7 +242,7 @@ export const PostsBoard = ({ category }) => {
               //   })}
               //   <SuggestionMsg />
               // </ThumbnailContainer>
-              <PostContainer category={category} postsData={postsData}/>
+              <PostContainer category={category}/>
             )
         }
       </InnerContainer>
