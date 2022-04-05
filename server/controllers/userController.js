@@ -307,6 +307,10 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
 			await User.updateOne({ _id: req.params.id }, newInfo, {
 				runValidators: true,
 			});
+			if (newNickname) {
+				await Post.updateMany({ author: req.params.id }, { nickname: newNickname });
+				await Comment.updateMany({ author: req.params.id }, { nickname: newNickname });
+			}
 			res.status(200).json({ message: "success" });
 		}
 	} else {
