@@ -102,7 +102,7 @@ export const PostsBoard = ({ category }) => {
       }
       if (category === "most_likes") {
         try {
-          const res = await axios.get(`${serverPath}/api/posts?like=true`)
+          const res = await axios.get(`${serverPath}/api/posts?like=true&level=1`)
           if (res.status === 200) {
             setPostsData(res.data.posts)
             setIsLoading(false)
@@ -114,7 +114,7 @@ export const PostsBoard = ({ category }) => {
       }
       if (category === "new_pics") {
         try {
-          const res = await axios.get(`${serverPath}/api/posts?date=true`)
+          const res = await axios.get(`${serverPath}/api/posts?date=true&level=1`)
           if (res.status === 200) {
             setPostsData(res.data.posts)
             setIsLoading(false)
@@ -128,7 +128,7 @@ export const PostsBoard = ({ category }) => {
         if (!window.localStorage.getItem('loginToken')) navigate('/main')
         else {
           try {
-            const res = await axios.get(`${serverPath}/api/posts?date=true`)
+            const res = await axios.get(`${serverPath}/api/posts?date=true&level=1`)
             if (res.status === 200) {
               setPostsData(
                 res.data.posts.filter((post) => {

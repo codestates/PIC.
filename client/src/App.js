@@ -24,6 +24,8 @@ import { TagSearch } from "./pages/tagSearch";
 import { CommentContainer } from "./components/commentContainer";
 import { NaverCallback } from "./pages/naverCallback";
 import { KakaoCallback } from "./pages/kakaoCallback";
+import { KeywordsSearch } from './pages/keywordsSearch';
+
 const GlobalStyles = createGlobalStyle`
     ${reset}
     .main{
@@ -89,6 +91,8 @@ export const App = () => {
           <Route path="tags" element={<TagSearch />} />
           <Route path="callback/naver" element={<NaverCallback />} />
           <Route path="callback/kakao" element={<KakaoCallback />} />
+          <Route path="tags"  element={<TagSearch />} />
+          <Route path="keywords"  element={<KeywordsSearch />} />
         </Routes>
       </InnerContainer>
       <Footer />
