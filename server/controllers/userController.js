@@ -223,7 +223,7 @@ const oauthKakaoLogin = asyncWrapper(async (req, res) => {
 		}).then((res) => res.json());
 
 		// DB에 넣을 값 생성
-		const email = kakaoUserInfo.kakao_account.email ? kakaoUserInfo.kakao_account.email + "-Kakao" : "user-Kakao";
+		const email = kakaoUserInfo.kakao_account.email ? kakaoUserInfo.kakao_account.email + "-Kakao" : "user" + String(Math.random()).slice(2, 8) + "-Kakao";
 		const nickname = kakaoUserInfo.kakao_account.profile.nickname + String(Math.random()).slice(2, 8);
 		const password = process.env.SOCIAL_LOGIN_PASSWORD;
 		const image = kakaoUserInfo.kakao_account.profile.profile_image_url;
