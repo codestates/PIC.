@@ -153,7 +153,7 @@ const oauthNaverLogin = asyncWrapper(async (req, res) => {
 	const { code, state } = req.body;
 	if (code && state) {
 		const response = await fetch(
-			`https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_CLIENT_ID}&client_secret=${process.env.NAVER_CLIENT_SECRET}&code=${code}&state=${code}`
+			`https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_CLIENT_ID}&client_secret=${process.env.NAVER_CLIENT_SECRET}&code=${code}&state=${state}`
 		).then((res) => res.json());
 		const naverAccessToken = response.access_token;
 		const naverUserInfo = await fetch(`https://openapi.naver.com/v1/nid/me`, {
@@ -164,8 +164,7 @@ const oauthNaverLogin = asyncWrapper(async (req, res) => {
 
 		// DB에 넣을 값 생성
 		const email = naverUserInfo.response.email + "-Naver";
-		const nickname =
-			naverUserInfo.response.nickname + String(Math.random()).slice(2, 8);
+		const nickname = naverUserInfo.response.nickname + String(Math.random()).slice(2, 8);
 		const password = process.env.SOCIAL_LOGIN_PASSWORD;
 		const image = naverUserInfo.response.profile_image;
 
@@ -193,6 +192,61 @@ const oauthNaverLogin = asyncWrapper(async (req, res) => {
 		res
 			.status(400)
 			.json({ message: "fail : require authorization code and state" });
+	}
+});
+
+// OAuth 2.0 카카오 로그인
+const oauthKakaoLogin = asyncWrapper(async (req, res) => {
+	const { code } = req.body;
+	if (!code) {
+		// authorization code가 전달되지 않았을 경우
+		res.status(400).json({ message: "fail : require authorization code" });
+	} else {
+		const response = await fetch("https://kauth.kakao.com/oauth/token", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+			},
+			body: new URLSearchParams({
+				grant_type: "authorization_code",
+				client_id: process.env.KAKAO_CLIENT_ID,
+				client_secret: process.env.KAKAO_CLIENT_SECRET,
+				redirect_uri: process.env.KAKAO_REDIRECT_URI,
+				code: code,
+			}),
+		}).then((res) => res.json());
+		const kakaoAccessToken = response.access_token;
+		const kakaoUserInfo = await fetch(`https://kapi.kakao.com/v2/user/me`, {
+			headers: {
+				Authorization: `Bearer ${kakaoAccessToken}`,
+			},
+		}).then((res) => res.json());
+
+		// DB에 넣을 값 생성
+		const email = kakaoUserInfo.kakao_account.email ? kakaoUserInfo.kakao_account.email + "-Kakao" : "user" + String(Math.random()).slice(2, 8) + "-Kakao";
+		const nickname = kakaoUserInfo.kakao_account.profile.nickname + String(Math.random()).slice(2, 8);
+		const password = process.env.SOCIAL_LOGIN_PASSWORD;
+		const image = kakaoUserInfo.kakao_account.profile.profile_image_url;
+
+		// DB에 추가
+		let userInfo = await User.findOne({ email });
+		if (!userInfo) {
+			// 처음 소셜로그인 하는 경우
+			userInfo = await User.create({ email, nickname, password, image });
+		}
+		const accessToken = generateToken(userInfo, "accessToken");
+		const refreshToken = generateToken(userInfo, "refreshToken");
+		res.cookie("refreshToken", refreshToken, {
+			httpOnly: true,
+			path: "/api/users/auth/token",
+			maxAge: 60 * 60 * 24 * 7,
+		});
+
+		res.json({
+			_id: userInfo._id,
+			accessToken,
+			message: "success",
+		});
 	}
 });
 
@@ -253,6 +307,10 @@ const updateUserInfo = asyncWrapper(async (req, res) => {
 			await User.updateOne({ _id: req.params.id }, newInfo, {
 				runValidators: true,
 			});
+			if (newNickname) {
+				await Post.updateMany({ author: req.params.id }, { nickname: newNickname });
+				await Comment.updateMany({ author: req.params.id }, { nickname: newNickname });
+			}
 			res.status(200).json({ message: "success" });
 		}
 	} else {
@@ -351,6 +409,7 @@ module.exports = {
 	login,
 	oauthGoogleLogin,
 	oauthNaverLogin,
+	oauthKakaoLogin,
 	logout,
 	refreshToken,
 	getUserInfo,

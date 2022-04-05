@@ -39,18 +39,29 @@ const getSinglePost = asyncWrapper(async (req, res) => {
 
 // 필터링 후 모든 게시글 조회
 const getAllPosts = asyncWrapper(async (req, res) => {
-	const { like, date, hashtags, distance, center } = req.query;
-	if (like && date) {
-		res
-			.status(400)
-			.json({ message: "fail : please request one option - like or date" });
+	const { level, mypost, bookmark, like, date, hashtags, distance, center } = req.query;
+	if (!level) {
+		res.status(400).json({ message: "fail : require level variable in query" });
+	} else if (mypost && bookmark) {
+		res.status(400).json({ message: "fail : use only one query - mypost OR bookmark" });
+	} else if (like && date) {
+		res.status(400).json({ message: "fail : use only one query - like OR date" });
 	} else {
 		let posts = await Post.find();
-		// Hashtag 필터링
+
+		// mypost(내가 적은 게시글) 필터링
+		if (mypost) {
+			posts = posts.filter((post) => String(post.author) === mypost);
+		}
+
+		// bookmark(즐겨찾기) 필터링
+		else if (bookmark) {
+			posts = posts.filter((post) => post.likes.includes(bookmark));
+		}
+
+		// hashtag 필터링
 		if (hashtags) {
-			filterHashtags = hashtags
-				.split(",")
-				.map((e) => (e[0] === " " ? e.slice(1) : e));
+			filterHashtags = hashtags.split(",").map((e) => (e[0] === " " ? e.slice(1) : e));
 			posts = posts.filter((post) => {
 				const allTags = [...post.hashtags.keywords, ...post.hashtags.myTags];
 				return isSubsetOf(allTags, filterHashtags);
@@ -74,11 +85,19 @@ const getAllPosts = asyncWrapper(async (req, res) => {
 			);
 		}
 
+		// 좋아요 순으로 정렬
 		if (like) {
 			posts.sort((a, b) => b.likes.length - a.likes.length);
-		} else if (date) {
+		} 
+
+		// 최신날짜 순으로 정렬
+		else if (date) {
 			posts.sort((a, b) => b.createdAt - a.createdAt);
 		}
+
+		// Level에 따라 자르기
+		posts = posts.slice(12 * (Number(level) - 1), 12 * (Number(level) - 1) + 12);
+
 		res.status(200).json({
 			posts,
 			message: "success",
