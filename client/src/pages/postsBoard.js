@@ -85,7 +85,7 @@ export const PostsBoard = ({ category }) => {
         if (!loginToken) navigate('/main')
         else {
           try {
-            const res = await axios.get(`${serverPath}/api/posts?date=true`)
+            const res = await axios.get(`${serverPath}/api/posts?date=true&level=1`)
             if (res.status === 200) {
               setPostsData(
                 res.data.posts.filter((post) => {
