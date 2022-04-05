@@ -1,29 +1,24 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { useRef } from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from "axios";
-
-import { PageTitle } from '../components/pageTitle';
-import { LoadingIndicator } from "../components/loadingIndicator";
-import { PostThumbnail } from "../components/postThumbnail";
-import { BtnComponent as Btn } from "../components/BtnComponent";
-import { AddPostFloatBtn } from "../components/addPostFloatBtn";
+import { BtnComponent as Btn } from './BtnComponent';
+import { PostThumbnail } from './postThumbnail';
 
 import { Login } from "../modals/login";
 import { Signup } from "../modals/signup";
-import { useRef } from "react";
-import { PostContainer } from "../components/postContainer";
+import { BsChevronDoubleDown } from 'react-icons/bs';
 
 const Container = styled.section`
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  width: 1200px;
-  height: max-content;
+
 `
 
 const InnerContainer = styled.div`
   position: relative;
-  grid-column: 2 / 12;
+  /* grid-column: 2 / 12; */
+  width: 100%;
   height: max-content;
 `
 
@@ -37,14 +32,6 @@ const ThumbnailContainer = styled.section`
   width: 100%;
   min-height: 20px;
   height: max-content;
-`
-
-const LoadingContainer = styled.section`
-  grid-column: 1/ -1;
-  height : 500px;
-
-  display: grid;
-  place-items: center;
 `
 
 const SuggetionContainer = styled.div`
@@ -84,50 +71,47 @@ const ViewmoreContainer = styled.section`
   width: 100%;
   height: 300px;
 
+  color: #888;
+
   .viewmore {
     position: absolute;
-    bottom : 0px;
-    color: #888;
-    font-weight: bold;
-  }
-` // 첫 배열의 크기가 12개 이하인 경우 표시하지 않기
+    bottom : 30%;
 
-export const PostsBoard = ({ category }) => {
+    font-size: 1rem;
+  }
+`
+// ! 사용 보류
+export const PostContainer = ({ category, data }) => {
+
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const loginToken = window.localStorage.getItem('loginToken')
   const userId = window.localStorage.getItem('userId')
 
   const navigate = useNavigate()
 
+  const [reqEndpoint, setReqEndpoint] = useState('')
+
   const [postsData, setPostsData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [pageLevel, setPageLevel] = useState(1);
 
   const [openLoginModal, setOpenLoginModal] = useState(false)
   const [openSignupModal, setOpenSignupModal] = useState(false);
 
-  const [pageLevel, setPageLevel] = useState(1);
-
+  const [isLoading, setIsLoading] = useState(false)
 
   const viewmore = useRef()
 
-  let reqEndpoint = ''
-  if (category === 'my_pics') reqEndpoint = `${serverPath}/api/posts?date=true&mypost=${userId}&level=${pageLevel}`
-  if (category === 'most_likes') reqEndpoint = `${serverPath}/api/posts?like=true&level=${pageLevel}`
-  if (category === 'new_pics') reqEndpoint = `${serverPath}/api/posts?date=true&level=${pageLevel}`
-  if (category === 'favorites') reqEndpoint = `${serverPath}/api/posts?date=true&bookmark=${userId}&level=${pageLevel}`
+  useEffect(() => {
+    if (category === 'my_pics') setReqEndpoint(`${serverPath}/api/posts?date=true&mypost=${userId}&level=${pageLevel}`)
+    if (category === 'most_likes') setReqEndpoint(`${serverPath}/api/posts?like=true&level=${pageLevel}`)
+    if (category === 'new_pics') setReqEndpoint(`${serverPath}/api/posts?date=true&level=${pageLevel}`)
+    if (category === 'favorites') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}&level=${pageLevel}`)
+  }, [])
 
   const io = new IntersectionObserver((entries, observer) => {
     if (entries[0].isIntersecting) {
-      console.log('보인다')
       // 바닥치면 요청 보내서 새로 저장해야함.
-
-      // 바닥에 도달하면 조건에 따라 레벨 + 1
-      // 응답이 0이면 숫자 추가 안함.
-      // 1~11개 라면 추가 안하고, 다시 요청을 보냈을때 중복을 제외한 데이터 저장
-      // 12개라면 +1
-
-      // 페이지 이동시마다 해당 level은 초기화되어야함.
-
+      console.log('seeit!')
     }
   }, { root: null, threshold: 1 })
 
@@ -138,33 +122,22 @@ export const PostsBoard = ({ category }) => {
   useEffect(() => {
     (async () => {
       setIsLoading(true)
-      try {
-        const res = await axios.get(reqEndpoint)
-        if (res.status === 200) {
-          setPostsData(res.data.posts)
-          setIsLoading(false)
+      if (reqEndpoint) {
+        try {
+          console.log(reqEndpoint)
+          const res = await axios.get(reqEndpoint)
+          if (res.status === 200) {
+            setPostsData(res.data.posts)
+            setIsLoading(false)
+          }
+        }
+        catch (err) {
+          // 서버와 연결할 수 없습니다 이런거 띄워주면 좋을 듯
+          // console.log(err)
         }
       }
-      catch (err) {
-        // 서버와 연결할 수 없습니다 이런거 띄워주면 좋을 듯
-      }
     })()
-  }, [category])
-
-  const TitleRender = () => {
-    if (category === "my_pics") {
-      return "나의 사진"
-    }
-    if (category === "most_likes") {
-      return "좋아요 많은 순"
-    }
-    if (category === "new_pics") {
-      return "새로 올라온 사진"
-    }
-    if (category === "favorites") {
-      return "내가 좋아요한 사진"
-    }
-  }
+  }, [])
 
   const SuggestionMsg = () => {
     // 로그인 되어있지 않은 경우
@@ -224,28 +197,25 @@ export const PostsBoard = ({ category }) => {
       {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal} /> : null}
       {openSignupModal ? <Signup closeFn={() => modalHandler('signup')} /> : null}
       <InnerContainer>
-        <AddPostFloatBtn />
-        <PageTitle>
-          <TitleRender />
-        </PageTitle>
-        {
-          isLoading
-            ? (
-              <LoadingContainer>
-                <LoadingIndicator size={'7rem'} />
-              </LoadingContainer>
-            )
-            : (
-              // <ThumbnailContainer>
-              //   {postsData.map((post, idx) => {
-              //     return <PostThumbnail key={idx} data={post} idx={idx} action={() => navigate(`/posts/${post._id}`)} />
-              //   })}
-              //   <SuggestionMsg />
-              // </ThumbnailContainer>
-              <PostContainer category={category} postsData={postsData}/>
-            )
-        }
+        <ThumbnailContainer>
+          {
+            postsData
+              ? postsData.map((post, idx) => {
+                return <PostThumbnail key={idx} data={post} idx={idx} action={() => navigate(`/posts/${post._id}`)} />
+              })
+              : null
+          }
+          <SuggestionMsg />
+        </ThumbnailContainer>
+        {userId && postsData.length
+          ? (
+            <ViewmoreContainer ref={viewmore}>
+              <BsChevronDoubleDown size={'2rem'} />
+              <div className="viewmore">더 보기</div>
+            </ViewmoreContainer>
+          )
+          : null}
       </InnerContainer>
-    </Container >
+    </Container>
   );
 };

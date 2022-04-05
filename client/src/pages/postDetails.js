@@ -56,6 +56,16 @@ const TagContainer = styled.section`
   width: 100%;
   min-height: 50px;
   height: max-content;
+
+  .tag_none {
+    position: absolute;
+    top: calc(50% - 15px);
+
+    width: 160px;
+
+    color: #888;
+    text-align: center;
+  }
 `
 
 const ModifyBtn = styled.div`
@@ -324,7 +334,7 @@ export const PostDetails = () => {
         }
         <div className='wrapper'>
           <TagContainer>
-            {tags.map((tag, idx) => <LinkTag key={idx}>{tag}</LinkTag>)}
+            {tags.length ? tags.map((tag, idx) => <LinkTag key={idx}>{tag}</LinkTag>) : <p className='tag_none'>설정된 태그가 없습니다.</p>}
           </TagContainer>
 
           <ToggleLikeBtn likeStat={likeStat} />
