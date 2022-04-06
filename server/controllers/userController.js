@@ -12,16 +12,13 @@ const ejs = require("ejs");
 const path = require("path");
 var appDir = path.dirname(require.main.filename);
 
-/********** Auth Number **********/
-let authNum;
-
 // 이메일 인증
 const sendMail = asyncWrapper(async (req, res) => {
 	const { email } = req.body;
 	if (!email) {
 		res.json({ message: "require email" });
 	} else {
-		authNum = String(Math.random()).split("").slice(2, 8).join("");
+		const authNum = String(Math.random()).split("").slice(2, 8).join("");
 		let emailTemplate;
 		ejs.renderFile(
 			appDir + "/template/authMail.ejs",

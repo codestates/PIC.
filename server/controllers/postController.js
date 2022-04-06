@@ -174,9 +174,7 @@ const toggleLike = asyncWrapper(async (req, res) => {
 		let newFavoriteArray;
 		if (oldLikesArray.includes(userId)) {
 			newLikesArray = oldLikesArray.filter((e) => e.toString() !== userId);
-			newFavoriteArray = oldFavoriteArray.filter(
-				(e) => e.toString() !== postId
-			);
+			newFavoriteArray = oldFavoriteArray.filter((e) => e.toString() !== postId);
 		} else {
 			oldLikesArray.push(userId);
 			newLikesArray = oldLikesArray;
