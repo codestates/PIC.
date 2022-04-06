@@ -1,14 +1,15 @@
-import { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
-import styled from 'styled-components';
+import { useRef } from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BsChevronDoubleDown, BsCheckCircle } from 'react-icons/bs';
-
-import { PostThumbnail } from './postThumbnail';
+import styled from 'styled-components';
 import { BtnComponent as Btn } from './BtnComponent';
+import { PostThumbnail } from './postThumbnail';
 
 import { Login } from "../modals/login";
 import { Signup } from "../modals/signup";
+import { BsChevronDoubleDown, BsCheckCircle } from 'react-icons/bs';
 
 const Container = styled.section`
 
@@ -29,7 +30,7 @@ const ThumbnailContainer = styled.section`
   grid-row-gap: 100px;
   
   width: 100%;
-  min-height: 20px;
+  /* min-height: 1200px; */
   height: max-content;
 `
 
@@ -38,6 +39,8 @@ const SuggetionContainer = styled.div`
 
   position: relative;
   top : 200px;
+
+  height: 400px;
 
   display: grid;
   justify-items: center;
@@ -109,16 +112,15 @@ export const PostContainer = ({ category, tags }) => {
 
   const [postsData, setPostsData] = useState([])
   const [pageLevel, setPageLevel] = useState(1);
-  const [prevData, setPrevData] = useState([])
-  const [endPost, setEndPost] = useState(false)
+  const [postEnd, setPostEnd] = useState(false)
 
   const [openLoginModal, setOpenLoginModal] = useState(false)
   const [openSignupModal, setOpenSignupModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false)
+  // const [viewmore, setViewmore] = useState(null)
 
   const viewmore = useRef()
-
 
   useEffect(() => {
     // 카테고리 props 가 변경되는 것을 감지하고, 그에 필요한 엔드포인트를 상태에 저장한다.
@@ -127,86 +129,72 @@ export const PostContainer = ({ category, tags }) => {
     if (category === 'new_pics') setReqEndpoint(`${serverPath}/api/posts?date=true`)
     if (category === 'favorites') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
 
-    if (category === 'tag_search') setReqEndpoint(`${serverPath}/api/posts?date=true&hashtags=${tags}`)
+    if (category === 'tag_search' && tags.length) {
+      setReqEndpoint(`${serverPath}/api/posts?date=true&hashtags=${tags}`)
+    } else if (category === 'tag_search' && !tags.length) {
+      setReqEndpoint(`${serverPath}/api/posts?date=true&hashtags=${['존재하지않는태그12341234']}`)
+    }
+    setPostEnd(false)
   }, [category, tags])
 
 
-  // 교차 감시 선언
-  const io = new IntersectionObserver((entries, observer) => {
-    if (isLoading) return
-    // 데이터 로딩 중에는 실행안한다.
-    if (entries[0].isIntersecting) {
-      // 감시하는 요소가 조건에 따라 보여지면 아래의 함수를 실행한다.
-      setIsLoading(true)
-
-      if (prevData.length === 12 && !isLoading) {
-        // 다음 데이터를 확인하고 값이 있는 경우 레벨 +1
-        axios.get(`${reqEndpoint}&level=${pageLevel + 1}`)
-          .then((res) => {
-            if (res.status === 200) {
-              if (res.data.posts.length > 0) {
-                setPageLevel(pageLevel + 1)
-                setEndPost(true)
-              }
-            }
-          })
-      }
-
-      if (prevData.length === 0) return
-      // 새로운 데이터가 없는 경우, 
-      // 레벨을 추가 하지 않는다.
-      // 명시적으로 작성.
-    }
-  }, { root: null, threshold: 1 })
-
-  if (viewmore.current) {
-    io.observe(viewmore.current)
-  }
-
-  // 엔드포인트의 변경, 즉 카테고리를 이동한 경우의 게시글 데이터를 설정한다.
   useEffect(() => {
     (async () => {
-      // setIsLoading(true)
       setPostsData([])
       // 데이터 초기화
       setPageLevel(1)
       // 페이지 레벨 초기화
       if (reqEndpoint) {
         try {
-          const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
+          const res = await axios.get(`${reqEndpoint}&level=1`)
           if (res.status === 200) {
             setPostsData(res.data.posts)
-            setPrevData(res.data.posts)
-            setIsLoading(false)
           }
         }
-        catch (err) {
-          // console.log(err)
-        }
+        catch (err) { }
       }
+      setIsLoading(false)
     })()
   }, [reqEndpoint])
 
-  // 페이지 레벨이 변경되는 경우 기존 데이터에 새로운 데이터를 추가한다.
-  useEffect(() => {
-    (async () => {
-      // setIsLoading(true)
-      if (reqEndpoint) {
-        try {
-          const res = await axios.get(`${reqEndpoint}&level=${pageLevel}`)
-          if (res.status === 200) {
-            setPostsData([...postsData, ...res.data.posts])
-            // 카테고리 이동과는 다르게, 
-            setPrevData(res.data.posts)
-            setIsLoading(false)
-          }
+  const getPage = async (level) => {
+    if (reqEndpoint) {
+      try {
+        const res = await axios.get(`${reqEndpoint}&level=${level}`)
+        if (res.status === 200 && res.data.posts.length > 0) {
+          setPostsData([...postsData, ...res.data.posts])
         }
-        catch (err) {
-          // console.log(err)
+        if (res.data.posts.length === 0) {
+          setPostEnd(true)
+
         }
       }
-    })()
+      catch (err) {
+        // console.log(err)
+      }
+    }
+    setIsLoading(false)
+  }
+
+  const loadMore = () => {
+    setPageLevel(pageLevel + 1)
+  }
+
+  useEffect(() => {
+    getPage(pageLevel)
   }, [pageLevel])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && viewmore.current && !isLoading && postsData.length) {
+        setIsLoading(true)
+        viewmore.current.click()
+      }
+    }, { threshold: 1 })
+    if (viewmore.current) {
+      observer.observe(viewmore.current)
+    }
+  }, [postsData])
 
   const SuggestionMsg = () => {
     // 로그인 되어있지 않은 경우
@@ -253,14 +241,12 @@ export const PostContainer = ({ category, tags }) => {
   const modalHandler = (modal) => {
     if (modal === "login") {
       openLoginModal ? setOpenLoginModal(false) : setOpenLoginModal(true);
-      console.log("로그인 모달 오픈");
     }
     if (modal === "signup") {
       openSignupModal ? setOpenSignupModal(false) : setOpenSignupModal(true);
-      console.log("회원가입 모달 오픈");
     }
   }
-
+  console.log(pageLevel)
   return (
     <Container>
       {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal} /> : null}
@@ -276,28 +262,30 @@ export const PostContainer = ({ category, tags }) => {
           }
           <SuggestionMsg />
         </ThumbnailContainer>
-        {/* 데이터가 12개 보다 적은 경우 렌더링 하게되면 원치않은 동작을 함. */}
-        {postsData.length >= 12
-          ? (
-            <BottomContainer ref={viewmore}>
-              {endPost
-                ? (
+        {
+          postsData.length < 12
+            ? null
+            : (postEnd
+              ? (
+                <BottomContainer>
                   <div className='wrapper'>
                     <BsCheckCircle size={'2rem'} />
                     <div>마지막 사진을 불러왔습니다</div>
                     <div className='to_top' onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>위로 가기</div>
                   </div>
-                )
-                : (
+                </BottomContainer>
+              )
+              : (
+                <BottomContainer >
                   <div className='wrapper'>
                     <BsChevronDoubleDown size={'2rem'} />
-                    <div>더보기</div>
+                    <div ref={viewmore} onClick={loadMore}>더보기</div>
                   </div>
-                )}
-            </BottomContainer>
-          )
-          : null}
+                </BottomContainer>
+              ))
+        }
       </InnerContainer>
     </Container >
   );
 };
+
