@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { PageTitle } from '../components/pageTitle';
 import { Tag } from '../components/tagComponent';
 import { PostThumbnail } from '../components/postThumbnail';
+import { PostContainer } from "../components/postContainer";
 
 const Container = styled.section`
   display: grid;
@@ -119,6 +120,9 @@ export const TagSearch = () => {
           return <PostThumbnail data={el} key={idx} action={() => goDetails(el)} />
           // 작성된 태그를 가지고 get 요청을 해서 해당 값에 맞는 태그가 있으면 가지고 오기
         }) : null}
+
+        <PostContainer category={'tag_search'} tags={tags}/>
+
       </InnerContainer>
     </Container>
   )
