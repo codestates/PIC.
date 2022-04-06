@@ -1,17 +1,9 @@
-// 모달즈에 배경이랑 정말로 내용이 표시될 컴포넌트를 작성
-// 테스트할땐 그 모달을 불러오는데 라우터로 표시말고 어떤 상태를 지정해놓고 그 상태가 트루일때만 그 모달이 전체화면에 렌더링 되도록
-// 모달이 최 상위로 올라와야하고 다른 위치를 다 무시하도록
-// 위치같은건 씨에스에스 우선 기능부터 되도록
-
-// test.js 에 기본 배경 에 작동되는 버튼 하나 만들어놓고
-// 그 버튼 클릭하면 로그인 모달창 더서 작동 되도록 구현하기
-
 import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { GoogleLoginBtn } from "../components/googleLoginBtn";
 import { NaverLoginBtn } from "../components/naverLoginBtn";
+import { KakaoLoginBtn } from "../components/kakaoLoginBtn"
 
 const ModalContainer = styled.div`
   position: absolute;
@@ -64,6 +56,9 @@ const ModalView = styled.div`
   height: 800px;
   border-radius: 1rem;
   position: relative;
+  .nofi {
+    color: red;
+  }
   /* > .close-btn {
     position: absolute;
     top: 2px;
@@ -76,35 +71,41 @@ const CloseBtn = styled.button`
 `
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
-export const Login = ({ closeFn }) => {
+export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
   const localStorage = window.localStorage
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const navigate = useNavigate();
-
-  const loginHandler = async () => {
-    const response = await axios.post(`${serverPath}/api/users/login`, {
-      email: email,
-      password: password,
-    })
-    return response
-  }
+  const [failedLogin, setFailedLogin] = useState(false)
 
   const submit = async (e) => {
-    e.preventDefault();
-    const res = await loginHandler();
-    if (res) {
-      localStorage.setItem("userId", res.data._id)
-      localStorage.setItem("loginToken", res.data.accessToken)
-      navSignup();
-      closeFn();
-      window.location.reload()
+    // e.preventDefault();
+    try {
+      const res = await axios.post(`${serverPath}/api/users/login`, {
+        email: email,
+        password: password,
+      })
+      console.log(res, "RES")
+      if (res) {
+        localStorage.setItem("userId", res.data._id)
+        localStorage.setItem("loginToken", res.data.accessToken)
+        localStorage.setItem("loginMethod", "common")
+        closeFn();
+        window.location.reload()
+      }
+    } catch (err) {
+      setFailedLogin(true)
     }
   };
 
-  const navSignup = () => {
-    navigate("../mypage");
+  const enterEvent = (e) => {
+    if (window.event.keyCode == 13) {
+      submit()
+    }
+  }
+
+  const openSignup = () => {
+    setOpenLoginModal(false)
+    setOpenSignupModal(true)
   };
 
   return (
@@ -112,21 +113,21 @@ export const Login = ({ closeFn }) => {
       <ModalForm>
         <ModalView><CloseBtn onClick={closeFn}>x</CloseBtn>
           <Column> 이메일 </Column>
-          <Input placeholder="이메일을 입력해주세욤" onChange={(e) => setEmail(e.target.value)}></Input>
+          <Input placeholder="이메일을 입력해주세요" onChange={(e) => setEmail(e.target.value)}></Input>
           <Column> 비밀번호</Column>
-          <Input type="password" placeholder="비밀번호를 입력해보시지요" onChange={(e) => setPassword(e.target.value)}></Input>
-          <Column>
-            <Btn onClick={submit}>로그인</Btn>
+          <Input type="password" onKeyUp={enterEvent} placeholder="비밀번호를 입력해주세요" onChange={(e) => setPassword(e.target.value)}></Input>
+          {failedLogin ? <div className="nofi">이메일과 비밀번호를 확인해 주세요</div> : null}
+          <Column onClick={submit}>
+            <Btn>로그인</Btn>
           </Column>
           <GoogleLoginBtn />
-          {/* <NaverLoginBtn /> */}
+          <NaverLoginBtn />
+          <KakaoLoginBtn />
           <Column>
-            <Btn onClick={navSignup}>회원가입</Btn>
+            <Btn onClick={openSignup}>회원가입</Btn>
           </Column>
         </ModalView>
       </ModalForm>
     </ModalContainer>
   );
 };
-
-

@@ -236,7 +236,6 @@ export const PlaceSearch = ({ setLocation, closeFn }) => {
     closeFn()
   }
 
-  console.log(placeData)
   return (
     <Container>
     <Backdrop onClick={closeFn} />

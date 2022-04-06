@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import { useParams } from "react-router-dom";
 
@@ -40,9 +40,9 @@ export const Comment = ({ data }) => {
 
   return (
     <div className='eachComment'>
-      <div>{nickname}</div>
-      {author === userId ? <button onClick={commentDelete}>삭제</button> : null}
-      {author === userId ? <button onClick={editOn}>수정</button> : null}
+      <div className='nick'>{nickname}</div>
+      {author === userId ? <button className='option' onClick={commentDelete}>삭제</button> : null}
+      {author === userId ? <button className='option' onClick={editOn}>수정</button> : null}
       {edit ? (
         <input type="text" value={text} onChange={(e) => handleChange(e)} />)
         : (<div>{text}</div>)

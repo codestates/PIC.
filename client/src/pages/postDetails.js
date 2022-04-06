@@ -56,6 +56,16 @@ const TagContainer = styled.section`
   width: 100%;
   min-height: 50px;
   height: max-content;
+
+  .tag_none {
+    position: absolute;
+    top: calc(50% - 15px);
+
+    width: 160px;
+
+    color: #888;
+    text-align: center;
+  }
 `
 
 const ModifyBtn = styled.div`
@@ -228,8 +238,8 @@ export const PostDetails = () => {
     if (coords.latitude && coords.longitude) {
 
       const imageSrc = markerImg, // 마커이미지의 주소입니다    
-        imageSize = new kakao.maps.Size(45, 48), // 마커이미지의 크기입니다
-        imageOption = { offset: new kakao.maps.Point(10, 40) };
+        imageSize = new kakao.maps.Size(50, 45), // 마커이미지의 크기입니다
+        imageOption = { offset: new kakao.maps.Point(13, 38) };
 
       const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
       const marker = new kakao.maps.Marker({
@@ -324,7 +334,7 @@ export const PostDetails = () => {
         }
         <div className='wrapper'>
           <TagContainer>
-            {tags.map((tag, idx) => <LinkTag key={idx}>{tag}</LinkTag>)}
+            {tags.length ? tags.map((tag, idx) => <LinkTag key={idx}>{tag}</LinkTag>) : <p className='tag_none'>설정된 태그가 없습니다.</p>}
           </TagContainer>
 
           <ToggleLikeBtn likeStat={likeStat} />
@@ -339,7 +349,7 @@ export const PostDetails = () => {
             {showOnMap
               ? (
                 <div className='wrapper'>
-                  <BsMapFill/>
+                  <BsMapFill />
                   <span>카카오 지도에서 보기</span>
                 </div>
               )
@@ -349,7 +359,7 @@ export const PostDetails = () => {
                   <span>{coords.roadAdd ? coords.roadAdd : coords.lotAdd}</span>
                 </div>
               )
-              }
+            }
           </LocationLink>
         </MapContainer>
         <h3 className='category'>사진 설명</h3>
@@ -362,8 +372,8 @@ export const PostDetails = () => {
             ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
             : null
         }
+        <CommentContainer />
       </InnerContainer>
-      <CommentContainer />
     </Container>
   );
 };
