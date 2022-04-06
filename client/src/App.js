@@ -27,9 +27,11 @@ import { KakaoCallback } from "./pages/kakaoCallback";
 import { KeywordsSearch } from './pages/keywordsSearch';
 
 const GlobalStyles = createGlobalStyle`
+    a {
+      color : black;
+    }
     ${reset}
     .main{
-      
       /* overflow: hidden; */
       /* 모달이 열린 경우 뒤의 화면의 스크롤이 생기지 않게 하려면 위의 내용을 추가시켜 줘야한다. */
       /* 모달이 열린 경우를 상태로 저장하여 클래스이름을 조건부 렌더링하면 해결 가능할 듯 */
