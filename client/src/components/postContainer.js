@@ -1,15 +1,14 @@
+import { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
-import { useRef } from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { BtnComponent as Btn } from './BtnComponent';
+import { useNavigate } from 'react-router-dom';
+import { BsChevronDoubleDown, BsCheckCircle } from 'react-icons/bs';
+
 import { PostThumbnail } from './postThumbnail';
+import { BtnComponent as Btn } from './BtnComponent';
 
 import { Login } from "../modals/login";
 import { Signup } from "../modals/signup";
-import { BsChevronDoubleDown, BsCheckCircle } from 'react-icons/bs';
 
 const Container = styled.section`
 
@@ -63,7 +62,7 @@ const BottomContainer = styled.section`
   position: absolute;
   bottom: -400px;
 
-  /* z-index: -1; */
+  /* z-index: 1; */
 
   margin-top: 100px;
   display: flex;
@@ -111,7 +110,7 @@ export const PostContainer = ({ category, tags }) => {
   const [postsData, setPostsData] = useState([])
   const [pageLevel, setPageLevel] = useState(1);
   const [prevData, setPrevData] = useState([])
-  const [newData, setNewData] = useState([])
+  const [endPost, setEndPost] = useState(false)
 
   const [openLoginModal, setOpenLoginModal] = useState(false)
   const [openSignupModal, setOpenSignupModal] = useState(false);
@@ -128,8 +127,8 @@ export const PostContainer = ({ category, tags }) => {
     if (category === 'new_pics') setReqEndpoint(`${serverPath}/api/posts?date=true`)
     if (category === 'favorites') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
 
-    if (category === 'tag_search') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
-  }, [category])
+    if (category === 'tag_search') setReqEndpoint(`${serverPath}/api/posts?date=true&hashtags=${tags}`)
+  }, [category, tags])
 
 
   // 교차 감시 선언
@@ -141,8 +140,16 @@ export const PostContainer = ({ category, tags }) => {
       setIsLoading(true)
 
       if (prevData.length === 12 && !isLoading) {
-        // 새로운 데이터가 12개인 경우 -> 불러올 데이터가 있을 수 있으니 +1
-        setPageLevel(pageLevel + 1)
+        // 다음 데이터를 확인하고 값이 있는 경우 레벨 +1
+        axios.get(`${reqEndpoint}&level=${pageLevel + 1}`)
+          .then((res) => {
+            if (res.status === 200) {
+              if (res.data.posts.length > 0) {
+                setPageLevel(pageLevel + 1)
+                setEndPost(true)
+              }
+            }
+          })
       }
 
       if (prevData.length === 0) return
@@ -273,19 +280,18 @@ export const PostContainer = ({ category, tags }) => {
         {postsData.length >= 12
           ? (
             <BottomContainer ref={viewmore}>
-              {postsData.length % 12 !== 0
+              {endPost
                 ? (
                   <div className='wrapper'>
                     <BsCheckCircle size={'2rem'} />
                     <div>마지막 사진을 불러왔습니다</div>
-                    <div className='to_top' onClick={() => window.scrollTo({top : 0, behavior : "smooth"})}>위로 가기</div>
+                    <div className='to_top' onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>위로 가기</div>
                   </div>
                 )
                 : (
                   <div className='wrapper'>
                     <BsChevronDoubleDown size={'2rem'} />
                     <div>더보기</div>
-                    
                   </div>
                 )}
             </BottomContainer>
