@@ -100,15 +100,12 @@ const BottomContainer = styled.section`
   }
 `
 
-export const PostContainer = ({ category, tags }) => {
+export const PostContainer = ({ reqEndpoint, category }) => {
 
-  const serverPath = process.env.REACT_APP_SERVER_PATH
   const loginToken = window.localStorage.getItem('loginToken')
   const userId = window.localStorage.getItem('userId')
 
   const navigate = useNavigate()
-
-  const [reqEndpoint, setReqEndpoint] = useState('')
 
   const [postsData, setPostsData] = useState([])
   const [pageLevel, setPageLevel] = useState(1);
@@ -118,62 +115,50 @@ export const PostContainer = ({ category, tags }) => {
   const [openSignupModal, setOpenSignupModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false)
-  // const [viewmore, setViewmore] = useState(null)
 
   const viewmore = useRef()
 
   useEffect(() => {
-    // 카테고리 props 가 변경되는 것을 감지하고, 그에 필요한 엔드포인트를 상태에 저장한다.
-    if (category === 'my_pics') setReqEndpoint(`${serverPath}/api/posts?date=true&mypost=${userId}`)
-    if (category === 'most_likes') setReqEndpoint(`${serverPath}/api/posts?like=true`)
-    if (category === 'new_pics') setReqEndpoint(`${serverPath}/api/posts?date=true`)
-    if (category === 'favorites') setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
-
-    if (category === 'tag_search' && tags.length) {
-      setReqEndpoint(`${serverPath}/api/posts?date=true&hashtags=${tags}`)
-    } else if (category === 'tag_search' && !tags.length) {
-      setReqEndpoint(`${serverPath}/api/posts?date=true&hashtags=${['존재하지않는태그12341234']}`)
-    }
     setPostEnd(false)
-  }, [category, tags])
-
+  }, [reqEndpoint])
 
   useEffect(() => {
     (async () => {
-      setPostsData([])
-      // 데이터 초기화
-      setPageLevel(1)
-      // 페이지 레벨 초기화
       if (reqEndpoint) {
+        setPostsData([])
+        // 데이터 초기화
+        setPageLevel(1)
+        // 페이지 레벨 초기화
+        setIsLoading(true)
         try {
           const res = await axios.get(`${reqEndpoint}&level=1`)
           if (res.status === 200) {
             setPostsData(res.data.posts)
+            setIsLoading(false)
           }
         }
         catch (err) { }
       }
-      setIsLoading(false)
     })()
   }, [reqEndpoint])
 
   const getPage = async (level) => {
     if (reqEndpoint) {
+      setIsLoading(true)
       try {
         const res = await axios.get(`${reqEndpoint}&level=${level}`)
         if (res.status === 200 && res.data.posts.length > 0) {
           setPostsData([...postsData, ...res.data.posts])
+          setIsLoading(false)
         }
         if (res.data.posts.length === 0) {
           setPostEnd(true)
-
         }
       }
       catch (err) {
         // console.log(err)
       }
     }
-    setIsLoading(false)
   }
 
   const loadMore = () => {
@@ -186,11 +171,11 @@ export const PostContainer = ({ category, tags }) => {
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && viewmore.current && !isLoading && postsData.length) {
-        setIsLoading(true)
+      if (entries[0].isIntersecting && viewmore.current) {
         viewmore.current.click()
       }
     }, { threshold: 1 })
+
     if (viewmore.current) {
       observer.observe(viewmore.current)
     }
@@ -246,7 +231,7 @@ export const PostContainer = ({ category, tags }) => {
       openSignupModal ? setOpenSignupModal(false) : setOpenSignupModal(true);
     }
   }
-  console.log(pageLevel)
+  
   return (
     <Container>
       {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal} /> : null}
@@ -288,4 +273,3 @@ export const PostContainer = ({ category, tags }) => {
     </Container >
   );
 };
-

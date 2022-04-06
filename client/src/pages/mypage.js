@@ -2,33 +2,73 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { PageTitle } from "../components/pageTitle";
+import { BtnComponent as Btn } from "../components/BtnComponent";
 
-const Container = styled.div``;
+const Container = styled.section`
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  
+  width: 1200px;
+  height: max-content;
+`
+
+const InnerContainer = styled.div`
+  grid-column: 3 / 11;
+
+  display: flex;
+  flex-direction: column;
+
+  min-height: max-content;
+
+  align-items: center;`
 
 const ProfilePic = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
+
+  margin-bottom: 20px;
+
   background: ${(props) => `url(${props.url})`};
   background-position: center;
   background-size: cover;
+
+  border-radius: 30%;
+
+  box-shadow: 0 3px 3px rgba(0,0,0,0.2);
 `;
 
-const Rows = styled.div`
-  h3 {
+const Userinfo = styled.div`
+  width: 305px;
+
+  margin-top: 30px;
+
+  .info {
+    h3 {
+      margin-bottom: 15px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    div {
+      font-size: 1.2rem;
+    }
   }
 
-  span {
+  .info:last-child {
+    margin-bottom: 30px;
   }
-`;
+`
+const Hline = styled.div`
+  margin : 28px 0;
 
-const ModifyBtn = styled.div`
-  display: grid;
-  place-items: center;
-  width: 200px;
-  height: 50px;
-  border: 1px solid black;
-  cursor: pointer;
-`;
+  width: 100%;
+  height: 1px;
+
+  background-color: #ddd;
+`
+
 
 export const Mypage = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
@@ -60,20 +100,27 @@ export const Mypage = () => {
   // 링크로 내 정보 수정 페이지로 넘어가야함.
   return (
     <Container>
-      <ProfilePic url={image} />
-      <Rows>
-        <h3>내 닉네임</h3>
-        <span>{nickname}</span>
-      </Rows>
-      <Rows>
-        <h3 className="red">내 이메일</h3>
-        <span>{email}</span>
-      </Rows>
-      <Rows>
-        <h3>내가 받은 좋아요</h3>
-        <span>{likes}</span>
-      </Rows>
-      <ModifyBtn onClick={navigateToModify}>회원정보 수정</ModifyBtn>
+      <InnerContainer>
+        <PageTitle>내 정보보기</PageTitle>
+        <ProfilePic url={image} />
+        <Userinfo>
+          <div className="info">
+            <h3>내 닉네임</h3>
+            <div>{nickname}</div>
+          </div>
+          <Hline />
+          <div className="info">
+            <h3>내 이메일</h3>
+            <div>{email}</div>
+          </div>
+          <Hline />
+          <div className="info">
+            <h3>내가 받은 좋아요</h3>
+            <div>{likes}</div>
+          </div>
+        </Userinfo>
+        <Btn action={navigateToModify}>회원정보 수정</Btn>
+      </InnerContainer>
     </Container>
   );
 };

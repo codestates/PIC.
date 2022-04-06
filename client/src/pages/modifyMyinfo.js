@@ -40,6 +40,7 @@ const Forms = styled.div`
 
   .fields > div{
     margin-bottom: 25px;
+    font-weight: 500;
   }
 
   .fields input{
