@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
@@ -65,15 +66,24 @@ const InnerContainer = styled.div`
 `
 
 export const App = () => {
-  const localStorage = window.localStorage
+  const sessionStorage = window.sessionStorage;
 
   const [isLogin, setIsLogin] = useState(false);
 
-  useEffect(() => {
-    if (localStorage.getItem("loginToken") && localStorage.getItem("userId")) {
+  useEffect(async () => {
+    if (sessionStorage.getItem("loginToken") && sessionStorage.getItem("userId")) {
       setIsLogin(true)
     } else {
-      setIsLogin(false)
+      const res = await axios.get(`${process.env.REACT_APP_SERVER_PATH}/api/users/auth/token`);
+      console.log(res)
+      if (res.data.message === "success") {
+        sessionStorage.setItem("userId", res.data._id)
+        sessionStorage.setItem("loginToken", res.data.accessToken)
+        sessionStorage.setItem("loginMethod", "common")
+        setIsLogin(true)
+      } else {
+        setIsLogin(false)
+      }
     }
   })
 

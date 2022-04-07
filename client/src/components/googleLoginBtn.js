@@ -5,7 +5,7 @@ import GoogleLogin from "react-google-login";
 const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENTID;
 
 export const GoogleLoginBtn = () => {
-  const localStorage = window.localStorage
+  const sessionStorage = window.sessionStorage;
   const serverPath = process.env.REACT_APP_SERVER_PATH;
 
   const onSuccess = async (e) => {
@@ -15,9 +15,9 @@ export const GoogleLoginBtn = () => {
       idToken: googleTokenId,
     });
     if (postGoogleId.status === 200) {
-      localStorage.setItem("loginToken", postGoogleId.data.accessToken);
-      localStorage.setItem("userId", postGoogleId.data._id)
-      localStorage.setItem("loginMethod", "social")
+      sessionStorage.setItem("loginToken", postGoogleId.data.accessToken);
+      sessionStorage.setItem("userId", postGoogleId.data._id)
+      sessionStorage.setItem("loginMethod", "social")
       window.location.reload()
     }
   };

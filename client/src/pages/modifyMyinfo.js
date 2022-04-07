@@ -134,8 +134,8 @@ const Nofication = styled.div`
 export const ModifyMyinfo = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
-  const userId = window.localStorage.getItem('userId')
-  const accessToken = window.localStorage.getItem('loginToken')
+  const userId = window.sessionStorage.getItem('userId')
+  const accessToken = window.sessionStorage.getItem('loginToken')
 
   const [profileImg, setProfileImg] = useState(null)
   const [oldProfileImg, setOldProfileImg] = useState(null)
