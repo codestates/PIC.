@@ -153,7 +153,7 @@ const NicknameSkeleton = styled.div`
 export const PostThumbnail = ({ data, action, idx }) => { // 실 사용시에는 해당 위치에 props 로 게시글의 정보를 받아옴.
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
-  const userId = window.localStorage.getItem('userId')
+  const userId = window.sessionStorage.getItem('userId')
 
   const [isLike, setIsLike] = useState(null)
 
