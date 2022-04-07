@@ -172,7 +172,7 @@ const toggleLike = asyncWrapper(async (req, res) => {
 		let newLikesArray;
 		const oldFavoriteArray = userInfo.favorite;
 		let newFavoriteArray;
-		let oldLikes = userInfo.likes;
+		let oldLikes = await User.findById(post.author).then(res => res.likes);
 		if (oldLikesArray.includes(userId)) {
 			newLikesArray = oldLikesArray.filter((e) => e.toString() !== userId);
 			newFavoriteArray = oldFavoriteArray.filter((e) => e.toString() !== postId);
@@ -185,19 +185,9 @@ const toggleLike = asyncWrapper(async (req, res) => {
 			oldLikes++;
 		}
 		// DB에 추가
-		await Post.updateOne(
-			{ _id: postId },
-			{
-				likes: newLikesArray,
-			}
-		);
-		await User.updateOne(
-			{ _id: userId },
-			{
-				favorite: newFavoriteArray,
-				likes: oldLikes
-			}
-		);
+		await Post.updateOne({ _id: postId }, {	likes: newLikesArray });
+		await User.updateOne({ _id: userId }, {	favorite: newFavoriteArray });
+		await User.updateOne({ _id: post.author }, { likes: oldLikes })
 		res.status(200).json({ message: "success" });
 	}
 });
