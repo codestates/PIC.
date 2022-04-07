@@ -36,7 +36,7 @@ const LoadingContainer = styled.section`
   height: 300px;
 `
 
-export const TagSelection = ({ setTags, tags }) => {
+export const TagSelection = ({ setTags, tags, hideMyTags }) => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
 
   const [tagData, setTagData] = useState([])
@@ -169,17 +169,23 @@ export const TagSelection = ({ setTags, tags }) => {
           </div>
         )
       }
-
-      <h3>나의 태그</h3>
-      <TagContainer>
-        {
-          myTags.map((myTag) => {
-            return <Tag key={myTag} usage={'added'} removeFn={removeMyTag}>{myTag}</Tag>
-          })
-        }
-        {/* props 로 조건부 렌더링하기 */}
-        <Tag usage={'add'} addFn={addMyTag}>내 태그추가</Tag>
-      </TagContainer>
-    </Container >
+      {
+        hideMyTags
+          ? null
+          : (
+            <div>
+              <h3>나의 태그</h3>
+              <TagContainer>
+                {
+                  myTags.map((myTag) => {
+                    return <Tag key={myTag} usage={'added'} removeFn={removeMyTag}>{myTag}</Tag>
+                  })
+                }
+                <Tag usage={'add'} addFn={addMyTag}>내 태그추가</Tag>
+              </TagContainer>
+            </div>
+          )
+      }
+    </Container>
   );
 };
