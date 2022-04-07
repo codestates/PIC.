@@ -28,7 +28,7 @@ const Container = styled.section`
 
 export const ToggleLikeBtn = ({ likeStat, setLikeStat }) => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
-  const loginToken = window.localStorage.getItem('loginToken')
+  const loginToken = window.sessionStorage.getItem('loginToken')
 
   const [isLikePost, setIsLikePost] = useState('')
 

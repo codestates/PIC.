@@ -237,7 +237,7 @@ export const AddPost = () => {
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
-  const accessToken = window.localStorage.getItem('loginToken')
+  const accessToken = window.sessionStorage.getItem('loginToken')
 
   const [imgBase64, setImgBase64] = useState(null)
   const [imgHostUrl, setImgHostUrl] = useState('')

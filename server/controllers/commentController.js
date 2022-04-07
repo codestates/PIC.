@@ -7,10 +7,6 @@ const verifyToken = require("../utils/verifyToken");
 // 게시물에 댓글 추가
 const addComment = asyncWrapper(async (req, res) => {
 	const { description } = req.body;
-	const userId = verifyToken(req.headers.authorization, "accessToken").id;
-	const userNickname = await User.findById(userId).then(
-		(res) => res.nickname
-	);
 	const postId = req.params.id;
 	const post = await Post.findById(postId);
 	if (!description) {
@@ -18,6 +14,8 @@ const addComment = asyncWrapper(async (req, res) => {
 	} else if (!post) {
 		res.status(400).json({ message: "fail : there's no post with the id" });
 	} else {
+		const userId = verifyToken(req.headers.authorization, "accessToken").id;
+		const userNickname = await User.findById(userId).then((res) => res.nickname);
 		const newInfo = {
 			author: userId,
 			nickname: userNickname,
@@ -90,9 +88,7 @@ const deleteComment = asyncWrapper(async (req, res) => {
 	} else if (!comment || !post.comment.includes(commentId)) {
 		res.status(400).json({ message: "fail : there's no comment with the id" });
 	} else {
-		const newCommentsArray = post.comment.filter(
-			(e) => e.toString() !== commentId
-		);
+		const newCommentsArray = post.comment.filter((e) => e.toString() !== commentId);
 		// Post, Comment DB에서 각각 삭제
 		await Post.updateOne({ _id: postId }, { comment: newCommentsArray });
 		await Comment.deleteOne({ _id: commentId });

@@ -72,7 +72,7 @@ const CloseBtn = styled.button`
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
 export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
-  const localStorage = window.localStorage
+  const sessionStorage = window.sessionStorage;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [failedLogin, setFailedLogin] = useState(false)
@@ -86,9 +86,9 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
       })
       console.log(res, "RES")
       if (res) {
-        localStorage.setItem("userId", res.data._id)
-        localStorage.setItem("loginToken", res.data.accessToken)
-        localStorage.setItem("loginMethod", "common")
+        sessionStorage.setItem("userId", res.data._id)
+        sessionStorage.setItem("loginToken", res.data.accessToken)
+        sessionStorage.setItem("loginMethod", "common")
         closeFn();
         window.location.reload()
       }

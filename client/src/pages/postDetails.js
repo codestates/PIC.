@@ -231,8 +231,8 @@ export const PostDetails = () => {
 
 
   const serverPath = process.env.REACT_APP_SERVER_PATH;
-  const loginToken = window.localStorage.getItem('loginToken')
-  const userId = window.localStorage.getItem('userId')
+  const loginToken = window.sessionStorage.getItem('loginToken')
+  const userId = window.sessionStorage.getItem('userId')
 
   const [postData, setPostData] = useState({})
   const [coords, setCoords] = useState([])

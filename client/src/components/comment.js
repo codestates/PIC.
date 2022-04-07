@@ -156,8 +156,9 @@ export const Comment = ({ data }) => {
   const { description, author, nickname, _id, createdAt } = data
   const serverPath = process.env.REACT_APP_SERVER_PATH;
   const { id } = useParams()
-  const userId = localStorage.getItem("userId")
-  const loginToken = localStorage.getItem("loginToken")
+  const sessionStorage = window.sessionStorage;
+  const userId = sessionStorage.getItem("userId")
+  const loginToken = sessionStorage.getItem("loginToken")
 
   const [text, setText] = useState(description)
   const [edit, setEdit] = useState(false)

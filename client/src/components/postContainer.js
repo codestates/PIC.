@@ -106,8 +106,8 @@ const BottomContainer = styled.section`
 
 export const PostContainer = ({ reqEndpoint, category }) => {
 
-  const loginToken = window.localStorage.getItem('loginToken')
-  const userId = window.localStorage.getItem('userId')
+  const loginToken = window.sessionStorage.getItem('loginToken')
+  const userId = window.sessionStorage.getItem('userId')
 
   const navigate = useNavigate()
 

@@ -73,7 +73,7 @@ const Hline = styled.div`
 
 export const Mypage = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
-  const userId = window.localStorage.getItem('userId')
+  const userId = window.sessionStorage.getItem('userId')
 
   const [userInfo, setUserInfo] = useState([]);
 

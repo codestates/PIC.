@@ -83,7 +83,7 @@ const RightLinks = styled.div`
 
 export const Navbar = ({ isLogin }) => {
   const navigate = useNavigate();
-  const localStorage = window.localStorage
+  const sessionStorage = window.sessionStorage;
 
   const [openModal, setOpenModal] = useState(false);
   const [openLoginModal, setOpenLoginModal] = useState(false);
@@ -110,7 +110,7 @@ export const Navbar = ({ isLogin }) => {
 
 
   const handleLogout = () => {
-    localStorage.clear()
+    sessionStorage.clear()
     window.location.reload()
   }
 

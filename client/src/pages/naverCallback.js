@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 export const NaverCallback = () => {
 
-  const localStorage = window.localStorage
+  const sessionStorage = window.sessionStorage
   const serverPath = process.env.REACT_APP_SERVER_PATH;
   const naverState = process.env.REACT_APP_NAVER_STATE;
   const navigate = useNavigate()
 
-  const userId = localStorage.getItem("userId")
-  const loginToken = localStorage.getItem("loginToken")
+  const userId = sessionStorage.getItem("userId")
+  const loginToken = sessionStorage.getItem("loginToken")
 
   const nidCode = new URLSearchParams(window.location.search).get('code');
   (async () => {
@@ -21,9 +21,9 @@ export const NaverCallback = () => {
         state: naverState,
       })
       if (res.status === 200) {
-        localStorage.setItem("userId", res.data._id)
-        localStorage.setItem("loginToken", res.data.accessToken)
-        localStorage.setItem("loginMethod", "social")
+        sessionStorage.setItem("userId", res.data._id)
+        sessionStorage.setItem("loginToken", res.data.accessToken)
+        sessionStorage.setItem("loginMethod", "social")
         navigate("/my_pics")
         window.location.reload()
       }

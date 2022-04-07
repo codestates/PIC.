@@ -134,8 +134,9 @@ const Notification = styled.section`
 
 export const CommentContainer = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
-  const token = localStorage.getItem("loginToken")
-  const userId = localStorage.getItem("userId")
+  const sessionStorage = window.sessionStorage;
+  const token = sessionStorage.getItem("loginToken")
+  const userId = sessionStorage.getItem("userId")
   const { id } = useParams()
 
   const [input, setInput] = useState("")
