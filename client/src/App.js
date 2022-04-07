@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
@@ -35,6 +35,7 @@ const GlobalStyles = createGlobalStyle`
     a {
       color : black;
     }
+    
     ${reset}
     .main{
       /* overflow: hidden; */
@@ -59,8 +60,7 @@ const InnerContainer = styled.div`
   height: max-content;
   min-height: 700px;
   
-
-  margin-top: 200px;
+  margin-top: 100px;
   margin-bottom: 200px;
 `
 
@@ -75,7 +75,13 @@ export const App = () => {
     } else {
       setIsLogin(false)
     }
-  })
+  }, [])
+
+  const { pathname } = useLocation();
+  useEffect(() => {
+    console.log(pathname)
+    window.scrollTo(0 ,0)
+  }, [pathname])
 
   return (
     <Container>

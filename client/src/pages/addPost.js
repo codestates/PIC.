@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsCameraFill } from "react-icons/bs";
 import { IoLocateSharp as LocationPin, IoSearch } from "react-icons/io5";
+import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
 
 
 import { PageTitle } from '../components/pageTitle';
@@ -110,11 +111,11 @@ const BtnOnMap = styled.div`
   height: 1.5rem;
   padding: 0 6px;
 
-  background-color: #fff;
+  background-color: #ffd600;
   border-radius: 1.5rem;
-  box-shadow: 0px 2px 3px rgba(0,0,0,0.3);
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.5);
 
-  color: #666;
+  color: #000;
 
   z-index: 2;
 
@@ -134,8 +135,8 @@ const BtnOnMap = styled.div`
   transition: 0.1s;
 
   &:hover {
-    background-color: #ffd600;
-    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.5);
   }
 `
 const MyLocationBtn = styled(BtnOnMap)`
@@ -177,7 +178,7 @@ const DescContainer = styled.section`
     min-height: 300px;
     box-sizing: border-box;
     padding: 10px;
-
+    margin-bottom: 30px;
     font-family: sans-serif;
     font-size: 1.1rem;
 
@@ -191,6 +192,41 @@ const DescContainer = styled.section`
     }
 
   }
+`
+
+const BtnContainer = styled.section`
+  height: 100px;
+
+  .requires_wrapper {
+    position: relative;
+    height: 32px;
+
+    .requires {
+      position: absolute;
+      right: 0;
+      display : flex;
+
+      svg {
+        position: relative;
+        top: 2px;
+
+        margin-left: 4px;
+      }
+
+      .msg {
+        margin-left: 10px;
+        svg {
+          color : #91d92e;
+        }
+      }
+      .msg.check {
+        svg{
+        color : #ff796b;
+        }
+      }
+    } 
+  }
+  
 `
 
 export const AddPost = () => {
@@ -263,7 +299,7 @@ export const AddPost = () => {
   useEffect(() => {
     const container = kakaoMap.current
     let options = {
-      center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표, 추후에 위치 지정하기.
+      center: new kakao.maps.LatLng(37.5666805, 126.9784147), //지도의 중심좌표, 추후에 위치 지정하기.
       level: 3
     }
 
@@ -407,6 +443,16 @@ export const AddPost = () => {
     }
   }
 
+  const RequireNotification = () => {
+    return (
+      <div className='requires'>
+        {title ? <div className='msg'>제목<BsCheckCircleFill /></div> : <div className='msg check'>제목<BsXCircleFill /></div>}
+        {imgHostUrl ? <div className='msg'>사진 업로드<BsCheckCircleFill /></div> : <div className='msg check'>사진 업로드<BsXCircleFill /></div>}
+        {location ? <div className='msg'>장소 정보 입력<BsCheckCircleFill /></div> : <div className='msg check'>장소 정보 입력<BsXCircleFill /></div>}
+      </div>
+    )
+  }
+
   const modalHandler = (modal) => {
     if (modal === "search") {
       openSearchModal ? setOpenSearchModal(false) : setOpenSearchModal(true);
@@ -446,7 +492,12 @@ export const AddPost = () => {
           <h3 className='category'>사진 설명</h3>
           <textarea ref={descArea} onKeyUp={autoResizing} spellCheck={false} onChange={(e) => setDesctription(e.target.value)} ></textarea>
         </DescContainer>
-        <UploadBtnByCondition />
+        <BtnContainer>
+          <div className="requires_wrapper">
+            <RequireNotification />
+          </div>
+          <UploadBtnByCondition />
+        </BtnContainer>
       </InnerContainer>
     </Container >
   );

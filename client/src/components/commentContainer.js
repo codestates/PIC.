@@ -19,12 +19,6 @@ const CommentList = styled.section`
   max-height: 500px;
 
   box-sizing: border-box;
-  
-  .nick {
-    font-weight: 550;
-    font-size: 1.1rem;
-    margin-bottom: 5px;
-  }
 
   .eachComment {
     margin-bottom: 10px;
@@ -45,9 +39,10 @@ const CommentForm = styled.div`
       textarea {
         width: 100%;
         height: 50px;
-
+        
         box-sizing: border-box;
         border-radius: 25px;
+        background-color: #FFF2AE;
 
         padding: 16px 55px;
 
@@ -58,10 +53,12 @@ const CommentForm = styled.div`
         resize: none;
         overflow: hidden;
 
-        border: 1px solid #aaa;
+        border: none;
+
+        box-shadow: 0px 2px 3px rgba(0,0,0,0.2);
 
         &:focus{
-          outline: 3px solid #ffd600;
+          outline: none;
           border: none;
         }
       }
@@ -79,11 +76,13 @@ const CommentForm = styled.div`
         height: 50px;
 
         border-radius: 50%;
-        background-color: #FFEA7C;
+        background-color: #fff;
 
         cursor: pointer;
 
         transition: 0.2s;
+
+        box-shadow: 0px 2px 3px rgba(0,0,0,0.1);
 
         &:hover{
           border: none;
@@ -111,6 +110,27 @@ const ProfilePic = styled.div`
   border-radius: 50%;
 `
 
+const Notification = styled.section`
+  display: grid;
+  place-items: center;
+
+  width: 100%;  
+  height: 200px;
+
+  .msg {
+    text-align: center;
+  }
+
+  .msg p {
+    color: #aaa;
+    font-size: 0.9rem;
+
+    &:first-child{
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+  }
+`
 
 export const CommentContainer = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
@@ -172,22 +192,34 @@ export const CommentContainer = () => {
     getComment()
   }, [])
 
-  console.log(comments)
   return (
     <Container>
       <CommentList>
         <div className="comment">
-          {comments.map((el, idx) => {
-            return <Comment data={el} key={idx}>nick: {el.nickname}  댓글 : {el.description}</Comment>
-          })}
+          {
+            comments.length
+              ? (
+                comments.map((el, idx) => {
+                  return <Comment data={el} key={idx}>nick: {el.nickname}  댓글 : {el.description}</Comment>
+                })
+              )
+              : (
+                <Notification>
+                  <div className='msg'>
+                    <p>작성된 댓글이 없습니다</p>
+                    <p>이 게시글의 첫 댓글을 남겨보세요!</p>
+                  </div>
+                </Notification>
+              )
+          }
+
         </div>
       </CommentList>
-      <h3 className="category">댓글 입력</h3>
       <CommentForm>
         <ProfilePic url={myProfilePic} />
         <div className="wrapper">
           <textarea ref={writeArea} value={input} type="text" onKeyUp={autoResizing} spellCheck={false} onChange={onChange} placeholder="댓글을 작성하세요."></textarea>
-          <div className="button" onClick={postComment}><HiArrowUp size={'1.5rem'}/></div>
+          <div className="button" onClick={postComment}><HiArrowUp size={'1.5rem'} /></div>
         </div>
       </CommentForm>
     </Container>
