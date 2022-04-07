@@ -257,11 +257,11 @@ const logout = asyncWrapper(async (req, res) => {
 const refreshToken = asyncWrapper(async (req, res) => {
 	const refreshToken = req.cookies.refreshToken;
 	if (!refreshToken) {
-		res.json({ message: "fail : require refresh token" });
+		res.status(400).json({ message: "fail : require refresh token" });
 	} else {
 		const data = verifyToken(refreshToken, "refreshToken");
 		if (data === "fail") {
-			res.json({ message: "fail : invalid refresh token" });
+			res.status(400).json({ message: "fail : invalid refresh token" });
 		} else {
 			const accessToken = generateToken({ _id: data.id }, "accessToken");
 			res.json({
