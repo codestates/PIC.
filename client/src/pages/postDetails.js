@@ -13,7 +13,7 @@ import { OneBtnModal } from '../components/oneBtnModal';
 import { PageTitle } from '../components/pageTitle';
 import { TwoBtnModal } from '../components/twoBtnModal';
 import { ToggleLikeBtn } from '../components/toggleLikeBtn';
-import { CommentContainer } from '../components/commentContainer';
+import { CommentContainer as Comments} from '../components/commentContainer';
 
 import markerImg from "../img/marker.png";
 
@@ -182,11 +182,12 @@ const DescContainer = styled.section`
   border-radius: 3px;
 `
 
-// const CommentContainer = styled.section`
-//   width: 100%;
-//   min-height: 300px;
-//   max-height: 500px;
-// `
+const CommentContainer = styled.section`
+  width: 100%;
+  min-height: 300px;
+  height: max-content;
+
+`
 
 export const PostDetails = () => {
   const kakao = window.kakao
@@ -366,13 +367,16 @@ export const PostDetails = () => {
         <DescContainer>
           <pre>{description}</pre>
         </DescContainer>
-        {/* <CommentForm /> */}
+        <h3 className='category'>댓글</h3>
+        <CommentContainer>
+          <Comments />
+        </CommentContainer>
         {
           postData.author === userId
             ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
             : null
         }
-        <CommentContainer />
+
       </InnerContainer>
     </Container>
   );

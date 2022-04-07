@@ -9,7 +9,6 @@ import { Mypage } from "./pages/mypage";
 import { ModifyMyinfo } from "./pages/modifyMyinfo";
 import { AddPost } from "./pages/addPost";
 import { ModifyPost } from "./pages/modifyPost";
-import { PostsBoard } from "./pages/postsBoard";
 import { PostDetails } from "./pages/postDetails";
 
 import { Navbar } from "./components/navbar";
@@ -25,6 +24,12 @@ import { CommentContainer } from "./components/commentContainer";
 import { NaverCallback } from "./pages/naverCallback";
 import { KakaoCallback } from "./pages/kakaoCallback";
 import { KeywordsSearch } from './pages/keywordsSearch';
+
+import { MyPics } from "./pages/categories/myPics";
+import { MostLikes } from "./pages/categories/mostLikes";
+import { NewPics } from "./pages/categories/newPics";
+import { Favorites } from "./pages/categories/favorites";
+
 
 const GlobalStyles = createGlobalStyle`
     a {
@@ -80,10 +85,11 @@ export const App = () => {
       <Navbar isLogin={isLogin} />
       <InnerContainer>
         <Routes>
-          <Route path="my_pics" element={<PostsBoard category="my_pics" />} />
-          <Route path="most_likes" element={<PostsBoard category="most_likes" />} />
-          <Route path="new_pics" element={<PostsBoard category="new_pics" />} />
-          <Route path="favorites" element={<PostsBoard category="favorites" />} />
+          <Route path="my_pics" element={<MyPics />} />
+          <Route path="most_likes" element={<MostLikes/>} />
+          <Route path="new_pics" element={<NewPics />} />
+          <Route path="favorites" element={<Favorites />} />
+
           <Route path="mypage/modify/" element={<ModifyMyinfo />} />
           <Route path="posts/:id/modify/" element={<ModifyPost />} />
           <Route path="posts/:id" element={<PostDetails />} />
