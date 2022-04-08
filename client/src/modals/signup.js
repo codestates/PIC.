@@ -1,42 +1,60 @@
 import { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BsXCircleFill } from "react-icons/bs";
+import { BtnComponent as Btn } from "../components/BtnComponent";
 
 
 const ModalContainer = styled.div`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position : fixed;
+  display: grid;
+  place-items: center;
+
+  top:0; left: 0; bottom: 0; right: 0;
+
   width: 100vw;
   height: 100vh;
-  margin: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
+
+  z-index: 998;
 `;
-const ModalForm = styled.div`
-  position: absolute;
-  top: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 600px;
+
+
+const Backdrop = styled.div`
+  position : fixed;
+  top:0; left: 0; bottom: 0; right: 0;
+
+  background-color: rgba(0,0,0,0.3);
+
+  z-index: 998;
+`
+
+const Modal = styled.div`
+  position: relative;
+  display: grid;
+  place-items: center;
+  background-color: white;
+  width: 400px;
   height: 700px;
+  border-radius: 15px;
+  z-index: 999;
+  
+  h3 {
+    margin-bottom: 6px;
+  } 
+
   .fields {
     display: grid;
     justify-content: center;
     width: 305px;
-    min-height: 30px;
-    margin-top: 30px;
-  }
-  .fields > div {
     margin-bottom: 20px;
   }
+
   .fields input {
     width: 305px;
-    height: 38px;
-    margin-top: 6px;
+    height: 40px;
+    margin-bottom: 15px;
+    padding-left: 5px;
     box-sizing: border-box;
     border: 1px solid #aaa;
     border-radius: 3px;
@@ -49,52 +67,28 @@ const ModalForm = styled.div`
     position: relative;
   }
 `;
-const ModalView = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  width: 400px;
-  height: 800px;
-  border-radius: 1rem;
+
+const InnerContainer = styled.div`
   position: relative;
-  /* > .close-btn {
-    position: absolute;
-    top: 2px;
-    right: 7px;
-    cursor: pointer;
-  } */
+  top: 15px;
+  height: max-content;
 `;
-const Btn = styled.div`
-  display: grid;
-  place-items: center;
-  width: 305px;
-  height: 40px;
-  background-color: ${(props) => (props.disabled ? "#DDDDDD" : "#FFD600")};
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
-  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+
+const CloseBtn = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 30px;
+
+  color: #ff796b;
+
   transition: 0.1s;
+  cursor: pointer;
+
   &:hover {
-    transform: ${(props) => (props.disabled ? "null" : "translateY(-2px)")};
-    box-shadow: ${(props) => (props.disabled ? "null" : "0px 5px 4px rgba(0,0,0,0.1)")};
+    transform: translateY(-2px);
   }
-  span {
-    position: relative;
-    top: 2px;
-  }
-`;
-const StyledSubmitBtn = styled.button`
-  margin-top: 20px;
-  width: 100%;
-  height: 35px;
-  font-size: 1rem;
-`;
-const ConfirmBtn = styled(Btn)`
-  margin-top: 30px;
-`;
+`
+
 const Nofication = styled.div`
   position: absolute;
   top: 2px;
@@ -102,7 +96,23 @@ const Nofication = styled.div`
   font-size: 0.8rem; ;
 `;
 
-export const Signup = ({ closeFn }) => {
+const Hline = styled.div`
+  margin-top : 15px;
+  margin-bottom : 15px;
+
+  width: 100%;
+  height: 1px;
+
+  background-color: #ddd;
+`
+
+export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
+
+  // 최초에는 중복확인 버튼만 활성화 상태로 보여야함
+  // 중복확인 버튼을 누르고 중복이 아닌 경우 인증 버튼을 활성화 함.
+
+
+
   //! -------------------------------------- 1. 상태선언 ------------------------------------
 
   const serverPath = process.env.REACT_APP_SERVER_PATH;
@@ -115,6 +125,7 @@ export const Signup = ({ closeFn }) => {
 
   //-------- 이메일 코드관련 상태 --------
   const [isValidEmailCode, setIsValidEmailCode] = useState(false);
+  const [isChecked, setIsChecked] = useState(false)
   const [emailCode, setEmailCode] = useState("");
   // email 코드 6자리
   const [codeInputValue, setCodeInputValue] = useState("");
@@ -140,26 +151,18 @@ export const Signup = ({ closeFn }) => {
     return emailRegex.test(value);
   };
 
+  const emailInputHandler = (e) => {
+    setEmail(e.target.value)
+    setIsChecked(false)
+    setIsNotUsingEmail(false)
+    setEmailCode('')
+  }
+
   //todo 이메일 입력창 이벤트를 사용하기위해서 만든 함수 _ com,co 요청 손 봐야함  (리펙토링해야함!!!!!)
   const emailCheckHandler = (e) => {
-    const tailCheck = () => {
-      const tail = e.tatget.value.split('.')[1]
-      console.log(tail);
-
-      if (tail === 'com' || tail === 'co.kr') return true
-      else return false
-    }
-
     // input에 입력된 값을 원하는 상태에 저장합니다.
-    if (tailCheck && validateEmail(e.target.value)) {
-      setEmail(e.target.value)
-    }
-  };
-  //todo -------------------------------------------------------------
-
-
-  useEffect(() => {
     (async () => {
+      setIsChecked(true)
       if (email && validateEmail(email)) {
         // 이메일 필드에 값이 있고, 유효한 경우에만 요청전송
         // 두 조건이 일치하는 요청에서 200이 아닌 경우 중복으로 볼 수 있음.
@@ -174,8 +177,10 @@ export const Signup = ({ closeFn }) => {
           setIsNotUsingEmail(false);
         }
       }
-    })();
-  }, [email, serverPath]);
+    })()
+  };
+  //todo -------------------------------------------------------------
+
   // useEffect 를 이용하여, email 상태가 바뀌면 email 요청을 보낸다.
   // 위의 문법은 즉시실행함수로, 호출하지 않고 1회성으로 함수를 실행 시킬 수 있다.
   // 이후 응답에 따라 분기하여 상태를 변경한다.
@@ -186,7 +191,6 @@ export const Signup = ({ closeFn }) => {
     const res = await axios.post(`${serverPath}/api/users/mail`, {
       email: email,
     });
-    console.log(res.data.authNum)
     if (res.status === 200) {
       setEmailCode(res.data.authNum);
       //200 일때 무엇을 저장 ? -> console.log로 찍어봐서 내가 원하는게 어디에 있는지 보고 저장! 
@@ -202,7 +206,6 @@ export const Signup = ({ closeFn }) => {
     setCodeInputValue(e.target.value)
 
     if (emailCode === e.target.value) {
-      console.log("죠옷습니돠")
       setIsValidEmailCode(true);
     } else {
       setIsValidEmailCode(false);
@@ -255,8 +258,8 @@ export const Signup = ({ closeFn }) => {
       password: password,
     });
     if (res.status === 201) {
-      naviagate("./login");
-      // 유즈네비게이트로 200시에 /login 으로 이동하겠다 의미.
+      setOpenLoginModal(true)
+      setOpenSignupModal(false)
     }
   };
 
@@ -264,10 +267,10 @@ export const Signup = ({ closeFn }) => {
   //! -------------------------------------- 3.컴포넌트------------------------------------
   // 이메일 유효성검사
   const EmailNotification = () => {
-    if (!isNotUsingEmail && email && validateEmail(email)) {
+    if (isChecked && !isNotUsingEmail && email && validateEmail(email)) {
       return <Nofication>중복된 이메일입니다.</Nofication>;
     }
-    if (isNotUsingEmail && email.length > 0 && validateEmail(email)) {
+    if (isChecked && isNotUsingEmail && email.length > 0 && validateEmail(email)) {
       return <Nofication>사용 가능한 이메일입니다.</Nofication>;
     }
     if (email && !validateEmail(email)) {
@@ -278,17 +281,23 @@ export const Signup = ({ closeFn }) => {
 
   // 이메일 인증 보내기 버튼
   const EmailCodeBtn = () => {
-    return isNotUsingEmail ? <StyledSubmitBtn onClick={sendEmailCode}>인증</StyledSubmitBtn> : <StyledSubmitBtn disabled>인증</StyledSubmitBtn>;
+    return isNotUsingEmail ? <Btn action={sendEmailCode}>인증</Btn> : <Btn action={emailCheckHandler}>중복확인</Btn>;
   };
 
 
   // 이메일 코드 6자리 검사
   const EmailCodeNotification = () => {
-    if (!isValidEmailCode && codeInputValue) {
+    if (emailCode && !isValidEmailCode && codeInputValue) {
       return <Nofication>코드가 서로 다릅니다.</Nofication>;
     }
-    if (isValidEmailCode && codeInputValue) {
-      return <Nofication>확인 했습니다.</Nofication>;
+    if (emailCode && isValidEmailCode && codeInputValue) {
+      return <Nofication>코드가 일치합니다.</Nofication>;
+    }
+    if (!emailCode && codeInputValue) {
+      return <Nofication>인증코드 전송이 필요합니다.</Nofication>;
+    }
+    if(emailCode) {
+      return <Nofication>메일에 전송된 코드를 입력해주세요.</Nofication>;
     }
     return null;
   };
@@ -337,18 +346,18 @@ export const Signup = ({ closeFn }) => {
 
   // 회원가입
   const ConfirmBtnByCondition = () => {
-    if (email && isNotUsingEmail && nickname && isValidNickname && password && retypePassword && password.length >= 8) {
+    if (email && isNotUsingEmail && nickname && isValidNickname && password && retypePassword && passwordCheck && password.length >= 8) {
       // 모든 값이 입력되어 았고, 유효성 및 중복검사, 일치여부를 충족한 경우
       return (
-        <ConfirmBtn onClick={SignupHandler}>
+        <Btn action={SignupHandler}>
           <span>회원가입</span>
-        </ConfirmBtn>
+        </Btn>
       );
     } else {
       return (
-        <ConfirmBtn disabled={true}>
+        <Btn disabled={true}>
           <span>회원가입</span>
-        </ConfirmBtn>
+        </Btn>
       );
     }
   };
@@ -356,42 +365,42 @@ export const Signup = ({ closeFn }) => {
   return (
     <div>
       <ModalContainer>
-        <ModalForm>
-          <ModalView><button onClick={closeFn}>x</button>
+        <Backdrop onClick={closeFn} />
+        <Modal>
+          <CloseBtn onClick={closeFn}><BsXCircleFill size={'2rem'} /></CloseBtn>
+          <InnerContainer>
 
             {/* 이메일 입력 */}
             <div className="fields">
               <div className="form">
-                <div>이메일</div>
+                <h3>이메일</h3>
                 <EmailNotification />
-                <input type="email" placeholder="이메일 입력" onChange={emailCheckHandler} />
+                <input autoFocus type="email" placeholder="이메일 입력" onChange={emailInputHandler} />
                 <EmailCodeBtn />
               </div>
+            </div>
 
-              {/* // onChange={() => setIsNotUsingEmail(false)}  */}
-
-
-              {/* 이메일 코드 6자리 입력 */}
-              <div className="fields">
-                <div className="form">
-                  <div>인증코드</div>
-                  <EmailCodeNotification />
-                  <input type="text" placeholder="6자리 인증코드 입력" onChange={emailCodeHandler} />
-                </div>
+            {/* 이메일 코드 6자리 입력 */}
+            <div className="fields">
+              <div className="form">
+                <h3>인증코드</h3>
+                <EmailCodeNotification />
+                <input type="text" placeholder="6자리 인증코드 입력" onChange={emailCodeHandler} />
               </div>
+            </div>
 
-              {/* 닉네임 입력 */}
-              <div className="fields">
-                <div className="form">
-                  <div>닉네임</div>
-                  <NicknameNofication />
-                  <input type="text" placeholder="닉네임을 입력합니다." onBlur={nicknameCheckHandler} />
-                </div>
+            {/* 닉네임 입력 */}
+            <Hline />
+            <div className="fields">
+              <div className="form">
+                <h3>닉네임</h3>
+                <NicknameNofication />
+                <input type="text" placeholder="닉네임을 입력합니다." onBlur={nicknameCheckHandler} />
               </div>
 
               {/* 비밀번호 및 비밀번호 확인 */}
               <div className="form">
-                <div>비밀번호 입력</div>
+                <h3>비밀번호 입력</h3>
                 <PasswordNofication />
                 <input
                   type={"password"}
@@ -401,9 +410,8 @@ export const Signup = ({ closeFn }) => {
                   }}
                 />
               </div>
-
               <div className="form">
-                <div>비밀번호 입력 확인</div>
+                <h3>비밀번호 입력 확인</h3>
                 <RetypePasswordNofication />
                 <input
                   type={"password"}
@@ -415,9 +423,8 @@ export const Signup = ({ closeFn }) => {
               </div>
             </div>
             <ConfirmBtnByCondition />
-
-          </ModalView>
-        </ModalForm>
+          </InnerContainer>
+        </Modal>
       </ModalContainer>
     </div>
   );

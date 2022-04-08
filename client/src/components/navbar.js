@@ -12,7 +12,7 @@ const Container = styled.header`
   align-items: center;
   justify-content: center;
 
-  width: 100vw;
+  width: 100%;
   min-width: 1200px;
   height: 50px;
 
@@ -119,7 +119,7 @@ export const Navbar = ({ isLogin }) => {
       {/* 로그인 모달 */}
       {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal} /> : null}
       {/* 회원가입 모달 */}
-      {openSignupModal ? <Signup closeFn={() => modalHandler('signup')} /> : null}
+      {openSignupModal ? <Signup closeFn={() => modalHandler('signup')} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal}/> : null}
       {/* 로그아웃 시 확인 모달 */}
       {openTwoBtnModal
         ? <TwoBtnModal main={"로그아웃 하시겠습니까?"} close={() => modalHandler("logout")} action={() => handleLogout()} navigate={"/main"} />

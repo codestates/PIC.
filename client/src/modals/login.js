@@ -41,13 +41,13 @@ const Modal = styled.div`
   z-index: 999;
 
   .nofi {
-    color: red;
+    font-size: 0.8rem;
   }
 
   input {
     width: 305px;
     height: 40px;
-
+    padding-left: 5px;
     border-radius: 3px;
     border: 1px solid #aaa;
 
@@ -76,13 +76,13 @@ const CloseBtn = styled.div`
   top: 30px;
   right: 30px;
 
-  color: #888;
+  color: #ff796b;
 
   transition: 0.1s;
   cursor: pointer;
 
   &:hover {
-    color: #ff796b;
+    transform: translateY(-2px);
   }
 `
 
@@ -166,7 +166,7 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
         <InnerContainer>
           <InputContainer>
             <h3>이메일</h3>
-            <Input placeholder="이메일을 입력해주세요" onChange={(e) => setEmail(e.target.value)}></Input>
+            <Input autoFocus placeholder="이메일을 입력해주세요" onChange={(e) => setEmail(e.target.value)}></Input>
             <h3>비밀번호</h3>
             <Input type="password" onKeyUp={enterEvent} placeholder="비밀번호를 입력해주세요" onChange={(e) => setPassword(e.target.value)}></Input>
             {failedLogin ? <div className="nofi">이메일과 비밀번호를 확인해 주세요</div> : null}

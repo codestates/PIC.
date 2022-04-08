@@ -48,7 +48,6 @@ const GlobalStyles = createGlobalStyle`
 const Container = styled.div`
 position: relative;
 width: 100vw;
-height: 100vh;
 min-height: 100vh;
 `
 
@@ -58,7 +57,7 @@ const InnerContainer = styled.div`
   justify-content: center;
   
   height: max-content;
-  min-height: 700px;
+  min-height: 800px;
   
   margin-top: 100px;
   margin-bottom: 200px;
