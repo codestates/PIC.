@@ -272,6 +272,27 @@ const refreshToken = asyncWrapper(async (req, res) => {
 	}
 });
 
+// 액세스토큰 유효여부 확인
+const validateToken = asyncWrapper(async (req, res) => {
+	const { token } = req.body;
+	if (!token) {
+		res.status(400).json({ message: "fail : require token" });
+	} else {
+		const data = verifyToken(token, "accessToken");
+		if (data === "fail") {
+			res.status(200).json({
+				valid: false,
+				message: "success"
+			});
+		} else {
+			res.status(200).json({
+				valid: true,
+				message: "success"
+			});
+		}
+	}
+})
+
 // 사용자 정보 조회
 const getUserInfo = asyncWrapper(async (req, res) => {
 	const userInfo = await User.findById(req.params.id).select("-password");
@@ -409,6 +430,7 @@ module.exports = {
 	oauthKakaoLogin,
 	logout,
 	refreshToken,
+	validateToken,
 	getUserInfo,
 	updateUserInfo,
 	deleteUser,
