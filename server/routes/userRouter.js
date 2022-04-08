@@ -13,6 +13,7 @@ router.post("/oauth/naver", controllers.oauthNaverLogin);
 router.post("/oauth/kakao", controllers.oauthKakaoLogin);
 router.get("/logout", controllers.logout);
 router.get("/auth/token", controllers.refreshToken);
+router.post("/auth/token/validate", controllers.validateToken);
 router.get("/:id", controllers.getUserInfo);
 router.patch("/:id", checkToken, controllers.updateUserInfo);
 router.delete("/:id", checkToken, controllers.deleteUser);
