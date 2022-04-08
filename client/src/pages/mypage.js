@@ -22,7 +22,8 @@ const InnerContainer = styled.div`
 
   min-height: max-content;
 
-  align-items: center;`
+  align-items: center;
+`
 
 const ProfilePic = styled.div`
   width: 130px;
@@ -52,7 +53,7 @@ const Userinfo = styled.div`
     }
 
     div {
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
   }
 
@@ -77,6 +78,12 @@ export const Mypage = () => {
   const [userInfo, setUserInfo] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userId) {
+      navigate('/main')
+    }
+  }, [])
 
   useEffect(() => {
     const getUserinfo = async () => {

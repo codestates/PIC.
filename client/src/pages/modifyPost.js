@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsCameraFill } from "react-icons/bs";
 import { IoLocateSharp as LocationPin, IoSearch } from "react-icons/io5";
@@ -197,6 +197,7 @@ export const ModifyPost = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
   const accessToken = window.sessionStorage.getItem('loginToken')
+  const userId = window.sessionStorage.getItem('userId')
 
   const [imgBase64, setImgBase64] = useState(null)
   const [imgHostUrl, setImgHostUrl] = useState('')
@@ -214,12 +215,11 @@ export const ModifyPost = () => {
   const [openSearchModal, setOpenSearchModal] = useState(false)
 
   const params = useParams()
+  const navigate = useNavigate()
 
   const imgInput = useRef()
   const kakaoMap = useRef()
   const descArea = useRef()
-
-
 
 
   // 게시글의 아이디를 받아서 ㅇㅋ
@@ -234,9 +234,12 @@ export const ModifyPost = () => {
     (async () => {
       const res = await axios.get(`${serverPath}/api/posts/${params.id}`)
       const data = res.data.post
-      console.log(data)
 
       if (res.status === 200) {
+        if (userId !== data.author) {
+          navigate('/main')
+        }
+
         setTitle(data.title)
         setDesctription(data.description)
         setLocation(data.location)
@@ -395,7 +398,7 @@ export const ModifyPost = () => {
       return null
     }
   }
-  const patchPost = () => {
+  const patchPost = async () => {
     const headers = {
       headers: {
         Authorization: accessToken
@@ -413,7 +416,11 @@ export const ModifyPost = () => {
       },
       newHashtags: tags
     }
-    axios.patch(`${serverPath}/api/posts/${params.id}`, body, headers)
+    const res = await axios.patch(`${serverPath}/api/posts/${params.id}`, body, headers)
+    if(res.status === 200){
+      navigate(-1)
+    }
+
   }
 
   const modalHandler = (modal) => {

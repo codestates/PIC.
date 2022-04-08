@@ -15,7 +15,7 @@ const Title = styled.div`
 
   position: relative;
 
-  width: 70%;
+  width: 100%;
   margin-bottom: 15px;
   
   font-size: 1.5rem;  
@@ -42,7 +42,7 @@ const Title = styled.div`
 
 const GoBackBtn = styled(BsChevronLeft)`
   position: absolute;
-  left: calc(50% - 306px);
+  left: -7px;
   top: -3px;
 
   font-size: 1.5rem;
@@ -54,13 +54,13 @@ const HLine = styled.div`
     display: block;
     margin-bottom: 50px;
     
-    width: 600px;
+    width: 100%;
     height: 1px;
 
     background-color: #aaa;
 `
 
-export const PageTitle = ({ children, author }) => {
+export const PageTitle = ({ children, author, goBackBtn }) => {
   const navigate = useNavigate()
 
   return (
@@ -69,7 +69,7 @@ export const PageTitle = ({ children, author }) => {
         <h2>{children}</h2>
         {author ? <div>by. {author}</div> : null}
       </Title>
-      <GoBackBtn onClick={() => navigate(-1)}/>
+      {goBackBtn ? <GoBackBtn onClick={() => navigate(-1)}/> : null}
       <HLine />
     </Container>
   );

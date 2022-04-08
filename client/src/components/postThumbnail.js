@@ -8,13 +8,15 @@ const Container = styled.section`
   position: relative;
   top : 10px;
 
-  width: 220px;
+  width: 100%;
   height: 320px;
 
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+
+  padding: 5px;
   
   cursor : pointer;
 
@@ -36,11 +38,10 @@ const Container = styled.section`
   }
 
   animation: up 0.2s linear;
-
 `
 
 const PostImg = styled.div`
-  width: 220px;
+  width: 100%;
   height: 220px;
   background: ${props => `url(${props.url})`};
   background-size: cover;
@@ -127,7 +128,7 @@ const PostInfo = styled.div`
   }
 `
 
-const NicknameSkeleton = styled.div`
+const Skeleton = styled.div`
   position: relative;
   top: -2px;
   width: 100px;

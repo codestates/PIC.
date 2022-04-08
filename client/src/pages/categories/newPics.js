@@ -34,7 +34,7 @@ export const NewPics = () => {
   return (
     <Container>
       <InnerContainer>
-        <AddPostFloatBtn />
+        {userId && <AddPostFloatBtn />}
         <PageTitle>가장 최근에 올라온 사진</PageTitle>
         <PostContainer category={'new_pics'} reqEndpoint={reqEndpoint} />
       </InnerContainer>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
@@ -31,11 +31,11 @@ import { MostLikes } from "./pages/categories/mostLikes";
 import { NewPics } from "./pages/categories/newPics";
 import { Favorites } from "./pages/categories/favorites";
 
-
 const GlobalStyles = createGlobalStyle`
     a {
       color : black;
     }
+    
     ${reset}
     .main{
       /* overflow: hidden; */
@@ -60,32 +60,44 @@ const InnerContainer = styled.div`
   height: max-content;
   min-height: 700px;
   
-
-  margin-top: 200px;
+  margin-top: 100px;
   margin-bottom: 200px;
 `
 
 export const App = () => {
-  const sessionStorage = window.sessionStorage;
 
+  const sessionStorage = window.sessionStorage;
   const [isLogin, setIsLogin] = useState(false);
 
-  useEffect(async () => {
-    if (sessionStorage.getItem("loginToken") && sessionStorage.getItem("userId")) {
-      setIsLogin(true)
-    } else {
-      const res = await axios.get(`${process.env.REACT_APP_SERVER_PATH}/api/users/auth/token`);
-      console.log(res)
-      if (res.data.message === "success") {
-        sessionStorage.setItem("userId", res.data._id)
-        sessionStorage.setItem("loginToken", res.data.accessToken)
-        sessionStorage.setItem("loginMethod", "common")
+  useEffect(() => {
+    (async () => {
+      if (sessionStorage.getItem("loginToken") && sessionStorage.getItem("userId")) {
         setIsLogin(true)
-      } else {
-        setIsLogin(false)
-      }
-    }
-  })
+      } 
+      // else if (엑세스토큰 유효하지 않음.) {
+      //   const res = await axios.get(`${process.env.REACT_APP_SERVER_PATH}/api/users/auth/token`);
+      //   if (res.data.message === "success") {
+      //     sessionStorage.setItem("userId", res.data._id)
+      //     sessionStorage.setItem("loginToken", res.data.accessToken)
+      //     sessionStorage.setItem("loginMethod", "common")
+      //     setIsLogin(true)
+      //   } else {
+      //     window.sessionStorage.clear()
+      //     setIsLogin(false)
+      //   }
+      // }
+    })()
+  }, [])
+
+  // 만약 엑세스 토큰이 유효하지 않은 경우에 위의 리프레시 토큰을 이용하여 갱신하는 로직을 실행
+  // 엑세스 토큰이 유효하다면 세션 스토리지 내부의 토큰과 아이디를 꺼내 사용.
+  // 만약 전부 유효하지 않다면 로그인 상태를 false 로 갱신하고, 세션 스토리지를 비운다.
+
+  const { pathname } = useLocation();
+  useEffect(() => {
+    console.log(pathname)
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   return (
     <Container>
@@ -96,7 +108,7 @@ export const App = () => {
       <InnerContainer>
         <Routes>
           <Route path="my_pics" element={<MyPics />} />
-          <Route path="most_likes" element={<MostLikes/>} />
+          <Route path="most_likes" element={<MostLikes />} />
           <Route path="new_pics" element={<NewPics />} />
           <Route path="favorites" element={<Favorites />} />
 
@@ -109,8 +121,8 @@ export const App = () => {
           <Route path="tags" element={<TagSearch />} />
           <Route path="callback/naver" element={<NaverCallback />} />
           <Route path="callback/kakao" element={<KakaoCallback />} />
-          <Route path="tags"  element={<TagSearch />} />
-          <Route path="keywords"  element={<KeywordsSearch />} />
+          <Route path="tags" element={<TagSearch />} />
+          <Route path="keywords" element={<KeywordsSearch />} />
         </Routes>
       </InnerContainer>
       <Footer />

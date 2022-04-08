@@ -9,7 +9,7 @@ import { PostThumbnail } from './postThumbnail';
 
 import { Login } from "../modals/login";
 import { Signup } from "../modals/signup";
-import { BsChevronDoubleDown, BsCheckCircle } from 'react-icons/bs';
+import { BsChevronDoubleDown, BsCheckCircle, BsHeartFill, BsKeyFill, BsFillImageFill } from 'react-icons/bs';
 
 const Container = styled.section`
 
@@ -27,10 +27,9 @@ const ThumbnailContainer = styled.section`
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   justify-items: center;
   grid-column-gap: 20px;
-  grid-row-gap: 100px;
+  grid-row-gap: 30px;
   
   width: 100%;
-  /* min-height: 1200px; */
   height: max-content;
 `
 
@@ -40,25 +39,30 @@ const SuggetionContainer = styled.div`
   position: relative;
   top : 200px;
 
-  height: 400px;
-
   display: grid;
   justify-items: center;
+
+  height: 400px;
 
   .msg {
     text-align: center;
     margin-bottom: 200px;
+    color: #aaa;
+  }
+
+  svg {
+    margin-bottom: 30px;
   }
 
   .msg p {
-    color: #aaa;
     font-size: 0.9rem;
 
-    &:first-child{
+    &:nth-child(2){
       font-size: 1.2rem;
       margin-bottom: 15px;
     }
   }
+  
 `
 
 const BottomContainer = styled.section`
@@ -100,7 +104,7 @@ const BottomContainer = styled.section`
   }
 `
 
-export const PostContainer = ({ reqEndpoint, category }) => {
+export const PostContainer = ({ reqEndpoint, category, setResult }) => {
 
   const loginToken = window.sessionStorage.getItem('loginToken')
   const userId = window.sessionStorage.getItem('userId')
@@ -179,6 +183,10 @@ export const PostContainer = ({ reqEndpoint, category }) => {
     if (viewmore.current) {
       observer.observe(viewmore.current)
     }
+    if (setResult) {
+      setResult(postsData)
+    }
+    // 검색 페이지에서 결과가 있는지 판단함.
   }, [postsData])
 
   const SuggestionMsg = () => {
@@ -188,6 +196,7 @@ export const PostContainer = ({ reqEndpoint, category }) => {
         return (
           <SuggetionContainer>
             <div className="msg">
+              <BsKeyFill size={'3rem'} />
               <p>로그인이 필요합니다!</p>
               <p>로그인 또는 회원가입하여 서비스를 이용해보세요.</p>
             </div>
@@ -202,6 +211,7 @@ export const PostContainer = ({ reqEndpoint, category }) => {
       return (
         <SuggetionContainer>
           <div className="msg">
+            <BsHeartFill size={'3rem'} />
             <p>아직 즐겨찾는 게시글이 없습니다.</p>
             <p>좋아요를 눌러 게시글을 추가해보세요!</p>
           </div>
@@ -213,6 +223,7 @@ export const PostContainer = ({ reqEndpoint, category }) => {
       return (
         <SuggetionContainer>
           <div className="msg">
+            <BsFillImageFill size={'3rem'} />
             <p>아직 사진이 없습니다.</p>
             <p>역사적인 첫 사진을 업로드해보세요!</p>
           </div>
@@ -231,7 +242,7 @@ export const PostContainer = ({ reqEndpoint, category }) => {
       openSignupModal ? setOpenSignupModal(false) : setOpenSignupModal(true);
     }
   }
-  
+
   return (
     <Container>
       {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal} /> : null}

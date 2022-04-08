@@ -4,25 +4,87 @@ import styled from "styled-components";
 import { GoogleLoginBtn } from "../components/googleLoginBtn";
 import { NaverLoginBtn } from "../components/naverLoginBtn";
 import { KakaoLoginBtn } from "../components/kakaoLoginBtn"
+import { BtnComponent as Btn } from "../components/BtnComponent";
+import { BsXCircleFill } from "react-icons/bs";
 
-const ModalContainer = styled.div`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+const Container = styled.section`
+  position : fixed;
+  display: grid;
+  place-items: center;
+
+  top:0; left: 0; bottom: 0; right: 0;
+
   width: 100vw;
   height: 100vh;
-  margin: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
+
+  z-index: 998;
+`
+
+const Backdrop = styled.div`
+  position : fixed;
+  top:0; left: 0; bottom: 0; right: 0;
+
+  background-color: rgba(0,0,0,0.3);
+
+  z-index: 998;
+`
+
+const Modal = styled.div`
+  position: relative;
+  display: grid;
+  place-items: center;
+  background-color: white;
+  width: 400px;
+  height: 550px;
+  border-radius: 15px;
+  z-index: 999;
+
+  .nofi {
+    color: red;
+  }
+
+  input {
+    width: 305px;
+    height: 40px;
+
+    border-radius: 3px;
+    border: 1px solid #aaa;
+
+    box-sizing: border-box;
+
+    &:focus {
+      border: none;
+      outline: 3px solid #ffd600;
+    }
+  }
+
+  h3{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 `;
 
-const ModalForm = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+const InnerContainer = styled.div`
+  position: relative;
+  top: 15px;
+  height: max-content;
+`
+
+const CloseBtn = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 30px;
+
+  color: #888;
+
+  transition: 0.1s;
+  cursor: pointer;
+
+  &:hover {
+    color: #ff796b;
+  }
+`
 
 const Input = styled.input`
   margin-bottom: 10px;
@@ -30,45 +92,33 @@ const Input = styled.input`
   height: 30px;
 `;
 
-const Btn = styled.button`
-  background-color: gray;
-  text-decoration: none;
-  border: none;
-  padding: 20px;
-  color: black;
-  border-radius: 20px;
-  margin-bottom: 10px;
-  cursor: pointer;
-`;
-
-const Column = styled.div`
+const InputContainer = styled.div`
   align-items: left;
-  margin-bottom: 10px;
+  margin-bottom: 35px;
 `;
 
-const ModalView = styled.div`
+const BtnContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+
+
+  margin-bottom: 35px;
+`
+
+const SignContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  background-color: white;
-  width: 400px;
-  height: 800px;
-  border-radius: 1rem;
-  position: relative;
-  .nofi {
-    color: red;
-  }
-  /* > .close-btn {
-    position: absolute;
-    top: 2px;
-    right: 7px;
-    cursor: pointer;
-  } */
-`;
+  width: 100%;
 
-const CloseBtn = styled.button`
+  div {
+    margin-bottom: 20px;
+  }
 `
+
+
+
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
 export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
@@ -109,25 +159,29 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
   };
 
   return (
-    <ModalContainer>
-      <ModalForm>
-        <ModalView><CloseBtn onClick={closeFn}>x</CloseBtn>
-          <Column> 이메일 </Column>
-          <Input placeholder="이메일을 입력해주세요" onChange={(e) => setEmail(e.target.value)}></Input>
-          <Column> 비밀번호</Column>
-          <Input type="password" onKeyUp={enterEvent} placeholder="비밀번호를 입력해주세요" onChange={(e) => setPassword(e.target.value)}></Input>
-          {failedLogin ? <div className="nofi">이메일과 비밀번호를 확인해 주세요</div> : null}
-          <Column onClick={submit}>
-            <Btn>로그인</Btn>
-          </Column>
-          <GoogleLoginBtn />
-          <NaverLoginBtn />
-          <KakaoLoginBtn />
-          <Column>
-            <Btn onClick={openSignup}>회원가입</Btn>
-          </Column>
-        </ModalView>
-      </ModalForm>
-    </ModalContainer>
+    <Container>
+      <Backdrop onClick={closeFn}/>
+      <Modal>
+        <CloseBtn onClick={closeFn}><BsXCircleFill size={'2rem'}/></CloseBtn>
+        <InnerContainer>
+          <InputContainer>
+            <h3>이메일</h3>
+            <Input placeholder="이메일을 입력해주세요" onChange={(e) => setEmail(e.target.value)}></Input>
+            <h3>비밀번호</h3>
+            <Input type="password" onKeyUp={enterEvent} placeholder="비밀번호를 입력해주세요" onChange={(e) => setPassword(e.target.value)}></Input>
+            {failedLogin ? <div className="nofi">이메일과 비밀번호를 확인해 주세요</div> : null}
+          </InputContainer>
+          <BtnContainer>
+            <GoogleLoginBtn />
+            <NaverLoginBtn />
+            <KakaoLoginBtn />
+          </BtnContainer>
+          <SignContainer>
+            <Btn action={submit}>로그인</Btn>
+            <Btn action={openSignup}>회원가입</Btn>
+          </SignContainer>
+        </InnerContainer>
+      </Modal>
+    </Container>
   );
 };

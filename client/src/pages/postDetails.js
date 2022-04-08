@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { BsPencilSquare, BsMap, BsGeoAltFill, BsMapFill } from "react-icons/bs";
+import { BsPencilSquare, BsMap, BsGeoAltFill, BsMapFill, BsFillChatDotsFill } from "react-icons/bs";
 
 import { BtnComponent as Btn } from '../components/BtnComponent';
 import { LinkTag } from '../components/linkTag';
@@ -13,7 +13,7 @@ import { OneBtnModal } from '../components/oneBtnModal';
 import { PageTitle } from '../components/pageTitle';
 import { TwoBtnModal } from '../components/twoBtnModal';
 import { ToggleLikeBtn } from '../components/toggleLikeBtn';
-import { CommentContainer as Comments} from '../components/commentContainer';
+import { CommentContainer as Comments } from '../components/commentContainer';
 
 import markerImg from "../img/marker.png";
 
@@ -115,15 +115,6 @@ const ImgContainer = styled.section`
   border-radius: 10px;
 `
 
-const MapContainer = styled.section`
-  width: 100%;
-  aspect-ratio: 3 / 1;
-
-  box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
-
-  border-radius: 10px;
-`
-
 const LocationLink = styled.div`
   position: absolute;
 
@@ -168,18 +159,64 @@ const LocationLink = styled.div`
 `
 
 const DescContainer = styled.section`
+  position: relative;
   width: 100%;
-  min-height: 300px;
+  min-height: 50px;
   max-height: 500px;
 
   box-sizing: border-box;
-  padding: 10px;
 
   font-family: sans-serif;
-  font-size: 1.1rem;
 
-  border: 1px solid #aaa;
+  /* border: 1px solid; */
+  .title_wrapper {
+    color: #333;
+    
+    display: flex;
+
+    margin-bottom: 10px;
+    
+    svg {
+      position: relative;
+      top: -2px;
+
+      margin-right: 5px;
+      color: #333;
+    }
+  }
+
+  pre {
+  min-height : 20px;
+  padding: 10px;
+  border-left: 3px solid #ffd600;
   border-radius: 3px;
+  }
+`
+
+const MapContainer = styled.section`
+  .title_wrapper {
+    color: #333;
+    
+    display: flex;
+
+    margin-bottom: 10px;
+    
+    svg {
+      position: relative;
+      top: -2px;
+
+      margin-right: 5px;
+      color: #333;
+    }
+  }
+`
+const KakaoMap = styled.section`
+  width: 100%;
+  aspect-ratio: 3 / 1;
+
+  box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
+
+  border-radius: 10px;
 `
 
 const CommentContainer = styled.section`
@@ -187,6 +224,21 @@ const CommentContainer = styled.section`
   min-height: 300px;
   height: max-content;
 
+    .title_wrapper {
+    color: #333;
+    
+    display: flex;
+
+    margin-bottom: 10px;
+    
+    svg {
+      position: relative;
+      top: -2px;
+
+      margin-right: 5px;
+      color: #333;
+    }
+  }
 `
 
 export const PostDetails = () => {
@@ -212,8 +264,6 @@ export const PostDetails = () => {
   const params = useParams()
   const navigate = useNavigate()
   const kakaoMap = useRef()
-
-  // window.scrollTo(0, 0)
 
   useEffect(() => {
     (async () => {
@@ -324,7 +374,7 @@ export const PostDetails = () => {
       {openDeleteModal ? <TwoBtnModal main={'정말로 게시글을 삭제하시겠습니까?'} close={() => modalHandler('delete')} action={deletePost} /> : null}
       {openDoneModal ? <OneBtnModal main={'게시글이 삭제되었습니다.'} close={() => modalHandler('done')} nav={'/my_pics'} /> : null}
       <InnerContainer>
-        <PageTitle author={postData.nickname}>{title}</PageTitle>
+        <PageTitle author={postData.nickname} goBackBtn={true}>{title}</PageTitle>
         {
           postData.author === userId
             ? (<ModifyBtn onClick={navigateToModify}>
@@ -344,31 +394,50 @@ export const PostDetails = () => {
         <ImgContainer img={photo}>
           {isLoading ? <LoadingIndicator size={'7rem'} /> : null}
         </ImgContainer>
-        <h3 className='category'>장소</h3>
-        <MapContainer ref={kakaoMap}>
-          <LocationLink onClick={openKakaoMap} onMouseOver={() => setShowOnMap(true)} onMouseLeave={() => setShowOnMap(false)}>
-            {showOnMap
-              ? (
-                <div className='wrapper'>
-                  <BsMapFill />
-                  <span>카카오 지도에서 보기</span>
-                </div>
-              )
-              : (
-                <div className='wrapper'>
-                  <BsGeoAltFill />
-                  <span>{coords.roadAdd ? coords.roadAdd : coords.lotAdd}</span>
-                </div>
-              )
-            }
-          </LocationLink>
-        </MapContainer>
-        <h3 className='category'>사진 설명</h3>
+
+
+        {/* <h3 className='category'>사진 설명</h3> */}
         <DescContainer>
+          <div className="title_wrapper">
+            <BsFillChatDotsFill />
+            <h3>사진에 대해서</h3>
+          </div>
           <pre>{description}</pre>
         </DescContainer>
-        <h3 className='category'>댓글</h3>
+
+
+        {/* <h3 className='category'>장소</h3> */}
+        <MapContainer>
+          <div className="title_wrapper">
+            <BsGeoAltFill />
+            <h3>여기서 찍었어요!</h3>
+          </div>
+          <KakaoMap ref={kakaoMap}>
+            <LocationLink onClick={openKakaoMap} onMouseOver={() => setShowOnMap(true)} onMouseLeave={() => setShowOnMap(false)}>
+              {showOnMap
+                ? (
+                  <div className='wrapper'>
+                    <BsMapFill />
+                    <span>카카오 지도에서 보기</span>
+                  </div>
+                )
+                : (
+                  <div className='wrapper'>
+                    <BsGeoAltFill />
+                    <span>{coords.roadAdd ? coords.roadAdd : coords.lotAdd}</span>
+                  </div>
+                )
+              }
+            </LocationLink>
+          </KakaoMap>
+        </MapContainer>
+        
+        {/* <h3 className='category'>댓글</h3> */}
         <CommentContainer>
+          <div className="title_wrapper">
+            <BsFillChatDotsFill />
+            <h3>재잘재잘</h3>
+          </div>
           <Comments />
         </CommentContainer>
         {
@@ -376,7 +445,6 @@ export const PostDetails = () => {
             ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
             : null
         }
-
       </InnerContainer>
     </Container>
   );
