@@ -136,6 +136,7 @@ export const ModifyMyinfo = () => {
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
   const userId = window.sessionStorage.getItem('userId')
   const accessToken = window.sessionStorage.getItem('loginToken')
+  const loginMethod = window.sessionStorage.getItem('loginMethod')
 
   const [profileImg, setProfileImg] = useState(null)
   const [oldProfileImg, setOldProfileImg] = useState(null)
@@ -157,6 +158,12 @@ export const ModifyMyinfo = () => {
 
   const navigate = useNavigate()
   const uploadBtn = useRef()
+
+  useEffect(() => {
+    if (!userId) {
+      navigate('/main')
+    }
+  }, [])
 
   useEffect(() => {
     (async () => {
@@ -261,7 +268,7 @@ export const ModifyMyinfo = () => {
 
     try {
       const res = await axios.post(`${serverPath}/api/users/${userId}/password`, {
-        password: oldPassword
+        password: loginMethod === 'common' ? oldPassword : 'socialLoginUser'
       }, headers)
       if (res.status === 200) {
         const body = {
@@ -286,7 +293,7 @@ export const ModifyMyinfo = () => {
 
     try {
       const res = await axios.post(`${serverPath}/api/users/${userId}/password`, {
-        password: oldPassword
+        password: loginMethod === 'common' ? oldPassword : 'socialLoginUser'
       }, headers)
       if (res.status === 200) {
         setSignoutModalOpen(true)
@@ -349,6 +356,13 @@ export const ModifyMyinfo = () => {
   }
 
   const ConfirmBtnByCondition = () => {
+    if (loginMethod === 'social' && newNickname) {
+      return (
+        <ConfirmBtn onClick={clickModifyBtn}>
+          <span>회원정보 수정</span>
+        </ConfirmBtn>
+      )
+    }
     if (oldPassword && newNickname && nicknameCheck && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
       // 모든 값이 입력되어 았고, 유효성 및 중복검사, 일치여부를 충족한 경우
       return (
@@ -382,8 +396,10 @@ export const ModifyMyinfo = () => {
     }
   }
 
+  console.log(loginMethod)
+
   const SignoutBtnByCondition = () => {
-    if (oldPassword) {
+    if (oldPassword || loginMethod === 'social') {
       return (
         <SignoutBtn onClick={clickSignoutBtn}>
           <span>회원탈퇴</span>
@@ -417,7 +433,7 @@ export const ModifyMyinfo = () => {
   return (
     <Container>
       {profileModalOpen ? <OneBtnModal close={() => modalHandler('profile')} main={'프로필 사진이 변경되었습니다!'} /> : null}
-      {okModalOpen ? <OneBtnModal close={() => modalHandler('ok')} main={'회원정보 변경이 완료되었습니다!'} /> : null}
+      {okModalOpen ? <OneBtnModal close={() => modalHandler('ok')} main={'회원정보 변경이 완료되었습니다!'} nav={-1}/> : null}
       {invaildModalOpen ? <OneBtnModal close={() => modalHandler('invalid')} main={'비밀번호가 다릅니다.'} /> : null}
       {signoutModalOpen ? <TwoBtnModal close={() => modalHandler('signout')} action={deleteAccount} main={'정말로 회원탈퇴 하시겠습니다?\n삭제된 정보는 복구 할 수 없습니다.'} /> : null}
 
@@ -431,25 +447,37 @@ export const ModifyMyinfo = () => {
           <span>프로필 이미지 변경</span>
         </ProfileImgBtn>
         <div className='fields'>
-          <div className='form'>
-            <div>기존 비밀번호 입력</div>
-            <input type={"password"} placeholder="닉네임과 비밀번호 변경을 위해서는 필수입력입니다." onBlur={(e) => { setOldPassword(e.target.value) }} />
-          </div>
+          {loginMethod === 'common' &&
+            (
+              <div className='form'>
+                <div>기존 비밀번호 입력</div>
+                <input type={"password"} placeholder="닉네임과 비밀번호 변경을 위해서는 필수입력입니다." onBlur={(e) => { setOldPassword(e.target.value) }} />
+              </div>
+            )
+          }
           <div className='form'>
             <div>새로운 닉네임</div>
             <input type="text" placeholder="변경할 닉네임을 입력합니다." onBlur={nicknameCheckHandler} />
             <NicknameNofication />
           </div>
-          <div className='form'>
-            <div>새로운 비밀번호 입력</div>
-            <input type={"password"} placeholder="변경할 비밀번호를 입력합니다." onBlur={(e) => { setNewPassword(e.target.value) }} />
-            <PasswordNofication />
-          </div>
-          <div className='form'>
-            <div>새로운 비밀번호 확인</div>
-            <input type={"password"} placeholder="변경할 비밀번호를 다시 입력합니다." onChange={(e) => { setRetypePassword(e.target.value) }} />
-            <RetypePasswordNofication />
-          </div>
+          {loginMethod === 'common' &&
+            (
+              <div className='form'>
+                <div>새로운 비밀번호 입력</div>
+                <input type={"password"} placeholder="변경할 비밀번호를 입력합니다." onBlur={(e) => { setNewPassword(e.target.value) }} />
+                <PasswordNofication />
+              </div>
+            )
+          }
+          {loginMethod === 'common' &&
+            (
+              <div className='form'>
+                <div>새로운 비밀번호 확인</div>
+                <input type={"password"} placeholder="변경할 비밀번호를 다시 입력합니다." onChange={(e) => { setRetypePassword(e.target.value) }} />
+                <RetypePasswordNofication />
+              </div>
+            )
+          }
         </div>
         <ConfirmBtnByCondition />
         <SignoutBtnByCondition>

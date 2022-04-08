@@ -34,7 +34,7 @@ export const MyPics = () => {
   return (
     <Container>
       <InnerContainer>
-        <AddPostFloatBtn />
+        {userId && <AddPostFloatBtn />}
         <PageTitle>나의 사진</PageTitle>
         <PostContainer category={'my_pics'} reqEndpoint={reqEndpoint} />
       </InnerContainer>

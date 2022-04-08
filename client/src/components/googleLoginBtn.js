@@ -1,10 +1,29 @@
 import axios from "axios";
 import React from "react";
 import GoogleLogin from "react-google-login";
+import styled from "styled-components";
 
-const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENTID;
+import googleIcon from "../img/google_oauth_icon.png"
+
+const Container = styled.section`
+  button{
+    width: 40px;
+    height: 40px;
+    background: ${`url(${googleIcon})`};
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    transition: 0.1s;
+    
+    &:hover{
+      transform: translateY(-2px);
+    }
+}
+`
 
 export const GoogleLoginBtn = () => {
+  const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENTID;
   const sessionStorage = window.sessionStorage;
   const serverPath = process.env.REACT_APP_SERVER_PATH;
 
@@ -27,8 +46,8 @@ export const GoogleLoginBtn = () => {
   };
 
   return (
-    <div>
-      <GoogleLogin clienId={clientId} responseType={"id_token"} onSuccess={onSuccess} onFailure={onFailure} />
-    </div>
+    <Container>
+      <GoogleLogin clienId={clientId} buttonText={false} icon={false} responseType={"id_token"} onSuccess={onSuccess} onFailure={onFailure} />
+    </Container>
   );
 };

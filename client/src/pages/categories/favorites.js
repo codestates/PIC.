@@ -34,7 +34,7 @@ export const Favorites = ({ category }) => {
   return (
     <Container>
       <InnerContainer>
-        <AddPostFloatBtn />
+        {userId && <AddPostFloatBtn />}
         <PageTitle>즐겨찾는 사진</PageTitle>
         <PostContainer category={'favorites'} reqEndpoint={reqEndpoint} />
       </InnerContainer>

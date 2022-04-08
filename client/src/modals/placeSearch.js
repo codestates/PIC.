@@ -2,6 +2,19 @@ import { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { IoSearch } from "react-icons/io5";
 
+const Container = styled.section`
+  position : fixed;
+  display: grid;
+  place-items: center;
+
+  top:0; left: 0; bottom: 0; right: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 998;
+`
+
 const Backdrop = styled.div`
   position : fixed;
   top:0; left: 0; bottom: 0; right: 0;
@@ -11,18 +24,9 @@ const Backdrop = styled.div`
   z-index: 998;
 `
 
-const Container = styled.section`
-  position : fixed;
-  display: flex;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-
-  z-index: 998;
-`
-
 const Modal = styled.div`
   position: relative;
+  top: -100px;
 
   display: flex;
   flex-direction: column;

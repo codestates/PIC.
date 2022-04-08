@@ -152,13 +152,13 @@ export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags }) => {
     <div>
       <Wrapper usage={usage} isSelected={isSelected}>
         {!usage
-          ? <CommonTag onClick={e => selectHandler(e.target.textContent)} ref={tagDOM} >{children}</CommonTag>
-          : null}
+          && <CommonTag onClick={e => selectHandler(e.target.textContent)} ref={tagDOM} >{children}</CommonTag>
+        }
         {usage === 'added'
-          ? <CommonTag usage={usage}>{children}</CommonTag>
-          : null}
+          && <CommonTag usage={usage}>{children}</CommonTag>
+        }
         {usage === 'add'
-          ? (
+          && (
             <CommonTag>
               <div
                 contentEditable
@@ -171,10 +171,10 @@ export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags }) => {
               ></div>
             </CommonTag>
           )
-          : null}
+        }
 
-        {usage === 'added' ? <Btn onClick={e => removeTag(e)} usage={usage}> <BsDash /> </Btn> : null}
-        {usage === 'add' ? <Btn onClick={e => addTag(e)} usage={usage}><BsPlus /></Btn> : null}
+        {usage === 'added' && <Btn onClick={e => removeTag(e)} usage={usage}> <BsDash /> </Btn>}
+        {usage === 'add' && <Btn onClick={e => addTag(e)} usage={usage}><BsPlus /></Btn>}
 
       </Wrapper>
     </div >
