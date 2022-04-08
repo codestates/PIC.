@@ -1,6 +1,28 @@
 import React from 'react'
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { LoadingIndicator } from '../components/loadingIndicator';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  position : relative;
+  display: flex;
+  justify-content: center;
+
+  top: 200px;
+
+  width: 100%;
+
+  .wrapper {
+    text-align: center;
+
+    div {
+      margin-bottom: 50px;
+      font-size: 1.1rem;
+      color: #888;
+    }
+  }
+`
 
 export const NaverCallback = () => {
 
@@ -33,6 +55,11 @@ export const NaverCallback = () => {
   })()
 
   return (
-    <div>NaverCallback</div>
+    <Container>
+      <div className="wrapper">
+        <div>리다이렉팅 중</div>
+        <LoadingIndicator size={'5rem'} />
+      </div>
+    </Container>
   )
 }

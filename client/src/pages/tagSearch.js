@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRef } from 'react';
 import styled from 'styled-components';
 
 import { PageTitle } from '../components/pageTitle';
@@ -163,17 +164,30 @@ const Notification = styled.section`
   }
 `
 
-
 export const TagSearch = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH;
 
   const [inputValue, setInputValue] = useState('');
   const [tags, setTags] = useState([]);
+  const [result, setResult] = useState([])
+
+  const searchBar = useRef()
 
   const addTag = () => {
-    setTags(
-      [...tags, inputValue]
-    )
+
+    if (!tags.includes(inputValue) && inputValue !== '') {
+      setTags(
+        [...tags, inputValue.replace(/\s/g, '')]
+      )
+    }
+    setInputValue('')
+  }
+
+  const keyHandler = (e) => {
+    e.preventDefault()
+    if (e.keyCode === 13) {
+      addTag()
+    }
   }
 
   const removeTag = (value) => {
@@ -197,12 +211,12 @@ export const TagSearch = () => {
         <SearchContainer>
           <div className="wrapper">
             <div className='search_bar'>
-              <input spellCheck={false} type='text' placeholder='찾으시는 태그를 입력하세요.' onChange={(e) => { setInputValue(e.target.value) }} />
+              <input spellCheck={false} ref={searchBar} type='text' value={inputValue} placeholder='찾으시는 태그를 입력하세요.' onChange={e => setInputValue(e.target.value)} onKeyUp={keyHandler} />
               <div className="search_icon">
-                <FiSearch size={'1.5rem'}/>
+                <FiSearch size={'1.5rem'} />
               </div>
               <div className='btn' onClick={addTag}>
-                <FiCornerDownLeft size={'1.5rem'}/>
+                <FiCornerDownLeft size={'1.5rem'} />
               </div>
             </div>
           </div>
@@ -217,24 +231,21 @@ export const TagSearch = () => {
             }
           </div>
         </SearchContainer>
-
         <ResultContainer>
-          
           <Hline />
-          <PostContainer reqEndpoint={reqEndpoint} />
+          <PostContainer reqEndpoint={reqEndpoint} setResult={setResult} />
         </ResultContainer>
         {
-          tags.length
-            ? null
-            : (
-              <Notification>
-                <div className='msg'>
+          !result.length
+          && (
+            <Notification>
+              <div className='msg'>
                 <FiSearch size={'3rem'} />
-                  <p>검색된 결과가 없습니다</p>
-                  <p>태그를 추가하지 않았거나, 해당하는 사진이 없습니다.</p>
-                </div>
-              </Notification>
-            )
+                <p>검색된 결과가 없습니다</p>
+                <p>태그를 추가하지 않았거나, 해당하는 사진이 없습니다.</p>
+              </div>
+            </Notification>
+          )
         }
       </InnerContainer>
     </Container>

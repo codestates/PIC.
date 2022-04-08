@@ -197,6 +197,7 @@ export const ModifyPost = () => {
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const imgbbApi = process.env.REACT_APP_IMGBB_API_KEY
   const accessToken = window.sessionStorage.getItem('loginToken')
+  const userId = window.sessionStorage.getItem('userId')
 
   const [imgBase64, setImgBase64] = useState(null)
   const [imgHostUrl, setImgHostUrl] = useState('')
@@ -233,9 +234,12 @@ export const ModifyPost = () => {
     (async () => {
       const res = await axios.get(`${serverPath}/api/posts/${params.id}`)
       const data = res.data.post
-      console.log(data)
 
       if (res.status === 200) {
+        if (userId !== data.author) {
+          navigate('/main')
+        }
+
         setTitle(data.title)
         setDesctription(data.description)
         setLocation(data.location)

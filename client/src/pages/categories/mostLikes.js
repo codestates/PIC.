@@ -35,7 +35,7 @@ export const MostLikes = () => {
   return (
     <Container>
       <InnerContainer>
-        <AddPostFloatBtn />
+        {userId && <AddPostFloatBtn />}
         <PageTitle>사람들이 좋아하는 사진</PageTitle>
         <PostContainer category={'most_likes'} reqEndpoint={reqEndpoint} />
       </InnerContainer>

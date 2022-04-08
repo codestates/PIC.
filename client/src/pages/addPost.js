@@ -258,6 +258,12 @@ export const AddPost = () => {
   const kakaoMap = useRef()
   const descArea = useRef()
 
+  useEffect(() => {
+    if(!accessToken){
+      navigate('/main')
+    }
+  }, [])
+
   // 이미지 읽어오기
   const uploadImage = (e) => {
     e.preventDefault()

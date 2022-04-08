@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useEffect } from 'react';
 import { BsPencilFill, BsFillTrashFill, BsCheck } from "react-icons/bs";
 import { useRef } from 'react';
+import { TwoBtnModal } from "./twoBtnModal";
 
 const Container = styled.section`
 position: relative;
@@ -164,6 +165,8 @@ export const Comment = ({ data }) => {
   const [edit, setEdit] = useState(false)
   const [userPic, setUserPic] = useState(null)
 
+  const [openLoginModal, setOpenLoginModal] = useState(false)
+
   const editField = useRef()
 
 
@@ -218,19 +221,22 @@ export const Comment = ({ data }) => {
     )
   }
 
-  
+  const modalHandler = (modal) => {
+    if (modal === "delete") {
+      openLoginModal ? setOpenLoginModal(false) : setOpenLoginModal(true);
+    }
+  };
+
 
   return (
     <Container>
-
+      {openLoginModal && <TwoBtnModal close={() => modalHandler('delete')} action={commentDelete} main={'댓글을 삭제하시겠습니까?'}/>}
       <CommentContent>
         <Content>
-
           <div className="user_wrapper">
             <ProfilePic url={userPic} />
             <div className='nick'>{nickname}</div>
           </div>
-
           {edit
             ? (
               <textarea className='edit_field' spellCheck={false} type="text" value={text} onChange={(e) => handleChange(e)} />)
@@ -238,12 +244,9 @@ export const Comment = ({ data }) => {
               <pre>{text}</pre>
             )
           }
-
-
-
           <BtnWrapper>
             {author === userId && !edit ? <div className='btn edit' onClick={editOn}><BsPencilFill /></div> : null}
-            {author === userId && !edit ? <div className='btn delete' onClick={commentDelete}><BsFillTrashFill /></div> : null}
+            {author === userId && !edit ? <div className='btn delete' onClick={() => modalHandler('delete')}><BsFillTrashFill /></div> : null}
             {edit ? <div className='btn done' onClick={modifyComment}><BsCheck size={'2rem'}/></div> : null}
           </BtnWrapper>
         </Content>

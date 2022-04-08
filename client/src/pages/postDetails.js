@@ -161,7 +161,7 @@ const LocationLink = styled.div`
 const DescContainer = styled.section`
   position: relative;
   width: 100%;
-  min-height: 100px;
+  min-height: 50px;
   max-height: 500px;
 
   box-sizing: border-box;
@@ -224,6 +224,21 @@ const CommentContainer = styled.section`
   min-height: 300px;
   height: max-content;
 
+    .title_wrapper {
+    color: #333;
+    
+    display: flex;
+
+    margin-bottom: 10px;
+    
+    svg {
+      position: relative;
+      top: -2px;
+
+      margin-right: 5px;
+      color: #333;
+    }
+  }
 `
 
 export const PostDetails = () => {
@@ -416,9 +431,13 @@ export const PostDetails = () => {
             </LocationLink>
           </KakaoMap>
         </MapContainer>
-
+        
         {/* <h3 className='category'>댓글</h3> */}
         <CommentContainer>
+          <div className="title_wrapper">
+            <BsFillChatDotsFill />
+            <h3>재잘재잘</h3>
+          </div>
           <Comments />
         </CommentContainer>
         {
@@ -426,7 +445,6 @@ export const PostDetails = () => {
             ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
             : null
         }
-
       </InnerContainer>
     </Container>
   );

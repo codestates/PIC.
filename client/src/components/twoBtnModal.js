@@ -53,7 +53,7 @@ const YesBtn = styled.button`
   place-items: center;
   width: 100px;
   height: 30px;
-  background-color: #fff;
+  background-color: #ddd;
 
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -76,7 +76,7 @@ const NoBtn = styled.button`
   place-items: center;
   width: 100px;
   height: 30px;
-  background-color: #eee;
+  background-color: #fff;
 
   border: 1px solid #ddd;
   border-radius: 5px;

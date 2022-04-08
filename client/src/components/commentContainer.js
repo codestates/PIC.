@@ -6,6 +6,8 @@ import { Comment } from "../components/comment"
 import { HiArrowUp } from "react-icons/hi";
 import { useRef } from "react";
 
+
+
 const Container = styled.section`
 margin-top: 10px;
 
@@ -216,13 +218,15 @@ export const CommentContainer = () => {
 
         </div>
       </CommentList>
-      <CommentForm>
-        <ProfilePic url={myProfilePic} />
-        <div className="wrapper">
-          <textarea ref={writeArea} value={input} type="text" onKeyUp={autoResizing} spellCheck={false} onChange={onChange} placeholder="댓글을 작성하세요."></textarea>
-          <div className="button" onClick={postComment}><HiArrowUp size={'1.5rem'} /></div>
-        </div>
-      </CommentForm>
+      {userId &&
+        (<CommentForm>
+          <ProfilePic url={myProfilePic} />
+          <div className="wrapper">
+            <textarea ref={writeArea} value={input} type="text" onKeyUp={autoResizing} spellCheck={false} onChange={onChange} placeholder="댓글을 작성하세요."></textarea>
+            <div className="button" onClick={postComment}><HiArrowUp size={'1.5rem'} /></div>
+          </div>
+        </CommentForm>)
+      }
     </Container>
   );
 };

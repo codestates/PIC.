@@ -80,6 +80,12 @@ export const Mypage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!userId) {
+      navigate('/main')
+    }
+  }, [])
+
+  useEffect(() => {
     const getUserinfo = async () => {
       const res = await axios.get(`${serverPath}/api/users/${userId}`)
       if (userInfo) {

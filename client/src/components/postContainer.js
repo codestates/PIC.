@@ -104,7 +104,7 @@ const BottomContainer = styled.section`
   }
 `
 
-export const PostContainer = ({ reqEndpoint, category }) => {
+export const PostContainer = ({ reqEndpoint, category, setResult }) => {
 
   const loginToken = window.sessionStorage.getItem('loginToken')
   const userId = window.sessionStorage.getItem('userId')
@@ -183,6 +183,10 @@ export const PostContainer = ({ reqEndpoint, category }) => {
     if (viewmore.current) {
       observer.observe(viewmore.current)
     }
+    if (setResult) {
+      setResult(postsData)
+    }
+    // 검색 페이지에서 결과가 있는지 판단함.
   }, [postsData])
 
   const SuggestionMsg = () => {
@@ -238,7 +242,7 @@ export const PostContainer = ({ reqEndpoint, category }) => {
       openSignupModal ? setOpenSignupModal(false) : setOpenSignupModal(true);
     }
   }
-  
+
   return (
     <Container>
       {openLoginModal ? <Login closeFn={() => modalHandler("login")} setOpenLoginModal={setOpenLoginModal} setOpenSignupModal={setOpenSignupModal} /> : null}
