@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { BsCameraFill } from "react-icons/bs";
 import { IoLocateSharp as LocationPin, IoSearch } from "react-icons/io5";
 import { BsCheckCircleFill, BsXCircleFill } from "react-icons/bs";
+import imageCompression from 'browser-image-compression';
 
 
 import { PageTitle } from '../components/pageTitle';
@@ -265,12 +266,12 @@ export const AddPost = () => {
   }, [])
 
   // 이미지 읽어오기
-  const uploadImage = (e) => {
+  const uploadImage = async (e) => {
     e.preventDefault()
     let img = e.target.files[0]
+    img = await imageCompression(img, { maxSizeMB: 1.5 })
 
     const reader = new FileReader()
-
     reader.readAsDataURL(img)
     reader.onload = () => {
       setImgBase64(reader.result.split(',')[1])
@@ -289,7 +290,6 @@ export const AddPost = () => {
 
         const res = await axios.post('https://api.imgbb.com/1/upload', form)
         setImgHostUrl(res.data.data.url)
-
       })()
     }
   }, [imgBase64])
