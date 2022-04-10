@@ -24,6 +24,13 @@ margin-top: 30px;
 
   z-index: 1;
   }
+
+  @media screen and (max-width : 500px){
+    .timestamp {
+      left: 0;
+    }
+  }
+  
 `
 
 const CommentContent = styled.div`
@@ -66,8 +73,10 @@ const Content = styled.div`
   .nick {
     position: relative;
     top: 2px;
-    
+
     width: 100px;
+    
+    padding-top: 2px;
 
     font-size: 1rem;
 
@@ -105,6 +114,27 @@ const Content = styled.div`
       outline: none;
     }
   }
+
+  @media screen and (max-width : 500px){
+    padding-left: 90px;
+    min-height: 70px;
+
+    .user_wrapper {
+      width: 28%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .nick {
+      width: 100px;
+    }
+
+    pre {
+      position: relative;
+      padding : 10px;
+    }
+  }
 `
 const ProfilePic = styled.div`
   /* position: absolute; */
@@ -120,6 +150,10 @@ const ProfilePic = styled.div`
   background-repeat: no-repeat;
 
   border-radius: 50%;
+
+  @media screen and (max-width : 500px){
+    margin-right: 0;
+  }
   `
 
 const BtnWrapper = styled.div`
@@ -149,6 +183,10 @@ const BtnWrapper = styled.div`
   .done:hover{
     color: #91d92e;
     transform: scale(1.2);
+  }
+
+  @media screen and (max-width : 500px){
+    top: -20px;
   }
 `
 
