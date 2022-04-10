@@ -27,7 +27,6 @@ export const Favorites = ({ category }) => {
   const userId = window.sessionStorage.getItem('userId')
 
   useEffect(() => {
-    // 카테고리 props 가 변경되는 것을 감지하고, 그에 필요한 엔드포인트를 상태에 저장한다.
     setReqEndpoint(`${serverPath}/api/posts?date=true&bookmark=${userId}`)
   }, [])
 

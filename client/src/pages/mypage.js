@@ -100,11 +100,7 @@ export const Mypage = () => {
   };
 
   let { email, nickname, image, likes } = userInfo;
-  // 회원 이미지 필요
-  // 닉네임 가져오고,
-  // 내 이메일 가져오고
-  // 좋아요 수 가져오고
-  // 링크로 내 정보 수정 페이지로 넘어가야함.
+
   return (
     <Container>
       <InnerContainer>

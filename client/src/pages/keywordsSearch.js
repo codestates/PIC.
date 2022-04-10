@@ -106,11 +106,9 @@ export const KeywordsSearch = () => {
       <InnerContainer>
         <PageTitle>키워드 검색</PageTitle>
         <TagContainer>
-          {/* <h3 className='category'>태그</h3> */}
           <TagSelection setTags={setSelectTags} hideMyTags={true} />
         </TagContainer>
         <ResultContainer>
-          {/* <h3 className='category'>검색결과</h3> */}
           <Hline />
           <PostContainer reqEndpoint={reqEndpoint} setResult={setResult}/>
         </ResultContainer>

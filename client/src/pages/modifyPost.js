@@ -187,7 +187,6 @@ const DescContainer = styled.section`
 
     resize: none;
     overflow: hidden;
-    // 히든을 줌으로써 스크롤을 없앰 -> 크기에 맞게 늘어나니 스크롤은 보이지 않지만, 내용은 다 보인다.
 
     &:focus {
       outline: 3px solid #FFD600;
@@ -229,15 +228,6 @@ export const ModifyPost = () => {
   const imgInput = useRef()
   const kakaoMap = useRef()
   const descArea = useRef()
-
-
-  // 게시글의 아이디를 받아서 ㅇㅋ
-  // 해당 게시글의 내용을 가져오기위해 요청을 보냄 ㅇㅋ
-  // 가져온 게시글의 정보를 이용해서 사진, 지도, 태그, 설명을 미리채움 반 ㅇㅋ
-
-  // !!!! 태그가 문제임
-
-  // 이후 patch 요청을 보낸다
 
   useEffect(() => {
     (async () => {
@@ -379,7 +369,6 @@ export const ModifyPost = () => {
       })
     } else {
       setIsLoadingMyLocation(false)
-      // 모달 상태
     }
   }
 
@@ -388,8 +377,6 @@ export const ModifyPost = () => {
     textarea.style.height = 'auto'
     textarea.style.height = textarea.scrollHeight + 'px'
   }
-
-  // -> 주소검색, 지도 크게 보기, 내위치 
 
   const ImageContainer = () => {
     if (isUploading) {

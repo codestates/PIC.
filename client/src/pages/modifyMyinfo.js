@@ -215,7 +215,6 @@ export const ModifyMyinfo = () => {
       })()
       setNowUploading(false)
       setProfileModalOpen(true)
-      // 프로필 이미지를 저장하는 상태가 변경되는 경우 위의 요청을 보내고, 요청이 끝난 뒤 로딩 상태를 false 로.
     }
   }, [profileImg, serverPath])
 
@@ -239,8 +238,6 @@ export const ModifyMyinfo = () => {
   useEffect(() => {
     (async () => {
       if (newNickname && nicknameValidCheck(newNickname)) {
-        // 새로운 닉네임 필드에 값이 있고, 유효한 경우에만 요청전송
-        // 두 조건이 일치하는 요청에서 200이 아닌 경우 중복으로 볼 수 있음.
         try {
           const res = await axios.post(`${serverPath}/api/users/nickname`, {
             nickname: newNickname
@@ -255,9 +252,6 @@ export const ModifyMyinfo = () => {
       }
     })()
   }, [newNickname, serverPath])
-  // useEffect 를 이용하여, newNickname 상태가 바뀌면 닉네임 요청을 보낸다.
-  // 위의 문법은 즉시실행함수로, 호출하지 않고 1회성으로 함수를 실행 시킬 수 있다.
-  // 이후 응답에 따라 분기하여 상태를 변경한다.
 
   const clickModifyBtn = async () => {
     const headers = {
@@ -315,10 +309,6 @@ export const ModifyMyinfo = () => {
     navigate('/main')
   }
 
-  // 기존 비밀번호랑 다를때 invaild
-  // 기존 비밀번호랑 같을때 ok
-  // 탈퇴 할때 signout
-
   const NicknameNofication = () => {
     if (!nicknameValidCheck(newNickname) && newNickname.length > 12 && newNickname) {
       return <Nofication>닉네임은 12글자를 넘길 수 없습니다!</Nofication>
@@ -339,7 +329,6 @@ export const ModifyMyinfo = () => {
   }
   const RetypePasswordNofication = () => {
     if (!passwordCheck && retypePassword) {
-      // 두 값이 다르고, 확인 필드에 값이 있는 경우
       return <Nofication>비밀번호가 서로 다릅니다!</Nofication>
     }
     if (!passwordCheck && !retypePassword) {
@@ -364,7 +353,6 @@ export const ModifyMyinfo = () => {
       )
     }
     if (oldPassword && newNickname && nicknameCheck && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
-      // 모든 값이 입력되어 았고, 유효성 및 중복검사, 일치여부를 충족한 경우
       return (
         <ConfirmBtn onClick={clickModifyBtn}>
           <span>회원정보 수정</span>
@@ -372,8 +360,6 @@ export const ModifyMyinfo = () => {
       )
     }
     if (oldPassword && nicknameCheck && newPassword && retypePassword && passwordCheck && newPassword.length >= 8) {
-      // 기존 비밀번호가 있고, 닉네임이 유효하며, 새 비밀번호, 리타입 필드에 값이 있고 그 둘이 같으며, 새 비밀번호의 길이가 8자 이상 일때
-      // 닉네임의 중복확인이 되지 않은 경우를 걸러낼 수 잇음
       return (
         <ConfirmBtn onClick={clickModifyBtn}>
           <span>회원정보 수정</span>
@@ -381,7 +367,6 @@ export const ModifyMyinfo = () => {
       )
     }
     if (oldPassword && newNickname && nicknameCheck && !newPassword && !retypePassword) {
-      // 닉네임 필드에만 값이 존재하는 경우.
       return (
         <ConfirmBtn onClick={clickModifyBtn}>
           <span>회원정보 수정</span>
@@ -395,8 +380,6 @@ export const ModifyMyinfo = () => {
       )
     }
   }
-
-  console.log(loginMethod)
 
   const SignoutBtnByCondition = () => {
     if (oldPassword || loginMethod === 'social') {

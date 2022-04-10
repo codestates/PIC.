@@ -104,9 +104,6 @@ export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags }) => {
   const [addTagValue, setAddTagValue] = useState('')
   const [isSelected, setIsSelected] = useState(false)
 
-  // 태그 추가를 위한 양식인 경우,
-  // 위의 값을 props 을 갱신함수를 이용하여 전달합니다.
-
   const tagInput = useRef()
 
   const addTag = () => {
@@ -144,8 +141,6 @@ export const Tag = ({ usage, children, addFn, removeFn, selectFn, tags }) => {
     if (tags && tagDOM.current && tags.keywords.includes(tagDOM.current.textContent)) {
       setIsSelected(true)
     }
-    // 게시글 수정에서 이미 포함된 키워드인 경우 선택된 상태를 true 로
-    // 결국 모양만 수정해주는 거임
   }, [])
 
   return (

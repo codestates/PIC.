@@ -28,7 +28,6 @@ const InnerContainer = styled.div`
   `
 
 const SearchContainer = styled.section`
-
   .wrapper {
     display: flex;
     justify-content: center;

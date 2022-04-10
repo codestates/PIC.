@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
@@ -13,13 +13,8 @@ import { ModifyPost } from "./pages/modifyPost";
 import { PostDetails } from "./pages/postDetails";
 
 import { Navbar } from "./components/navbar";
-import { PostThumbnail } from "./components/postThumbnail";
-import { AddPostFloatBtn } from "./components/addPostFloatBtn";
-import { Tag } from "./components/tagComponent";
 import { Footer } from "./components/footer";
 
-import { OneBtnModal } from "./components/oneBtnModal";
-import { TwoBtnModal } from "./components/twoBtnModal";
 import { TagSearch } from "./pages/tagSearch";
 import { CommentContainer } from "./components/commentContainer";
 import { NaverCallback } from "./pages/naverCallback";
@@ -68,6 +63,33 @@ const InnerContainer = styled.div`
 
 export const App = () => {
 
+  useEffect(() => {
+    console.log(
+      `⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠋⠉⠉⠉⠙⠛⢿⠿⠛⠛⠛⠛⠛⠿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⡿⠁⠀⠀⢀⡀⠤⠤⢄⣀⠐⡄⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⠟⠀⠀⠀⠐⠁⠀⠀⢀⣀⣀⣉⣒⣄⠉⠉⠉⢉⣀⣂⠈⠙⠻⣿⣿
+⣿⣿⣿⠟⠉⡄⠀⠀⠀⠠⠤⣐⠭⠒⠉⠉⠉⠉⣒⣳⠈⠛⠂⠀⠀⣒⣛⡢⠈⢿
+⣿⣿⠁⠀⠀⠃⠀⠀⠈⠛⠛⠠⣤⣶⠖⠙⠀⡉⢻⡿⣶⣿⣿⠁⡂⠠⠈⢿⠗⢸
+⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠂⠭⠤⠤⠤⣤⠄⠊⠀⠀⠈⠀⠀⠀⠀⢀⣶⣿
+⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠒⠉⠀⠀⠀⠈⠁⠒⠂⠈⠁⠘⢿⣿⣿
+⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿
+⡇⠀⠀⠀⠀⠀⠀⠀⠀⣾⣟⣛⣛⣻⡶⠶⠶⣶⣤⣤⣤⣤⣤⣤⣤⡶⠾⢃⣼⣿
+⣷⡀⠀⠀⠀⠀⠀⠘⢄⡀⠀⠀⠉⠉⠙⠛⠛⠛⠓⠛⠻⠿⠿⠷⠿⠟⢃⣼⣿⣿
+⣿⣿⣶⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⣿⣿⣿⣿⣿
+⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿
+⣿⡿⠁⠀⠀⢠⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡶⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⠃⠀⠀⢀⡞⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣇⠀⢠⢶⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⡄⠀⢠⠞⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠋⢸⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡏⠀⠀⠀⠀⢰⣶⣤⣤⣤⣤⣤⣴⣦⡀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣷⣄⣀⣀⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣄⣀⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿
+Made By 박우용, 조승호, 이상훈, 최경락`
+    )
+  }, [])
   const sessionStorage = window.sessionStorage;
   const [isLogin, setIsLogin] = useState(false);
 
@@ -79,14 +101,13 @@ export const App = () => {
             token: sessionStorage.getItem("loginToken")
           });
 
-        if (res.data.valid === false) {
+        if (res.data.valid === true) {
           if (sessionStorage.getItem("loginToken") && sessionStorage.getItem("userId")) {
             setIsLogin(true)
-            console.log('asdasdasd')
           }
-        } else if (res.data.valid === true) {
+        } else if (res.data.valid === false) {
           const res = await axios.get(`${process.env.REACT_APP_SERVER_PATH}/api/users/auth/token`);
-          if (res.data.message === "success") {
+          if (res.status === 200) {
             sessionStorage.setItem("userId", res.data._id)
             sessionStorage.setItem("loginToken", res.data.accessToken)
             sessionStorage.setItem("loginMethod", "common")
@@ -106,15 +127,12 @@ export const App = () => {
 
   const { pathname } = useLocation();
   useEffect(() => {
-    console.log(pathname)
     window.scrollTo(0, 0)
   }, [pathname])
 
   return (
     <Container>
-      {/* <Signup /> */}
       <GlobalStyles />
-      {/* <TempContainer></TempContainer> */}
       <Navbar isLogin={isLogin} />
       <InnerContainer>
         <Routes>
@@ -125,17 +143,20 @@ export const App = () => {
           <Route path="new_pics" element={<NewPics />} />
           <Route path="favorites" element={<Favorites />} />
 
-          <Route path="mypage/modify/" element={<ModifyMyinfo />} />
-          <Route path="posts/:id/modify/" element={<ModifyPost />} />
-          <Route path="posts/:id" element={<PostDetails />} />
-          <Route path="mypage" element={<Mypage />} />
           <Route path="add_post" element={<AddPost />} />
+
+          <Route path="posts/:id" element={<PostDetails />} />
+          <Route path="posts/:id/modify/" element={<ModifyPost />} />
           <Route path="posts/:id/comment" element={<CommentContainer />} />
-          <Route path="tags" element={<TagSearch />} />
-          <Route path="callback/naver" element={<NaverCallback />} />
-          <Route path="callback/kakao" element={<KakaoCallback />} />
+
           <Route path="tags" element={<TagSearch />} />
           <Route path="keywords" element={<KeywordsSearch />} />
+
+          <Route path="mypage" element={<Mypage />} />
+          <Route path="mypage/modify/" element={<ModifyMyinfo />} />
+
+          <Route path="callback/naver" element={<NaverCallback />} />
+          <Route path="callback/kakao" element={<KakaoCallback />} />
         </Routes>
       </InnerContainer>
       <Footer />

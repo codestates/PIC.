@@ -198,7 +198,6 @@ const DescContainer = styled.section`
 
     resize: none;
     overflow: hidden;
-    // 히든을 줌으로써 스크롤을 없앰 -> 크기에 맞게 늘어나니 스크롤은 보이지 않지만, 내용은 다 보인다.
 
     &:focus {
       outline: 3px solid #FFD600;
@@ -399,10 +398,7 @@ export const AddPost = () => {
       // 모달 상태
     }
   }
-  // 현재위치를 불러오는 중입니다.
-  // 현재위치를 불러올수없습니다 -> 모달
 
-  // 본문 작성 페이지 리사이징
   const autoResizing = () => {
     const textarea = descArea.current
     textarea.style.height = 'auto'

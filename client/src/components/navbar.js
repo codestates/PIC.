@@ -236,9 +236,6 @@ export const Navbar = ({ isLogin }) => {
         ? <TwoBtnModal main={"로그아웃 하시겠습니까?"} close={() => modalHandler("logout")} action={() => handleLogout()} navigate={"/main"} />
         : null}
 
-      {/* 여기에 완성된 로그인, 회원가입 모달 가져와서 상태에 따른 조건부 렌더링으로 처리하기 */}
-      {/* 완성된 모달 컴포넌트에 props 로 modal 상태변경 함수를 내려서 사용하기 */}
-      {/* 백드롭도 모달에서 관리해주어야함. */}
       <Container>
         <InnerContainer>
           <Logo className="logo" onClick={() => navigate("/main")}>PIC<span>.</span></Logo>
