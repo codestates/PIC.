@@ -34,10 +34,6 @@ export const ToggleLikeBtn = ({ likeStat, setLikeStat }) => {
 
   const params = useParams()
 
-  // 만약 해당 글의 라이크에 내가 있으면 색이 있어야함.
-  // 없다면 회색
-  // 누르면 요청 보내기
-
   useEffect(() => {
     setIsLikePost(likeStat)
   }, [likeStat])

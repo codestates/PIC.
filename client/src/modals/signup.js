@@ -120,42 +120,26 @@ const Hline = styled.div`
 
 export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
 
-  // 최초에는 중복확인 버튼만 활성화 상태로 보여야함
-  // 중복확인 버튼을 누르고 중복이 아닌 경우 인증 버튼을 활성화 함.
-
-
-
-  //! -------------------------------------- 1. 상태선언 ------------------------------------
-
   const serverPath = process.env.REACT_APP_SERVER_PATH;
-  //------ 이메일입력, 이메일 중복 상태 --------
-  const [email, setEmail] = useState("");
-  //1.상태(변수)  2.상태갱신함수
-  const [isNotUsingEmail, setIsNotUsingEmail] = useState(false);
-  // 이메일 중복여부 관련 상태
-  // 우용숙제 : useState false,true 정확히 어떻게 작동하는지 파고들기.
 
-  //-------- 이메일 코드관련 상태 --------
+  const [email, setEmail] = useState("");
+  const [isNotUsingEmail, setIsNotUsingEmail] = useState(false);
+
   const [isValidEmailCode, setIsValidEmailCode] = useState(false);
   const [isChecked, setIsChecked] = useState(false)
   const [emailCode, setEmailCode] = useState("");
-  // email 코드 6자리
+
   const [codeInputValue, setCodeInputValue] = useState("");
 
-  //---------닉네임입력, 닉네임 중복 상태 -------
   const [nickname, setNickname] = useState("");
   const [isValidNickname, setIsValidNickname] = useState(true);
 
-  //---------패스워드입력, 패스워드 확인 상태-------
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState('')
 
   const [passwordCheck, setPasswordCheck] = useState(false)
 
-  //---------회원가입 버튼 누를시 어디로 가는지 경로지정------
   const naviagate = useNavigate()
-
-  //! -------------------------------------- 2.함수 (유효성검사, 유즈이펙트, 통신) ------------------------------------
 
   const validateEmail = (value) => {
     // 이메일 유효성 검사
@@ -170,14 +154,10 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
     setEmailCode('')
   }
 
-  //todo 이메일 입력창 이벤트를 사용하기위해서 만든 함수 _ com,co 요청 손 봐야함  (리펙토링해야함!!!!!)
   const emailCheckHandler = (e) => {
-    // input에 입력된 값을 원하는 상태에 저장합니다.
     (async () => {
       setIsChecked(true)
       if (email && validateEmail(email)) {
-        // 이메일 필드에 값이 있고, 유효한 경우에만 요청전송
-        // 두 조건이 일치하는 요청에서 200이 아닌 경우 중복으로 볼 수 있음.
         try {
           const res = await axios.post(`${serverPath}/api/users/email`, {
             email: email,
@@ -191,30 +171,17 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
       }
     })()
   };
-  //todo -------------------------------------------------------------
-
-  // useEffect 를 이용하여, email 상태가 바뀌면 email 요청을 보낸다.
-  // 위의 문법은 즉시실행함수로, 호출하지 않고 1회성으로 함수를 실행 시킬 수 있다.
-  // 이후 응답에 따라 분기하여 상태를 변경한다.
-
-  //-------- 이메일 코드관련 ----------
-  // 회원가입 전 이메일인증 -> 코드6자리 발급받는 요청
+  
   const sendEmailCode = async () => {
     const res = await axios.post(`${serverPath}/api/users/mail`, {
       email: email,
     });
     if (res.status === 200) {
       setEmailCode(res.data.authNum);
-      //200 일때 무엇을 저장 ? -> console.log로 찍어봐서 내가 원하는게 어디에 있는지 보고 저장! 
     }
   };
 
-  // console.log(emailCode) 
-
-
-  // 이메일 코드 핸들러
   const emailCodeHandler = (e) => {
-    // input에 입력된 값을 원하는 상태에 저장합니다.
     setCodeInputValue(e.target.value)
 
     if (emailCode === e.target.value) {
@@ -224,7 +191,6 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
     }
   };
 
-  //--------- 닉네임 코드관련 ---------
   const validateNickname = (value) => {
     const nicknameRegex = /^[가-힣|a-z|A-Z|0-9|_]{2,12}$/;
     return nicknameRegex.test(value);
@@ -237,8 +203,6 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
   useEffect(() => {
     (async () => {
       if (nickname && validateNickname(nickname)) {
-        // 새로운 닉네임 필드에 값이 있고, 유효한 경우에만 요청전송
-        // 두 조건이 일치하는 요청에서 200이 아닌 경우 중복으로 볼 수 있음.
         try {
           const res = await axios.post(`${serverPath}/api/users/nickname`, {
             nickname: nickname,
@@ -253,7 +217,6 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
     })();
   }, [nickname, serverPath]);
 
-  // 비밀번호 , 비밀번호확인
   useEffect(() => {
     if (password === retypePassword) {
       setPasswordCheck(true)
@@ -262,7 +225,6 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
     }
   }, [password, retypePassword])
 
-  // 회원가입
   const SignupHandler = async () => {
     const res = await axios.post(`${serverPath}/api/users`, {
       email: email,
@@ -275,9 +237,6 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
     }
   };
 
-
-  //! -------------------------------------- 3.컴포넌트------------------------------------
-  // 이메일 유효성검사
   const EmailNotification = () => {
     if (isChecked && !isNotUsingEmail && email && validateEmail(email)) {
       return <Nofication>중복된 이메일입니다.</Nofication>;
@@ -291,13 +250,10 @@ export const Signup = ({ closeFn, setOpenLoginModal, setOpenSignupModal }) => {
     return null;
   };
 
-  // 이메일 인증 보내기 버튼
   const EmailCodeBtn = () => {
     return isNotUsingEmail ? <Btn action={sendEmailCode}>인증</Btn> : <Btn action={emailCheckHandler}>중복확인</Btn>;
   };
 
-
-  // 이메일 코드 6자리 검사
   const EmailCodeNotification = () => {
     if (emailCode && !isValidEmailCode && codeInputValue) {
       return <Nofication>코드가 서로 다릅니다.</Nofication>;

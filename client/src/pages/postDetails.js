@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { BsPencilSquare, BsMap, BsGeoAltFill, BsMapFill, BsFillChatDotsFill, BsQuestionLg } from "react-icons/bs";
+import { BsPencilSquare, BsGeoAltFill, BsMapFill, BsFillChatDotsFill, BsQuestionLg } from "react-icons/bs";
 
 import { BtnComponent as Btn } from '../components/BtnComponent';
 import { LinkTag } from '../components/linkTag';
@@ -176,7 +176,6 @@ const DescContainer = styled.section`
 
   font-family: sans-serif;
 
-  /* border: 1px solid; */
   .title_wrapper {
     color: #333;
     
@@ -326,7 +325,7 @@ export const PostDetails = () => {
       const staticMapContainer = kakaoMap.current, // 이미지 지도를 표시할 div  
         staticMapOption = {
           center: new kakao.maps.LatLng(coords.latitude, coords.longitude), // 이미지 지도의 중심좌표
-          level: 3, // 이미지 지도의 확대 레벨,
+          level: 3, // 이미지 지도의 확대 레벨
         };
 
       const map = new kakao.maps.Map(staticMapContainer, staticMapOption);
@@ -339,7 +338,6 @@ export const PostDetails = () => {
 
   const { _id, title, description, photo, nickname, likes } = postData
 
-  // 로드시 내가 좋아요한 게시글인지 확인 및 좋아요 숫자 가져오기.
   useEffect(() => {
     if (likes) {
       setLikeStat(likes.includes(userId))
@@ -367,19 +365,6 @@ export const PostDetails = () => {
       // err
     }
   }
-
-  // 파라미터 이용
-  // 데이터 가져오기
-  // 뿌리기
-  // 태그 -> 가나다 순, 두 태그 합쳐서
-  // 사진
-  // 지도
-  // -> 눌러서 웹에서 보기, 움직이지 않는 지도여야함.
-  // 만약 내아이디와 동일?
-  // 수정 버튼 렌더
-  // 좋아요 토글
-  // 댓글 컴포넌트 추가
-  // 삭제버튼 -> 모달
 
   const navigateToModify = () => {
     navigate('modify')
@@ -420,8 +405,6 @@ export const PostDetails = () => {
           {isLoading ? <LoadingIndicator size={'7rem'} /> : null}
         </ImgContainer>
 
-
-        {/* <h3 className='category'>장소</h3> */}
         <MapContainer>
           <div className="title_wrapper">
             <BsGeoAltFill />
@@ -447,7 +430,6 @@ export const PostDetails = () => {
           </KakaoMap>
         </MapContainer>
 
-        {/* <h3 className='category'>사진 설명</h3> */}
         {description &&
           (
             <DescContainer>
@@ -460,7 +442,6 @@ export const PostDetails = () => {
           )
         }
 
-        {/* <h3 className='category'>댓글</h3> */}
         <CommentContainer>
           <div className="title_wrapper">
             <BsFillChatDotsFill />

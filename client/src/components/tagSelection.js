@@ -114,37 +114,12 @@ export const TagSelection = ({ setTags, tags, hideMyTags }) => {
     )
   }
 
-  const RenderTags = (data) => {
-    return data.data.map((tag) => {
-      return <Tag key={tag} selectFn={selectTag}>{tag}</Tag>
-    }
-    )
-  }
-
-  // 어떤 클래스를 가진 요소를 전체 불러오고, 
-  // 만약 그 요소의 텍스트컨텐츠가 배열에 있는 값과 동일하다면
-  // click 이벤트를 실행시킨다.
-
-  // 즉, keywords props 로 받아온 배열내부에 있는 값과 일치하는 경우.
-
-
   return (
     <Container>
       {loading
         ? <LoadingContainer><LoadingIndicator size={'9rem'} /></LoadingContainer> // 여기에 로딩 컴포넌트 넣기
         :
         (
-          // tagData.map((tagData, idx) => { 
-          //   return (
-          //     <div key={idx}>
-          //       <h3>{tagData.category}</h3>
-          //       <TagContainer>
-          //         <RenderTags data={tagData.content} />
-          //       </TagContainer>
-          //     </div>
-          //   )
-          // })
-
           <div>
             <h3>지역</h3>
             <TagContainer>

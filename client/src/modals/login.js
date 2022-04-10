@@ -138,7 +138,6 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
         email: email,
         password: password,
       })
-      console.log(res, "RES")
       if (res) {
         sessionStorage.setItem("userId", res.data._id)
         sessionStorage.setItem("loginToken", res.data.accessToken)

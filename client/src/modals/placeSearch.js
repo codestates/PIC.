@@ -56,6 +56,10 @@ const Modal = styled.div`
     font-size: 0.8rem;
     color: #555;
   }
+
+  @media screen and (max-width : 500px) {
+    width: 100%;
+  }
 `
 
 const InnerContainer = styled.div`
