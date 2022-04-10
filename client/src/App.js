@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
@@ -28,7 +28,9 @@ import { Favorites } from "./pages/categories/favorites";
 import { LandingPage } from "./pages/landingPage";
 
 const GlobalStyles = createGlobalStyle`
-    font-family: 'Noto Sans KR', sans-serif;
+
+    /* font-family: 'Noto Sans KR', sans-serif; */
+    
 
     a {
       color : black;
@@ -61,8 +63,8 @@ const InnerContainer = styled.div`
   margin-bottom: 200px;
 `
 
-export const App = () => {
 
+export const App = () => {
   useEffect(() => {
     console.log(
       `⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠋⠉⠉⠉⠙⠛⢿⠿⠛⠛⠛⠛⠛⠿⣿⣿⣿⣿⣿⣿
@@ -137,6 +139,7 @@ Made By 박우용, 조승호, 이상훈, 최경락`
       <InnerContainer>
         <Routes>
           <Route path="main" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
 
           <Route path="my_pics" element={<MyPics />} />
           <Route path="most_likes" element={<MostLikes />} />

@@ -6,6 +6,7 @@ import { NaverLoginBtn } from "../components/naverLoginBtn";
 import { KakaoLoginBtn } from "../components/kakaoLoginBtn"
 import { BtnComponent as Btn } from "../components/BtnComponent";
 import { BsXCircleFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 
 const Container = styled.section`
@@ -151,7 +152,7 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
   };
 
   const enterEvent = (e) => {
-    if (window.event.keyCode == 13) {
+    if (window.event.keyCode === 13) {
       submit()
     }
   }
