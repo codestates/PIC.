@@ -17,6 +17,7 @@ const ModalContainer = styled.div`
   height: 100vh;
 
   z-index: 998;
+
 `;
 
 
@@ -66,12 +67,23 @@ const Modal = styled.div`
   .form {
     position: relative;
   }
+
+  @media screen and (max-width : 500px) {
+    width: 92%;
+    height: 80%;
+    overflow-y: auto;
+  }
 `;
 
 const InnerContainer = styled.div`
   position: relative;
   top: 15px;
   height: max-content;
+
+    @media screen and (max-width : 500px) {
+    margin-top: 80px;
+    margin-bottom: 50px;
+  }
 `;
 
 const CloseBtn = styled.div`

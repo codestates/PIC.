@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { BsPencilSquare, BsMap, BsGeoAltFill, BsMapFill, BsFillChatDotsFill } from "react-icons/bs";
+import { BsPencilSquare, BsMap, BsGeoAltFill, BsMapFill, BsFillChatDotsFill, BsQuestionLg } from "react-icons/bs";
 
 import { BtnComponent as Btn } from '../components/BtnComponent';
 import { LinkTag } from '../components/linkTag';
@@ -41,7 +41,7 @@ const Container = styled.section`
 
 const InnerContainer = styled.div`
   position: relative;
-  grid-column: 3 / 11;
+  grid-column: 2 / 12;
   height: max-content;
 `
 
@@ -96,6 +96,10 @@ const ModifyBtn = styled.div`
     transform: translateY(-2px);
     color: #000;
   }
+
+  @media screen and (max-width : 500px) {
+    top: -60px;
+  }
 `
 
 const ImgContainer = styled.section`
@@ -113,6 +117,10 @@ const ImgContainer = styled.section`
   box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
 
   border-radius: 10px;
+
+  @media screen and (max-width : 500px) {
+    aspect-ratio: 1 / 1;
+  }
 `
 
 const LocationLink = styled.div`
@@ -174,6 +182,7 @@ const DescContainer = styled.section`
     
     display: flex;
 
+    margin-top: 30px;
     margin-bottom: 10px;
     
     svg {
@@ -199,6 +208,7 @@ const MapContainer = styled.section`
     
     display: flex;
 
+    margin-top: 30px;
     margin-bottom: 10px;
     
     svg {
@@ -217,6 +227,10 @@ const KakaoMap = styled.section`
   box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
 
   border-radius: 10px;
+
+  @media screen and (max-width : 500px) {
+    height: 150px;
+  }
 `
 
 const CommentContainer = styled.section`
@@ -229,6 +243,7 @@ const CommentContainer = styled.section`
     
     display: flex;
 
+    margin-top: 30px;
     margin-bottom: 10px;
     
     svg {
@@ -239,6 +254,16 @@ const CommentContainer = styled.section`
       color: #333;
     }
   }
+
+    @media screen and (max-width : 500px) {
+      .title_wrapper {
+        margin-bottom: 0px;
+      }
+    }
+`
+
+const DeleteBtnContainer = styled.div`
+  margin-top: 200px;
 `
 
 export const PostDetails = () => {
@@ -396,16 +421,6 @@ export const PostDetails = () => {
         </ImgContainer>
 
 
-        {/* <h3 className='category'>사진 설명</h3> */}
-        <DescContainer>
-          <div className="title_wrapper">
-            <BsFillChatDotsFill />
-            <h3>사진에 대해서</h3>
-          </div>
-          <pre>{description}</pre>
-        </DescContainer>
-
-
         {/* <h3 className='category'>장소</h3> */}
         <MapContainer>
           <div className="title_wrapper">
@@ -431,7 +446,20 @@ export const PostDetails = () => {
             </LocationLink>
           </KakaoMap>
         </MapContainer>
-        
+
+        {/* <h3 className='category'>사진 설명</h3> */}
+        {description &&
+          (
+            <DescContainer>
+              <div className="title_wrapper">
+                <BsQuestionLg />
+                <h3>사진에 대해서</h3>
+              </div>
+              <pre>{description}</pre>
+            </DescContainer>
+          )
+        }
+
         {/* <h3 className='category'>댓글</h3> */}
         <CommentContainer>
           <div className="title_wrapper">
@@ -442,7 +470,11 @@ export const PostDetails = () => {
         </CommentContainer>
         {
           postData.author === userId
-            ? <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
+            ? (
+              <DeleteBtnContainer>
+                <Btn width={'100%'} color={'#ddd'} hover={'#FF796B'} action={() => modalHandler('delete')}>게시글 삭제하기</Btn>
+              </DeleteBtnContainer>
+            )
             : null
         }
       </InnerContainer>

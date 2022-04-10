@@ -37,7 +37,7 @@ const Container = styled.section`
 `
 
 const InnerContainer = styled.div`
-  grid-column: 3 / 11;
+  grid-column: 2 / 12;
   height: max-content;
 `
 
@@ -83,6 +83,10 @@ const UploadImageBox = styled.section`
     }
   }
   cursor: pointer;
+
+  @media screen and (max-width : 500px) {
+    width: 100%;
+  }
 `
 
 const KakaoMapBox = styled.section`
@@ -92,6 +96,11 @@ const KakaoMapBox = styled.section`
   box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
 
   border-radius: 10px;
+
+  @media screen and (max-width : 500px) {
+    width: 100%;
+    aspect-ratio: 2 / 1;
+  }
 `
 
 const BtnOnMap = styled.div`

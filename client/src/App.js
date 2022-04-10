@@ -30,8 +30,11 @@ import { MyPics } from "./pages/categories/myPics";
 import { MostLikes } from "./pages/categories/mostLikes";
 import { NewPics } from "./pages/categories/newPics";
 import { Favorites } from "./pages/categories/favorites";
+import { LandingPage } from "./pages/landingPage";
 
 const GlobalStyles = createGlobalStyle`
+    font-family: 'Noto Sans KR', sans-serif;
+
     a {
       color : black;
     }
@@ -106,6 +109,8 @@ export const App = () => {
       <Navbar isLogin={isLogin} />
       <InnerContainer>
         <Routes>
+          <Route path="main" element={<LandingPage />} />
+
           <Route path="my_pics" element={<MyPics />} />
           <Route path="most_likes" element={<MostLikes />} />
           <Route path="new_pics" element={<NewPics />} />

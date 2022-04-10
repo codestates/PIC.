@@ -46,6 +46,12 @@ const Btn = styled.div`
 
     background-color: #000;
   }
+
+  @media screen and (max-width : 500px) {
+    right: 5%;
+    bottom: 5%;
+    transform: scale(0.8);
+  }
 `
 
 export const AddPostFloatBtn = () => {
