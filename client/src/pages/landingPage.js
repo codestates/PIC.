@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { BtnComponent as Btn } from '../components/BtnComponent';
 
 import image1 from '../img/landing1.png'
 import image2 from '../img/landing2.png'
@@ -169,24 +170,24 @@ const InnerContainer = styled.div`
 
   @media screen and (max-width : 500px){
     width: 100%;
-    margin-top: 0px;
+    margin-top: 250px;
 
     section {
-      display : flex;
-      flex-direction: column;
-      /* height: 300px; */
+      display : grid;
+      place-items: center;
+      height: max-content;
 
-      /* background-color: #ddd; */
+      margin-top: 30px;
 
       .image {
-        position: static;
-        width: 100%;
-        height: 50%;
+        display: flex;
+        justify-content: center;
+        height: 200px;
 
         z-index: -1;
-
         img {
-          height: 30%;
+          width: 300px;
+          height: auto;
         }
       }
 
@@ -195,8 +196,9 @@ const InnerContainer = styled.div`
         display: flex;
         flex-direction: column;
         align-items: center;
+
         width: 100%;
-        height: 50%;
+        height: 100px;
 
         .wrapper {
           display : flex;
@@ -237,8 +239,21 @@ const SmallLogo = styled(Logo)`
   }
 `
 
+const BtnContainer = styled.div`
+  width: 100%;
+  display : flex;
+  justify-content: center;
+
+  margin-top: 150px;
+
+  @media screen and (max-width : 500px){
+    margin-top: 50px;
+  }
+`
+
 export const LandingPage = () => {
   const navigate = useNavigate()
+
   return (
     <Container>
       <Top>
@@ -277,12 +292,15 @@ export const LandingPage = () => {
           </div>
           <div className="text">
             <div className="wrapper">
-            <SmallLogo>PIC<span>.</span></SmallLogo>
-            <p>을 통해 사람들과</p>
+              <SmallLogo>PIC<span>.</span></SmallLogo>
+              <p>을 통해 사람들과</p>
             </div>
             <p>당신의 특별한 순간을 공유해보세요.</p>
           </div>
         </section>
+        <BtnContainer>
+          <Btn width={'90%'} action={() => navigate('/my_pics')}>시작하기</Btn>
+        </BtnContainer>
       </InnerContainer>
     </Container>
   );

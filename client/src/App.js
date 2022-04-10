@@ -72,23 +72,32 @@ export const App = () => {
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      if (sessionStorage.getItem("loginToken") && sessionStorage.getItem("userId")) {
-        setIsLogin(true)
-      } 
-      // else if (엑세스토큰 유효하지 않음.) {
-      //   const res = await axios.get(`${process.env.REACT_APP_SERVER_PATH}/api/users/auth/token`);
-      //   if (res.data.message === "success") {
-      //     sessionStorage.setItem("userId", res.data._id)
-      //     sessionStorage.setItem("loginToken", res.data.accessToken)
-      //     sessionStorage.setItem("loginMethod", "common")
-      //     setIsLogin(true)
-      //   } else {
-      //     window.sessionStorage.clear()
-      //     setIsLogin(false)
-      //   }
-      // }
-    })()
+    if (sessionStorage.getItem('loginToken') && sessionStorage.getItem('userId')) {
+      (async () => {
+        const res = await axios.post(`${process.env.REACT_APP_SERVER_PATH}/api/users/auth/token/validate`,
+          {
+            token: sessionStorage.getItem("loginToken")
+          });
+
+        if (res.data.valid === false) {
+          if (sessionStorage.getItem("loginToken") && sessionStorage.getItem("userId")) {
+            setIsLogin(true)
+            console.log('asdasdasd')
+          }
+        } else if (res.data.valid === true) {
+          const res = await axios.get(`${process.env.REACT_APP_SERVER_PATH}/api/users/auth/token`);
+          if (res.data.message === "success") {
+            sessionStorage.setItem("userId", res.data._id)
+            sessionStorage.setItem("loginToken", res.data.accessToken)
+            sessionStorage.setItem("loginMethod", "common")
+            setIsLogin(true)
+          } else {
+            window.sessionStorage.clear()
+            setIsLogin(false)
+          }
+        }
+      })()
+    }
   }, [])
 
   // 만약 엑세스 토큰이 유효하지 않은 경우에 위의 리프레시 토큰을 이용하여 갱신하는 로직을 실행
