@@ -207,13 +207,15 @@ export const Comment = ({ data }) => {
 
   const editField = useRef()
 
-
   useEffect(() => {
     const getProfilePic = async () => {
       const res = await axios.get(`${serverPath}/api/users/${author}`)
       setUserPic(res.data.userInfo.image)
     }
-    getProfilePic()
+
+    if (data) {
+      getProfilePic()
+    }
   }, [])
 
   const headers = {

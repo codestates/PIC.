@@ -7,6 +7,7 @@ import image2 from '../img/landing2.png'
 import image3 from '../img/landing3.png'
 
 const Container = styled.section`
+  font-family: 'Noto Sans KR', sans-serif;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   width: 1200px;
@@ -148,13 +149,15 @@ const InnerContainer = styled.div`
     }
 
     .text {
-
+      position: absolute;
+      right : 0;
       display: flex;
+
       flex-direction: column;
       justify-content: center;
       align-items: flex-end;
 
-      width: 50%;
+      width: 700px;
       height: 400px;
 
       .wrapper {
