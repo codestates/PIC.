@@ -1,8 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import image1 from '../img/landing1.png'
+import image2 from '../img/landing2.png'
+import image3 from '../img/landing3.png'
+
 const Container = styled.section`
-  width: 100vw;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 1200px;
+  /* width: 100vw; */
   height: max-content;
 
   display: flex;
@@ -21,34 +28,43 @@ const Top = styled.div`
   width: 100%;
   height: 700px;
 
-  background: url(https://images.unsplash.com/photo-1531012804729-7df44b58327b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1710&q=80);
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 60%, rgba(255,255,255,1) 100%),
+              url(https://images.unsplash.com/photo-1531012804729-7df44b58327b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1710&q=80); 
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 
   .wrapper {
-    position: absolute;
-    left: 0;
-    top: 0;
-
     display: grid;
-    width: 100%;
-    padding: 70px;
-
-    box-sizing: border-box;
-
-    font-size: 1.8rem;
-
+    grid-template-columns: repeat(12, 1fr);
+    width: 2000px;
     height: max-content;
-    
-    p {
-      margin-top: 20px;
-      margin-bottom: 20px;
 
-      &:first-child{
-        margin-top: 0;
-      }
-    }
+    .intro {
+      grid-column: 2 / 12;
+      /* position: absolute; */
+      left: 0;
+      top: 0;
+
+      display: grid;
+      width: 100%;
+      padding: 70px;
+
+      box-sizing: border-box;
+
+      font-size: 1.8rem;
+
+      height: max-content;
+      
+      p {
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        &:first-child{
+          margin-top: 0;
+        }
+      } 
+    } 
   }
 
   .start {
@@ -68,15 +84,25 @@ const Top = styled.div`
     height: max-content;
 
     .wrapper {
-      font-size: 1rem;
-      height: 150px;
-      padding: 20px;
+      position: relative;
+      display: block;
+      width: 100vw;
+      height: 100%;
+
+      .intro {
+        position: absolute;
+        top: 0;
+        grid-column: 0 / -1;
+        font-size: 1rem;
+        height: 150px;
+        padding: 20px;
 
       p {
         margin-top: 10px;
         margin-bottom: 10px;
       }
     }
+  }
 
     .start {
       position: absolute;
@@ -93,47 +119,93 @@ const Top = styled.div`
 
 const InnerContainer = styled.div`
   position: relative;
-  width: 70%;
+  grid-column: 2 / 12;
+
+  width: 100%;
   height: max-content;
 
   margin-top: 700px;
   
   section {
+    position: relative;
     display: flex;
-    justify-content: space-around;
+    align-items: center;
+
     height: 400px;
     width: 100%;
-
-    border: 1px solid;
-
-    img {
-      width: 100px;
-      height: 100px;
-
-      background-color: #ddd;
-    }
 
     .image {
       display: grid;
       place-items: center;
 
       width: 50%;
+      height: 400px;
+
+      img {
+        height: 400px;
+      }
     }
 
     .text {
+
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+
       width: 50%;
+      height: 400px;
+
+      .wrapper {
+        display : flex;
+      }
+
+      p {
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
     }
   }
 
   @media screen and (max-width : 500px){
     width: 100%;
-    margin-top: 200px;
+    margin-top: 0px;
 
     section {
-      display: grid;
-      place-items: center;
+      display : flex;
+      flex-direction: column;
+      /* height: 300px; */
+
+      /* background-color: #ddd; */
+
+      .image {
+        position: static;
+        width: 100%;
+        height: 50%;
+
+        z-index: -1;
+
+        img {
+          height: 30%;
+        }
+      }
+
+      .text {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 50%;
+
+        .wrapper {
+          display : flex;
+        }
+
+        p {
+        font-size: 1.1rem;
+        }   
+      }
     }
   }
 `
@@ -152,48 +224,63 @@ const Logo = styled.div`
   }
 `
 
+const SmallLogo = styled(Logo)`
+  position: relative;
+  top: -10px;
+  margin-bottom: 10px;
+  font-size: 3rem;
+
+  @media screen and (max-width : 500px){
+    position: relative;
+    top: -10px;
+    font-size: 2rem;
+  }
+`
+
 export const LandingPage = () => {
   const navigate = useNavigate()
   return (
     <Container>
       <Top>
         <div className="wrapper">
-          <p>같은 장소, 다른 시선</p>
-          <p>나의 감정과 시선을 공유하는 서비스</p>
-          <Logo>PIC<span>.</span></Logo>
-          <p>입니다.</p>
-          <div className='start' onClick={() => navigate('/my_pics')}>시작하기 &gt;&gt;</div>
+          <div className="intro">
+            <p>같은 장소, 다른 시선</p>
+            <p>나의 감정과 시선을 공유하는 서비스</p>
+            <Logo>PIC<span>.</span></Logo>
+            <p>입니다.</p>
+            <div className='start' onClick={() => navigate('/my_pics')}>시작하기 &gt;&gt;</div>
+          </div>
         </div>
       </Top>
       <InnerContainer>
         <section>
           <div className="image">
-            <img />
+            <img src={image1} alt="1" />
           </div>
           <div className="text">
-            <p>
-              사진에 담긴 그때의 감정을 남들과 공유하고 싶으셨던 적이 있으셨나요?
-            </p>
-          </div>
-        </section>
-        <section>
-          <div className="text">
-            <p>
-              반복되는 일상, 늘 지나던 같은 장소가 오늘만큼은 다르게 보이던 순간들이 있으셨나요?
-            </p>
-          </div>
-          <div className="image">
-            <img />
+            <p>사진에 담긴 그때의 감정을</p>
+            <p>남들과 공유하고 싶으셨던 적이 있으셨나요?</p>
           </div>
         </section>
         <section>
           <div className="image">
-            <img />
+            <img src={image2} alt="2" />
           </div>
           <div className="text">
-            <p>
-              로고 를 통해 다른 사람들과 당신의 특별한 순간을 공유해보세요.
-            </p>
+            <p>반복되는 일상, 늘 지나던 같은 장소가</p>
+            <p>왠지 달라보이던 순간들이 있으셨나요?</p>
+          </div>
+        </section>
+        <section>
+          <div className="image">
+            <img src={image3} alt="3" />
+          </div>
+          <div className="text">
+            <div className="wrapper">
+            <SmallLogo>PIC<span>.</span></SmallLogo>
+            <p>을 통해 사람들과</p>
+            </div>
+            <p>당신의 특별한 순간을 공유해보세요.</p>
           </div>
         </section>
       </InnerContainer>
