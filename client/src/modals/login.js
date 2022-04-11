@@ -127,6 +127,7 @@ const SignContainer = styled.div`
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
 export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
+  const navigate = useNavigate()
   const sessionStorage = window.sessionStorage;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
