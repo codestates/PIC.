@@ -198,7 +198,11 @@ const DescContainer = styled.section`
   padding: 10px;
   border-left: 3px solid #ffd600;
   border-radius: 3px;
+  white-space : pre-wrap;
+  line-height: 1.4rem;
   }
+
+
 `
 
 const MapContainer = styled.section`
