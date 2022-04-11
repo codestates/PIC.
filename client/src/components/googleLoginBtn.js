@@ -23,6 +23,7 @@ const Container = styled.section`
 `
 
 export const GoogleLoginBtn = () => {
+  const navigate = useNavigate()
   const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENTID;
   const sessionStorage = window.sessionStorage;
   const serverPath = process.env.REACT_APP_SERVER_PATH;
