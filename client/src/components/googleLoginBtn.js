@@ -37,6 +37,7 @@ export const GoogleLoginBtn = () => {
       sessionStorage.setItem("loginToken", postGoogleId.data.accessToken);
       sessionStorage.setItem("userId", postGoogleId.data._id)
       sessionStorage.setItem("loginMethod", "social")
+      navigate("/my_pics")
       window.location.reload()
     }
   };

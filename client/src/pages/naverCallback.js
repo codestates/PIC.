@@ -46,7 +46,7 @@ export const NaverCallback = () => {
         sessionStorage.setItem("userId", res.data._id)
         sessionStorage.setItem("loginToken", res.data.accessToken)
         sessionStorage.setItem("loginMethod", "social")
-        navigate(-1)
+        navigate("/my_pics")
         window.location.reload()
       }
     } else {
