@@ -13,7 +13,6 @@ const Container = styled.section`
   width: 1200px;
   height: max-content;
 `
-
 const InnerContainer = styled.div`
   grid-column: 3 / 11;
 
