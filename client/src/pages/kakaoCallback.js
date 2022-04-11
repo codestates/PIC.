@@ -44,6 +44,7 @@ export const KakaoCallback = () => {
         sessionStorage.setItem("userId", res.data._id)
         sessionStorage.setItem("loginToken", res.data.accessToken)
         sessionStorage.setItem("loginMethod", "social")
+        navigate(-1)
         window.location.reload()
       }
     } else {
