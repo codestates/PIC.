@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import GoogleLogin from "react-google-login";
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 import googleIcon from "../img/google_oauth_icon.png"
 
@@ -23,6 +24,7 @@ const Container = styled.section`
 `
 
 export const GoogleLoginBtn = () => {
+  const navigate = useNavigate()
   const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENTID;
   const sessionStorage = window.sessionStorage;
   const serverPath = process.env.REACT_APP_SERVER_PATH;
@@ -37,6 +39,7 @@ export const GoogleLoginBtn = () => {
       sessionStorage.setItem("loginToken", postGoogleId.data.accessToken);
       sessionStorage.setItem("userId", postGoogleId.data._id)
       sessionStorage.setItem("loginMethod", "social")
+      navigate("/my_pics")
       window.location.reload()
     }
   };

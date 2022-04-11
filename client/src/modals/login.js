@@ -127,6 +127,7 @@ const SignContainer = styled.div`
 const serverPath = process.env.REACT_APP_SERVER_PATH;
 
 export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
+  const navigate = useNavigate()
   const sessionStorage = window.sessionStorage;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -144,6 +145,7 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
         sessionStorage.setItem("loginToken", res.data.accessToken)
         sessionStorage.setItem("loginMethod", "common")
         closeFn();
+        navigate("/my_pics")
         window.location.reload()
       }
     } catch (err) {
@@ -164,9 +166,9 @@ export const Login = ({ closeFn, setOpenSignupModal, setOpenLoginModal }) => {
 
   return (
     <Container>
-      <Backdrop onClick={closeFn}/>
+      <Backdrop onClick={closeFn} />
       <Modal>
-        <CloseBtn onClick={closeFn}><BsXCircleFill size={'2rem'}/></CloseBtn>
+        <CloseBtn onClick={closeFn}><BsXCircleFill size={'2rem'} /></CloseBtn>
         <InnerContainer>
           <InputContainer>
             <h3>이메일</h3>
