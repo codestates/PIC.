@@ -58,6 +58,8 @@ const YesBtn = styled.button`
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
+  
+  color : #000;
 
   cursor : pointer;
   transition: 0.1s;
@@ -81,6 +83,8 @@ const NoBtn = styled.button`
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
+
+  color : #000;
 
   cursor : pointer;
   

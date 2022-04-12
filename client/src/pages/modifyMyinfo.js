@@ -298,15 +298,19 @@ export const ModifyMyinfo = () => {
     }
   }
 
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     const headers = {
       headers: {
         Authorization: accessToken
       }
     }
 
-    axios.delete(`${serverPath}/api/users/${userId}`, headers)
-    navigate('/main')
+    const res = await axios.delete(`${serverPath}/api/users/${userId}`, headers)
+    if(res.status === 200){
+      sessionStorage.clear()
+      navigate('/main')
+      window.location.reload()
+    }
   }
 
   const NicknameNofication = () => {

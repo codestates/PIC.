@@ -33,6 +33,8 @@ const Container = styled.header`
 
   @media screen and (max-width : 500px) {
     min-width: 0;
+    position: fixed;
+    top: 0;
   }
 `;
 

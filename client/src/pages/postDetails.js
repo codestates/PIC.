@@ -149,7 +149,7 @@ const LocationLink = styled.div`
 
   .wrapper span {  
     position: relative;
-    top: 2px;
+    top: 1px;
 
     font-size: 0.9rem;
   }
@@ -194,12 +194,12 @@ const DescContainer = styled.section`
   }
 
   pre {
-  min-height : 20px;
-  padding: 10px;
-  border-left: 3px solid #ffd600;
-  border-radius: 3px;
-  white-space : pre-wrap;
-  line-height: 1.4rem;
+    min-height : 20px;
+    padding: 10px;
+    border-left: 3px solid #ffd600;
+    border-radius: 3px;
+    white-space : pre-wrap;
+    line-height: 1.4rem;
   }
 
 
@@ -272,7 +272,6 @@ const DeleteBtnContainer = styled.div`
 export const PostDetails = () => {
   const kakao = window.kakao
 
-
   const serverPath = process.env.REACT_APP_SERVER_PATH;
   const loginToken = window.sessionStorage.getItem('loginToken')
   const userId = window.sessionStorage.getItem('userId')
@@ -318,7 +317,7 @@ export const PostDetails = () => {
 
       const imageSrc = markerImg, // 마커이미지의 주소입니다    
         imageSize = new kakao.maps.Size(50, 45), // 마커이미지의 크기입니다
-        imageOption = { offset: new kakao.maps.Point(13, 38) };
+        imageOption = { offset: new kakao.maps.Point(20, 38) };
 
       const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
       const marker = new kakao.maps.Marker({

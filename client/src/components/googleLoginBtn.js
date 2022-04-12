@@ -45,7 +45,7 @@ export const GoogleLoginBtn = () => {
   };
 
   const onFailure = (error) => {
-    console.log(error);
+    // console.log(error);
   };
 
   return (
