@@ -85,7 +85,7 @@ const PostInfo = styled.div`
     top: -2px;
 
     width: 90%;
-    margin-top: 5px;
+    margin-top: 6px;
 
     color: #888;
     font-size: 0.8rem;

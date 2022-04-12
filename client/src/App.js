@@ -29,12 +29,19 @@ import { LandingPage } from "./pages/landingPage";
 
 const GlobalStyles = createGlobalStyle`
 
-    /* font-family: 'Noto Sans KR', sans-serif; */
     
+    html {
+      body{
+        font-family: 'NanumSquareRound', sans-serif;
+        color : #000;
+      }
 
-    a {
-      color : black;
+      a {
+        color : black;
+      }
     }
+
+
     
     ${reset}
     .main{
@@ -61,6 +68,10 @@ const InnerContainer = styled.div`
   
   margin-top: 100px;
   margin-bottom: 200px;
+
+  @media screen and (max-width : 500px) {
+    margin-top: 150px;
+  }
 `
 
 

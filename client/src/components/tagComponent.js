@@ -26,7 +26,7 @@ const CommonTag = styled.div`
   height: 25px;
   
   box-sizing: border-box;
-  padding: 3px 10px 0px 10px;
+  padding: 2px 10px 0px 10px;
 
   user-select: none;
 

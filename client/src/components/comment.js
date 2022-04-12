@@ -72,11 +72,8 @@ const Content = styled.div`
 
   .nick {
     position: relative;
-    top: 2px;
 
     width: 100px;
-    
-    padding-top: 2px;
 
     font-size: 1rem;
 
@@ -89,7 +86,7 @@ const Content = styled.div`
     width: 100%;
     word-break: break-all;
     white-space: pre-wrap;
-    padding: 10px 100px 10px 10px;
+    padding: 7px 100px 10px 10px;
     position: relative;
     top: 2px;
   }
@@ -132,7 +129,7 @@ const Content = styled.div`
 
     pre {
       position: relative;
-      padding : 10px;
+      padding : 5px 10px 10px 10px;
     }
   }
 `

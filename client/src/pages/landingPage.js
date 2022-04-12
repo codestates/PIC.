@@ -7,7 +7,6 @@ import image2 from '../img/landing2.png'
 import image3 from '../img/landing3.png'
 
 const Container = styled.section`
-  font-family: 'Noto Sans KR', sans-serif;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   width: 1200px;

@@ -259,7 +259,7 @@ export const PostContainer = ({ reqEndpoint, category, setResult }) => {
           <SuggestionMsg />
         </ThumbnailContainer>
         {
-          postsData.length < 12
+          postsData.length < 1
             ? null
             : (postEnd
               ? (
