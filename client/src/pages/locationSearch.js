@@ -79,6 +79,8 @@ export const LocationSearch = () => {
   // 썸네일 불러오기
   // -> 게시글 전체 한번에 불러와야함
   // -> 페이지네이션 없는 무한 스크롤 만들기.
+  // 새로운 떼스또
+
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const [centerPosition, setCenterPosition] = useState([]);
   const [distance, setDistance] = useState('100')
