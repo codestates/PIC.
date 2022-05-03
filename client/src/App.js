@@ -26,15 +26,23 @@ import { MostLikes } from "./pages/categories/mostLikes";
 import { NewPics } from "./pages/categories/newPics";
 import { Favorites } from "./pages/categories/favorites";
 import { LandingPage } from "./pages/landingPage";
+import { LocationSearch } from "./pages/locationSearch";
 
 const GlobalStyles = createGlobalStyle`
 
-    /* font-family: 'Noto Sans KR', sans-serif; */
     
+    html {
+      body{
+        font-family: 'NanumSquareRound', sans-serif;
+        color : #000;
+      }
 
-    a {
-      color : black;
+      a {
+        color : black;
+      }
     }
+
+
     
     ${reset}
     .main{
@@ -61,6 +69,10 @@ const InnerContainer = styled.div`
   
   margin-top: 100px;
   margin-bottom: 200px;
+
+  @media screen and (max-width : 500px) {
+    margin-top: 150px;
+  }
 `
 
 
@@ -154,6 +166,7 @@ Made By 박우용, 조승호, 이상훈, 최경락`
 
           <Route path="tags" element={<TagSearch />} />
           <Route path="keywords" element={<KeywordsSearch />} />
+          <Route path="location" element={<LocationSearch />} />
 
           <Route path="mypage" element={<Mypage />} />
           <Route path="mypage/modify/" element={<ModifyMyinfo />} />
