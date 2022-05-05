@@ -211,7 +211,6 @@ export const Navbar = ({ isLogin }) => {
     }
   };
 
-
   const handleLogout = () => {
     sessionStorage.clear()
     window.location.reload()

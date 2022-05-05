@@ -271,7 +271,7 @@ export const AddPost = () => {
   const descArea = useRef()
 
   useEffect(() => {
-    if(!accessToken){
+    if (!accessToken) {
       navigate('/main')
     }
   }, [])
