@@ -72,7 +72,6 @@ const Content = styled.div`
 
   .nick {
     position: relative;
-    top: 2px;
 
     width: 100px;
     
