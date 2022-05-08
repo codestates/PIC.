@@ -136,6 +136,7 @@ export const LocationSearch = () => {
   const [centerPosition, setCenterPosition] = useState([]);
   const [location, setLocation] = useState(null);
   const [distance, setDistance] = useState("100");
+  const [searchModal, setSearchModal] = useState(false);
   // const [] = useState()
 
   const kakao = window.kakao;
@@ -197,15 +198,26 @@ export const LocationSearch = () => {
     console.log("국군지휘통신사령부 요청가즈아");
   }, [centerPosition, distance]);
 
+  const modalHandler = (modal) => {
+    if (modal === "search") {
+      searchModal ? setSearchModal(false) : setSearchModal(true);
+    }
+  }
   return (
     <Container>
+      {searchModal ? <PlaceSearch searchLocation={setLocation} closeFn={() => modalHandler('search')} /> : null}
       <InnerContainer>
-        <KakaoMapBox ref={kakaoMap} />
-        {centerPosition && (
-          <div>
-            현재 중앙 좌표 : {centerPosition} // here ; {distance}
-          </div>
-        )}
+        <KakaoMapBox ref={kakaoMap}>
+          {/* {centerPosition && (
+            <div>
+              현재 중앙 좌표 : {centerPosition} // here ; {distance}
+            </div>
+          )} */}
+          <LocationSearchBtn onClick={() => modalHandler('search')}>
+            <span>주소로 검색하기</span>
+            <IoSearch />
+          </LocationSearchBtn>
+        </KakaoMapBox>
         {/* Ma -> 위도, La -> 경도 */}
         <div className="BtnWrapper">
           <SelectDistance onClick={() => setDistance("100")}>
@@ -225,7 +237,6 @@ export const LocationSearch = () => {
           </SelectDistance>
         </div>
       </InnerContainer>
-      {/* <PlaceSearch /> */}
     </Container>
   );
 };

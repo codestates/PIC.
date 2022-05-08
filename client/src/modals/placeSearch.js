@@ -203,7 +203,8 @@ const NoSearch = styled.div`
   color : #888;
 `
 
-export const PlaceSearch = ({ setLocation, closeFn }) => {
+export const PlaceSearch = ({ searchLocation, setLocation, closeFn }) => {
+  console.log(closeFn, "CLOSE", searchLocation, "LO")
   const kakao = window.kakao
 
   const [searchValue, setSearchValue] = useState('')
@@ -212,7 +213,7 @@ export const PlaceSearch = ({ setLocation, closeFn }) => {
   const inputHandler = (e) => {
     setSearchValue(e.target.value)
 
-    if(e.keyCode === 13){
+    if (e.keyCode === 13) {
       e.preventDefault()
       getPlaces()
     }
@@ -241,12 +242,18 @@ export const PlaceSearch = ({ setLocation, closeFn }) => {
         longitude: lng //경도
       }
     )
+    searchLocation(
+      {
+        latitude: lat,
+        longitude: lng
+      }
+    )
     closeFn()
   }
 
   return (
     <Container>
-    <Backdrop onClick={closeFn} />
+      <Backdrop onClick={closeFn} />
       <Modal>
         <InnerContainer>
           <SearchContainer>
