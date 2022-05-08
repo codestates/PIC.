@@ -135,7 +135,7 @@ const LeftLinks = styled.div`
 
 const RightLinks = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-gap: 20px;
   place-items: center;
 `;

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { PlaceSearch } from "../modals/placeSearch";
 import markerImg from "../img/marker.png";
+import { IoLocateSharp as LocationPin, IoSearch } from "react-icons/io5";
 
 const Container = styled.section`
   position: relative;
@@ -71,6 +72,55 @@ const SelectDistance = styled.div`
     background-color: #ffea7c;
   }
 `;
+
+const BtnOnMap = styled.div`
+  position: absolute;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: max-content;
+  height: 1.5rem;
+  padding: 0 6px;
+
+  background-color: #ffd600;
+  border-radius: 1.5rem;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.5);
+
+  color: #000;
+
+  z-index: 2;
+
+  cursor : pointer;
+
+  span {  
+    position: relative;
+    top: 1px;
+
+    font-size: 0.9rem;
+  }
+
+  svg {
+    margin-left: 5px;
+  }
+
+  transition: 0.1s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.5);
+  }
+`
+const MyLocationBtn = styled(BtnOnMap)`
+  top: 17px;
+  right: 17px;
+`
+
+const LocationSearchBtn = styled(BtnOnMap)`
+  bottom: 17px;
+  right: 17px;
+`
 
 export const LocationSearch = () => {
   // 일단 지도불러오기
