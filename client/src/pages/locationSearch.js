@@ -132,12 +132,12 @@ export const LocationSearch = () => {
   // -> 게시글 전체 한번에 불러와야함
   // -> 페이지네이션 없는 무한 스크롤 만들기.
 
-  const serverPath = process.env.REACT_APP_SERVER_PATH;
+  const serverPath = process.env.REACT_APP_SERVER_PATH
   const [centerPosition, setCenterPosition] = useState([]);
   const [location, setLocation] = useState(null);
   const [distance, setDistance] = useState("100");
   const [searchModal, setSearchModal] = useState(false);
-  // const [] = useState()
+  const [isLoadingMyLocation, setIsLoadingMyLocation] = useState(false)
 
   const kakao = window.kakao;
   const kakaoMap = useRef();
@@ -151,11 +151,6 @@ export const LocationSearch = () => {
     };
 
     const map = new kakao.maps.Map(mapContainer, options);
-    // 여기서 지도 확대 크기 조절?
-    // 조건문으로 distance에 따라 level 증.감
-
-    const markerPosition = new kakao.maps.LatLng(37.5666805, 126.9784147);
-    // 마커 표시 될 위치
 
     const imageSrc = markerImg, // 마커이미지의 주소입니다
       imageSize = new kakao.maps.Size(50, 45), // 마커이미지의 크기입니다
@@ -163,11 +158,27 @@ export const LocationSearch = () => {
 
     const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
+    const markerPosition = new kakao.maps.LatLng(37.5666805, 126.9784147);
+    // 마커 표시 될 위치
+
     const marker = new kakao.maps.Marker({
+      // map: map,
+      // position: positions[0].latlng,
       position: markerPosition,
       image: markerImage,
     });
+    // 지도에 마커 표시
     marker.setMap(map);
+
+    const iwContent = '<div style="padding:5px;">띠용쓰<br><a href="https://map.kakao.com/link/map/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">여기에 게시글 제목 |</a> <a href="https://map.kakao.com/link/to/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">해당 게시글 길찾기</a></div>',
+      iwPosition = new kakao.maps.LatLng(37.5666805, 126.9784147)
+    console.log(location, "lo")
+
+    const infowindow = new kakao.maps.InfoWindow({
+      position: iwPosition,
+      content: iwContent
+    })
+    infowindow.open(map, marker)
 
     if (location) {
       marker.setPosition(new kakao.maps.LatLng(location.latitude, location.longitude));
@@ -193,10 +204,30 @@ export const LocationSearch = () => {
   }, [location]);
   // 거리 사용 -> 거리에 따라 확대비율 조정해야하니까.
 
-  useEffect(() => {
-    // const res = axios.get(`${serverPath}/api/posts?center`)
-    console.log("국군지휘통신사령부 요청가즈아");
+  useEffect(async () => {
+    // const res = await axios.get(`${serverPath}/api/posts?center=${location.latitude, location.longitude}`)
+    // console.log(res, "location");
   }, [centerPosition, distance]);
+
+  const getMyLocation = () => {
+    setIsLoadingMyLocation(true)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        if (position) {
+          setLocation(
+            {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }
+          )
+          setIsLoadingMyLocation(false)
+        }
+      })
+    } else {
+      setIsLoadingMyLocation(false)
+      // 모달 상태
+    }
+  }
 
   const modalHandler = (modal) => {
     if (modal === "search") {
@@ -205,7 +236,7 @@ export const LocationSearch = () => {
   }
   return (
     <Container>
-      {searchModal ? <PlaceSearch searchLocation={setLocation} closeFn={() => modalHandler('search')} /> : null}
+      {searchModal ? <PlaceSearch setLocation={setLocation} closeFn={() => modalHandler('search')} /> : null}
       <InnerContainer>
         <KakaoMapBox ref={kakaoMap}>
           {/* {centerPosition && (
@@ -213,6 +244,10 @@ export const LocationSearch = () => {
               현재 중앙 좌표 : {centerPosition} // here ; {distance}
             </div>
           )} */}
+          <MyLocationBtn onClick={getMyLocation}>
+            <span>{isLoadingMyLocation ? '위치를 가져오는 중...' : '내 위치'}</span>
+            <LocationPin />
+          </MyLocationBtn>
           <LocationSearchBtn onClick={() => modalHandler('search')}>
             <span>주소로 검색하기</span>
             <IoSearch />
