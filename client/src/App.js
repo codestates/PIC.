@@ -29,7 +29,6 @@ import { Favorites } from "./pages/categories/favorites";
 import { LandingPage } from "./pages/landingPage";
 
 const GlobalStyles = createGlobalStyle`
-
     
     html {
       body{
@@ -138,7 +137,6 @@ Made By 박우용, 조승호, 이상훈, 최경락`
   // 만약 엑세스 토큰이 유효하지 않은 경우에 위의 리프레시 토큰을 이용하여 갱신하는 로직을 실행
   // 엑세스 토큰이 유효하다면 세션 스토리지 내부의 토큰과 아이디를 꺼내 사용.
   // 만약 전부 유효하지 않다면 로그인 상태를 false 로 갱신하고, 세션 스토리지를 비운다.
-
 
   const { pathname } = useLocation();
   useEffect(() => {
