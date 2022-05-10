@@ -242,12 +242,12 @@ export const PlaceSearch = ({ searchLocation, setLocation, closeFn }) => {
         longitude: lng //경도
       }
     )
-    searchLocation(
-      {
-        latitude: lat,
-        longitude: lng
-      }
-    )
+    // searchLocation(
+    //   {
+    //     latitude: lat,
+    //     longitude: lng
+    //   }
+    // )
     closeFn()
   }
 
