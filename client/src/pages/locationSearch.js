@@ -1,4 +1,3 @@
-import react from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -223,7 +222,6 @@ export const LocationSearch = () => {
     });
   }, [centerPosition, distance, location]);
   // 거리 사용 -> 거리에 따라 확대비율 조정해야하니까.
-
 
   const getMyLocation = () => {
     setIsLoadingMyLocation(true)
