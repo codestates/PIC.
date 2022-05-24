@@ -134,21 +134,32 @@ export const LocationSearch = () => {
 
   const serverPath = process.env.REACT_APP_SERVER_PATH
   const [centerPosition, setCenterPosition] = useState([]);
-  const [location, setLocation] = useState(null);
-  const [distance, setDistance] = useState("100");
+  const [location, setLocation] = useState({ latitude: 37.5666805, longitude: 126.9784147 });
+  const [distance, setDistance] = useState(0.5);
   const [searchModal, setSearchModal] = useState(false);
   const [isLoadingMyLocation, setIsLoadingMyLocation] = useState(false)
+  const [zoomLevel, setZoomLevel] = useState(3)
 
   const kakao = window.kakao;
   const kakaoMap = useRef();
 
-  useEffect(() => {
+  useEffect(async () => {
     const mapContainer = kakaoMap.current;
+    const getZoomLevel = () => {
+      if (distance === 0.1) return 1
+      if (distance === 0.3) return 2
+      if (distance === 0.5) return 3
+      if (distance === 1) return 4
+      if (distance === 3) return 5
+
+    }
+
     let options = {
       center: new kakao.maps.LatLng(37.5666805, 126.9784147),
       // center: location ? new kakao.maps.LatLng(location.latitude, location.longitude) : new kakao.maps.LatLng(37.5666805, 126.9784147),
-      level: 3,
+      level: getZoomLevel()
     };
+    console.log(distance, "HERE")
 
     const map = new kakao.maps.Map(mapContainer, options);
 
@@ -170,20 +181,29 @@ export const LocationSearch = () => {
     // 지도에 마커 표시
     marker.setMap(map);
 
-    const iwContent = '<div style="padding:5px;">띠용쓰<br><a href="https://map.kakao.com/link/map/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">여기에 게시글 제목 |</a> <a href="https://map.kakao.com/link/to/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">해당 게시글 길찾기</a></div>',
-      iwPosition = new kakao.maps.LatLng(37.5666805, 126.9784147)
-    console.log(location, "lo")
-
-    const infowindow = new kakao.maps.InfoWindow({
-      position: iwPosition,
-      content: iwContent
-    })
-    infowindow.open(map, marker)
 
     if (location) {
       marker.setPosition(new kakao.maps.LatLng(location.latitude, location.longitude));
       const latlng = marker.getPosition();
       map.setCenter(latlng);
+    }
+
+    const res = await axios.get(`${serverPath}/api/posts?date=true&center=[${[location.latitude, location.longitude]}]&distance=${distance}&level=1`)
+
+    for (let el of res.data.posts) {
+      const iwContent = `<a href="posts/${el._id}" style="color:blue; padding: 5px;" target="_self">${el.title}</a><br><div style="padding:1px;"><br> <a href="https://map.kakao.com/link/to/Hello World!,${el.location.latitude}, ${el.location.longitude}" style="color:blue" target="_blank">해당 게시글 길찾기</a></div>`
+      console.log(el, "HOO")
+      const infowindow = new kakao.maps.InfoWindow({
+        position: new kakao.maps.LatLng(el.location.latitude, el.location.longitude),
+        content: iwContent
+      })
+
+      const postsMarker = new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(el.location.latitude, el.location.longitude)
+      })
+      postsMarker.setMap(map);
+      infowindow.open(map, postsMarker)
     }
 
     kakao.maps.event.addListener(map, "dragend", (e) => {
@@ -201,13 +221,9 @@ export const LocationSearch = () => {
 
       setCenterPosition([latlng.Ma, latlng.La]);
     });
-  }, [location]);
+  }, [centerPosition, distance, location]);
   // 거리 사용 -> 거리에 따라 확대비율 조정해야하니까.
 
-  useEffect(async () => {
-    // const res = await axios.get(`${serverPath}/api/posts?center=${location.latitude, location.longitude}`)
-    // console.log(res, "location");
-  }, [centerPosition, distance]);
 
   const getMyLocation = () => {
     setIsLoadingMyLocation(true)
@@ -255,19 +271,19 @@ export const LocationSearch = () => {
         </KakaoMapBox>
         {/* Ma -> 위도, La -> 경도 */}
         <div className="BtnWrapper">
-          <SelectDistance onClick={() => setDistance("100")}>
+          <SelectDistance onClick={() => setDistance(0.1)}>
             <span>100m</span>
           </SelectDistance>
-          <SelectDistance onClick={() => setDistance("300")}>
+          <SelectDistance onClick={() => setDistance(0.3)}>
             <span>300m</span>
           </SelectDistance>
-          <SelectDistance onClick={() => setDistance("500")}>
+          <SelectDistance onClick={() => setDistance(0.5)}>
             <span>500m</span>
           </SelectDistance>
-          <SelectDistance onClick={() => setDistance("1000")}>
+          <SelectDistance onClick={() => setDistance(1)}>
             <span>1 km</span>
           </SelectDistance>
-          <SelectDistance onClick={() => setDistance("3000")}>
+          <SelectDistance onClick={() => setDistance(3)}>
             <span>3 km</span>
           </SelectDistance>
         </div>
