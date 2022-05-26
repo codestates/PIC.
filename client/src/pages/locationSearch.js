@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { PlaceSearch } from "../modals/placeSearch";
 import markerImg from "../img/marker.png";
 import { IoLocateSharp as LocationPin, IoSearch } from "react-icons/io5";
+import "./overlay.css";
 
 const Container = styled.section`
   position: relative;
@@ -190,19 +191,67 @@ export const LocationSearch = () => {
     const res = await axios.get(`${serverPath}/api/posts?date=true&center=[${[location.latitude, location.longitude]}]&distance=${distance}&level=1`)
 
     for (let el of res.data.posts) {
-      const iwContent = `<a href="posts/${el._id}" style="color:blue; padding: 5px;" target="_self">${el.title}</a><br><div style="padding:1px;"><br> <a href="https://map.kakao.com/link/to/Hello World!,${el.location.latitude}, ${el.location.longitude}" style="color:blue" target="_blank">해당 게시글 길찾기</a></div>`
-      console.log(el, "HOO")
-      const infowindow = new kakao.maps.InfoWindow({
+      // const content = `
+      //                   <div 
+      //                     style="
+      //                       width : 200px;
+      //                       position : relative; 
+      //                       background : #ddd;
+      //                     ">
+      //                     <div style="position: absolute; top: 5px; right: 0">x</div>
+      //                     <a href="posts/${el._id}" 
+      //                       style="
+      //                         color:blue; 
+      //                         font-size: 16px; 
+      //                         font-weight: bold;
+      //                         text-decoration: none; 
+      //                         width: 90%; 
+      //                         padding: 5% 3% 0%; 
+      //                         overflow: hidden; 
+      //                         text-overflow: ellipsis; 
+      //                         white-space: nowrap; 
+      //                         display: block;"
+      //                       target="_self">${el.title}</a>
+      //                     <br>
+      //                     <a href="https://map.kakao.com/link/to/Hello World!,${el.location.latitude}, ${el.location.longitude}" 
+      //                       style="
+      //                         color:blue; 
+      //                         padding-left:5px; 
+      //                         position: relative; 
+      //                         bottom: 6px" 
+      //                       target="_blank">게시글 길찾기</a>
+      //                   </div>`
+      const content = `<div class="wrap">
+            <div class="info">
+                <div class="title">
+                    카카오 스페이스닷원
+                    <div class="close" onclick="closeOverlay()" title="닫기"></div>
+                </div>
+                <div class="body">
+                    <div class="img">
+                        <img src="https://cfile181.uf.daum.net/image/250649365602043421936D" width="73" height="70">
+                   </div>
+                    <div class="desc">
+                        <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>
+                        <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>
+                        <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+      const overlay = new kakao.maps.CustomOverlay({
         position: new kakao.maps.LatLng(el.location.latitude, el.location.longitude),
-        content: iwContent
+        content: content
       })
 
       const postsMarker = new kakao.maps.Marker({
         map: map,
         position: new kakao.maps.LatLng(el.location.latitude, el.location.longitude)
       })
-      postsMarker.setMap(map);
-      infowindow.open(map, postsMarker)
+      kakao.maps.event.addListener(postsMarker, 'click', function () {
+        postsMarker.setMap(map);
+        overlay.setMap(map, postsMarker)
+      })
     }
 
     kakao.maps.event.addListener(map, "dragend", (e) => {
@@ -211,7 +260,6 @@ export const LocationSearch = () => {
       // 인자로 e 를 넣고 e.latLng 를 하면 이벤트에 dragend에는 이벤트 객체가 없어서 (click과 달리) 저장할 것이 없다.
       // 위치를 저장해야 하므로 지도의 중앙 좌표 getCenter()를 이용해서 지더의 중앙 위치를 저장해야한다. 
       marker.setPosition(latlng);
-      console.log(latlng, "HERE");
 
       setLocation({
         latitude: latlng.getLat(),
@@ -253,11 +301,6 @@ export const LocationSearch = () => {
       {searchModal ? <PlaceSearch setLocation={setLocation} closeFn={() => modalHandler('search')} /> : null}
       <InnerContainer>
         <KakaoMapBox ref={kakaoMap}>
-          {/* {centerPosition && (
-            <div>
-              현재 중앙 좌표 : {centerPosition} // here ; {distance}
-            </div>
-          )} */}
           <MyLocationBtn onClick={getMyLocation}>
             <span>{isLoadingMyLocation ? '위치를 가져오는 중...' : '내 위치'}</span>
             <LocationPin />
@@ -267,7 +310,6 @@ export const LocationSearch = () => {
             <IoSearch />
           </LocationSearchBtn>
         </KakaoMapBox>
-        {/* Ma -> 위도, La -> 경도 */}
         <div className="BtnWrapper">
           <SelectDistance onClick={() => setDistance(0.1)}>
             <span>100m</span>
